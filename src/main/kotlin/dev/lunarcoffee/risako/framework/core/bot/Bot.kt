@@ -1,9 +1,10 @@
 package dev.lunarcoffee.risako.framework.core.bot
 
-import dev.lunarcoffee.risako.framework.core.commands.*
-import dev.lunarcoffee.risako.framework.core.dispatchers.*
-import net.dv8tion.jda.api.*
-import net.dv8tion.jda.api.hooks.*
+import dev.lunarcoffee.risako.framework.core.bot.config.BotConfig
+import dev.lunarcoffee.risako.framework.core.commands.Command
+import dev.lunarcoffee.risako.framework.core.dispatchers.Dispatcher
+import net.dv8tion.jda.api.JDA
+import net.dv8tion.jda.api.hooks.EventListener
 
 internal interface Bot {
     val jda: JDA

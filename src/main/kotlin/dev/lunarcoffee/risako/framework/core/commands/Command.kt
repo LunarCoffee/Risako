@@ -1,7 +1,8 @@
 package dev.lunarcoffee.risako.framework.core.commands
 
-import dev.lunarcoffee.risako.framework.core.dispatchers.*
-import dev.lunarcoffee.risako.framework.core.std.*
+import dev.lunarcoffee.risako.framework.core.dispatchers.Dispatchable
+import dev.lunarcoffee.risako.framework.core.dispatchers.DispatchableArgs
+import dev.lunarcoffee.risako.framework.core.std.HasBot
 
 internal interface Command : Dispatchable<CommandContext, DispatchableArgs>, HasBot {
     val name: String

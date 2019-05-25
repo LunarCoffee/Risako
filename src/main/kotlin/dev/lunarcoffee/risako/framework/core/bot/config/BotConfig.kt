@@ -1,4 +1,4 @@
-package dev.lunarcoffee.risako.framework.core.bot
+package dev.lunarcoffee.risako.framework.core.bot.config
 
 internal interface BotConfig {
     val prefix: String

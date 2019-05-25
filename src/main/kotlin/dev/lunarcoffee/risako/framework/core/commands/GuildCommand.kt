@@ -1,13 +1,11 @@
-package dev.lunarcoffee.risako.framework.core.commands.impl
+package dev.lunarcoffee.risako.framework.core.commands
 
-import dev.lunarcoffee.risako.framework.core.bot.*
-import dev.lunarcoffee.risako.framework.core.commands.Command
-import dev.lunarcoffee.risako.framework.core.commands.CommandContext
-import dev.lunarcoffee.risako.framework.core.dispatchers.*
+import dev.lunarcoffee.risako.framework.core.bot.Bot
+import dev.lunarcoffee.risako.framework.core.dispatchers.DispatchableArgs
 
 internal class GuildCommand(override val bot: Bot, override val name: String) :
     Command {
-    override val groupName = "Misc"
+    override var groupName = "Misc"
     override val description = "(none)"
     override val extDescription = "(none)"
 
