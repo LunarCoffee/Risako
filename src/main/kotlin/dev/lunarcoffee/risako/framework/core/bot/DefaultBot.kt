@@ -1,3 +1,5 @@
+@file:Suppress("LeakingThis")
+
 package dev.lunarcoffee.risako.framework.core.bot
 
 import dev.lunarcoffee.risako.framework.core.bot.config.DefaultConfig
@@ -16,22 +18,25 @@ import org.yaml.snakeyaml.Yaml
 import java.io.File
 
 internal open class DefaultBot(configPath: String) : Bot {
-    override lateinit var jda: JDA
-    override lateinit var dispatcher: Dispatcher
+    init {
+        instance = this
+    }
 
-    override val config = Yaml().loadAs(File(configPath).readText(), DefaultConfig::class.java)!!
+    final override val jda: JDA
+    final override val dispatcher: Dispatcher
 
-    // Load commands.
+    final override val config = Yaml()
+        .loadAs(File(configPath).readText(), DefaultConfig::class.java)!!
+
     private val commandLoader = CommandLoader(this)
 
     private val groupToCommands = commandLoader.groupToCommands
     override val commands = commandLoader.commands
     override val commandNames get() = commands.map { it.name }.sorted()
 
-    // Load listeners.
     private val listenerLoader = ListenerLoader(this)
 
-    override val listeners = listenerLoader.listeners
+    final override val listeners = listenerLoader.listeners
     override val listenerNames
         get() = listeners
             .map { it.javaClass.name.substringAfterLast(".") }
@@ -76,5 +81,8 @@ internal open class DefaultBot(configPath: String) : Bot {
 
     companion object {
         private val log = KotlinLogging.logger {}
+
+        // This shouldn't be used outside of the <framework> package.
+        internal lateinit var instance: Bot
     }
 }

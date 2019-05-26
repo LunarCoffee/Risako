@@ -14,7 +14,12 @@ version = "0.1.0"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
+    
+    // Loading commands/listeners.
     compile(kotlin("reflect"))
+    
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.2.1")
 
     // Discord API wrapper.
     implementation("net.dv8tion:JDA:4.ALPHA.0_89")

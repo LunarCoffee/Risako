@@ -7,3 +7,5 @@ internal inline fun <T> silence(crossinline f: () -> T): T? {
         null
     }
 }
+
+fun String.trimToDescription() = trimMargin().replace("\n", " ").replace("\\n", "\n")

@@ -1,20 +1,27 @@
 package dev.lunarcoffee.risako.framework.core.commands
 
 import dev.lunarcoffee.risako.framework.core.bot.Bot
+import dev.lunarcoffee.risako.framework.core.commands.transformers.Transformer
 import dev.lunarcoffee.risako.framework.core.dispatchers.DispatchableArgs
+import dev.lunarcoffee.risako.framework.core.trimToDescription
 
-internal class GuildCommand(override val bot: Bot, override val name: String) :
-    Command {
+internal class GuildCommand(override val bot: Bot, override var name: String) : Command {
     override var groupName = "Misc"
-    override val description = "(none)"
-    override val extDescription = "(none)"
+    override var description = "(none)"
+    override var extDescription = "(none)"
+        set(value) {
+            field = value.trimToDescription()
+        }
 
-    override val aliases = emptyArray<String>()
+    override var aliases = emptyArray<String>()
     override val names get() = aliases + name
 
-    override val ownerOnly = false
-    override val nsfwOnly = false
-    override val noArgParsing = false
+    override var expectedArgs = emptyArray<Transformer<out Any?>>()
+
+    override var ownerOnly = false
+    override var nsfwOnly = false
+    override var deleteSender = false
+    override var noArgParsing = false
 
     override lateinit var execute: suspend (CommandContext, DispatchableArgs) -> Unit
 
