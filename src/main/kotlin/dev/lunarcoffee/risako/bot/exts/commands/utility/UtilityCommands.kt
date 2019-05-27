@@ -2,20 +2,23 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.utility
 
+import dev.lunarcoffee.risako.bot.exts.commands.utility.fact.FastFactorialCalculator
 import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpTextGenerator
 import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculator
 import dev.lunarcoffee.risako.framework.api.dsl.command
+import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
 import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
-import dev.lunarcoffee.risako.framework.core.std.*
+import dev.lunarcoffee.risako.framework.core.std.OpError
+import dev.lunarcoffee.risako.framework.core.std.OpSuccess
 import dev.lunarcoffee.risako.framework.core.trimToDescription
 
 @CommandGroup("Utility")
-internal class UtilityCommands(override val bot: Bot) : HasBot {
+internal class UtilityCommands(private val bot: Bot) {
     fun rpn() = command("rpn") {
-        description = "Reverse p4olish notation calculator! I'm not sure why this exists."
+        description = "Reverse polish notation calculator! I'm not sure why this exists."
         aliases = arrayOf("reversepolish")
 
         extDescription = """
@@ -25,12 +28,12 @@ internal class UtilityCommands(override val bot: Bot) : HasBot {
         """.trimToDescription()
 
         expectedArgs = arrayOf(TrSplit())
-        execute { ctx, args ->
+        execute { args ->
             val expression = args.get<List<String>>(0)
 
             when (val result = RPNCalculator(expression).calculate()) {
-                is OpSuccess -> ctx.success("The result of the calculation is `${result.result}`!")
-                is OpError -> ctx.error("Something was wrong with your expression!")
+                is OpSuccess -> sendSuccess("The result of the calculation is `${result.result}`!")
+                is OpError -> sendError("Something was wrong with your expression!")
             }
         }
     }
@@ -46,17 +49,47 @@ internal class UtilityCommands(override val bot: Bot) : HasBot {
         """.trimToDescription()
 
         expectedArgs = arrayOf(TrRest())
-        execute { ctx, args ->
+        execute { args ->
             val rawText = args.get<String>(0)
-
             val byWords = rawText.endsWith(" -w")
+
             val text = if (byWords) {
                 rawText.split(" ").dropLast(1).reversed().joinToString(" ")
             } else {
                 rawText.reversed()
             }
 
-            ctx.success("Your text reversed is `$text`")
+            sendSuccess("Your text reversed is `$text`")
+        }
+    }
+
+    fun fact() = command("fact") {
+        description = "Calculates the factorial of a given number."
+        aliases = arrayOf("factorial")
+
+        extDescription = """
+            |`$name number`\n
+            |A lot of online calculators stop giving you factorials in whole numbers after quite an
+            |early point, usually around `15!` or so. Unlike them, I'll calculate factorials up to
+            |50000 and happily provide them in all their glory.
+        """.trimToDescription()
+
+        expectedArgs = arrayOf(TrInt())
+        execute { args ->
+            val number = args.get<Int>(0).toLong()
+            if (number !in 0..50_000) {
+                sendError("I can't calculate the factorial of that number!")
+                return@execute
+            }
+            val result = FastFactorialCalculator.factorial(number).toString().chunked(1_777)
+
+            send(
+                messagePaginator {
+                    for (chunk in result) {
+                        page("```$chunk```")
+                    }
+                }
+            )
         }
     }
 
@@ -71,14 +104,14 @@ internal class UtilityCommands(override val bot: Bot) : HasBot {
         """.trimToDescription()
 
         expectedArgs = arrayOf(TrRest())
-        execute { ctx, args ->
+        execute { args ->
             val rawText = args.get<String>(0)
             val byWords = rawText.endsWith(" -w")
 
             val length = if (byWords) rawText.split(" ").size - 1 else rawText.length
             val charsOrWords = if (byWords) "words" else "characters"
 
-            ctx.success("Your text is `$length` $charsOrWords long.")
+            sendSuccess("Your text is `$length` $charsOrWords long.")
         }
     }
 
@@ -106,21 +139,21 @@ internal class UtilityCommands(override val bot: Bot) : HasBot {
         """
 
         expectedArgs = arrayOf(TrWord(true), TrWord(true))
-        execute { ctx, args ->
+        execute { args ->
             val commandName = args.get<String>(0)
             val flags = args.get<String>(1)
-            val command = ctx.bot.commands.find { commandName in it.names }
+            val command = bot.commands.find { commandName in it.names }
 
             if (commandName.isNotBlank() && command == null) {
-                ctx.error("I can't find that command!")
+                sendError("I can't find that command!")
                 return@execute
             }
 
-            ctx.send(
+            send(
                 if (command == null) {
-                    HelpTextGenerator(ctx).listCommandsEmbed()
+                    HelpTextGenerator(this).listCommandsEmbed()
                 } else {
-                    HelpTextGenerator(ctx).detailedCommandHelpEmbed(command, flags)
+                    HelpTextGenerator(this).detailedCommandHelpEmbed(command, flags)
                 }
             )
         }

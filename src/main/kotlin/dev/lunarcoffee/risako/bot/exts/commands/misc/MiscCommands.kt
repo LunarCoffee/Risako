@@ -4,6 +4,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.misc
 
 import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.bot.exts.commands.misc.loc.CodeStats
+import dev.lunarcoffee.risako.bot.exts.commands.misc.stats.SystemStats
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.extensions.*
@@ -11,13 +12,12 @@ import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrInt
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrWord
-import dev.lunarcoffee.risako.framework.core.std.HasBot
 import java.security.SecureRandom
 import kotlin.random.Random
 import kotlin.system.measureNanoTime
 
 @CommandGroup("Misc")
-internal class MiscCommands(override val bot: Bot) : HasBot {
+internal class MiscCommands(private val bot: Bot) {
     fun ping() = command("ping") {
         description = "Gets various info about how good I feel am today."
         aliases = arrayOf("pong", "peng", "latency")
@@ -28,17 +28,17 @@ internal class MiscCommands(override val bot: Bot) : HasBot {
             |allocation latency (this one's just for fun and might not be accurate either).
         """
 
-        execute { ctx, _ ->
-            val apiLatency = ctx.jda.restPing.await()
+        execute {
+            val apiLatency = jda.restPing.await()
             val stackLatency = measureNanoTime {
                 @Suppress("UNUSED_VARIABLE")
                 val temp = 0
             }
 
-            ctx.send(
+            send(
                 embed {
                     title = "${Emoji.PING_PONG}  Pong!"
-                    description = "[${ctx.jda.gatewayPing}ms, ${apiLatency}ms, ${stackLatency}ns]"
+                    description = "[${jda.gatewayPing}ms, ${apiLatency}ms, ${stackLatency}ns]"
                 }
             )
         }
@@ -54,8 +54,8 @@ internal class MiscCommands(override val bot: Bot) : HasBot {
             |number of files and folders I am, and the number of characters I'm written in.
         """
 
-        execute { ctx, _ ->
-            ctx.send(
+        execute {
+            send(
                 embed {
                     CodeStats(bot).run {
                         title = "${Emoji.OPEN_FILE_FOLDER}  Code stats:"
@@ -86,7 +86,7 @@ internal class MiscCommands(override val bot: Bot) : HasBot {
         """
 
         expectedArgs = arrayOf(TrInt(), TrInt(), TrWord(true))
-        execute { ctx, args ->
+        execute { args ->
             val lowerBound = args.get<Int>(0)
             val upperBound = args.get<Int>(1) + 1
             val secure = args.get<String>(2) == "-s"
@@ -98,7 +98,7 @@ internal class MiscCommands(override val bot: Bot) : HasBot {
             }
 
             val secureText = if (secure) " secure" else ""
-            ctx.success("Your$secureText random number is `$number`!")
+            sendSuccess("Your$secureText random number is `$number`!")
         }
     }
 
@@ -112,8 +112,41 @@ internal class MiscCommands(override val bot: Bot) : HasBot {
             |under the MIT license.
         """
 
-        execute { ctx, _ ->
-            ctx.success("<https://gitlab.com/LunarCoffee/risako>")
+        execute { sendSuccess("<https://gitlab.com/LunarCoffee/risako>") }
+    }
+
+    fun stats() = command("stats") {
+        description = "Gets various stats about my... existence?"
+        aliases = arrayOf("statistics")
+
+        extDescription = """
+            |`$name`\n
+            |Gets various stats about me, like how much RAM I'm eating up, the language I'm written
+            |in, how long I've been awake, and what architecture the CPU I'm running on is.
+        """
+
+        execute {
+            send(
+                embed {
+                    SystemStats().run {
+                        val creatorTag = jda.getUserById(bot.config.ownerId)!!.asTag
+
+                        title = "${Emoji.LAPTOP_COMPUTER}  System statistics:"
+                        description = """
+                            |**Memory usage**: ${totalMemory - freeMemory}/$totalMemory MB
+                            |**Language**: $language
+                            |**Creator**: $creatorTag
+                            |**JVM version**: $jvmVersion
+                            |**Operating system**: $osName
+                            |**Uptime**: $uptime
+                            |**CPU architecture**: $cpuArchitecture
+                            |**Logical cores available**: $logicalProcessors
+                            |**Total threads**: $totalThreads
+                            |**Running threads**: $runningThreads
+                        """.trimMargin()
+                    }
+                }
+            )
         }
     }
 }

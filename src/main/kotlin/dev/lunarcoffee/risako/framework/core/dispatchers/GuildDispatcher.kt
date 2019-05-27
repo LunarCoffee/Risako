@@ -1,7 +1,7 @@
 package dev.lunarcoffee.risako.framework.core.dispatchers
 
 import dev.lunarcoffee.risako.framework.api.extensions.await
-import dev.lunarcoffee.risako.framework.api.extensions.error
+import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.*
 import dev.lunarcoffee.risako.framework.core.dispatchers.parsers.ArgParser
@@ -50,13 +50,13 @@ internal class GuildDispatcher(
         val command = commands.find { commandName in it.names } ?: return
 
         if (command.ownerOnly && event.author.id != bot.config.ownerId) {
-            channel.error("Only my owner can use that command!")
+            channel.sendError("Only my owner can use that command!")
             log.info { "[OWNER] $authorName tried to use command `$commandName`!" }
             return
         }
 
         if (command.nsfwOnly && !channel.isNSFW) {
-            channel.error("You need to be in an NSFW channel to use that command!")
+            channel.sendError("You need to be in an NSFW channel to use that command!")
             log.info { "[NNSFW] $authorName tried to use command `$commandName`!" }
             return
         }
@@ -103,7 +103,7 @@ internal class GuildDispatcher(
 
     // Tell the user to see the command's help message if the arguments were wrong.
     private suspend fun sendUsage(channel: MessageChannel, name: String) {
-        channel.error("That's not right. Type `..help $name` for more info.") {
+        channel.sendError("That's not right. Type `..help $name` for more info.") {
             delay(5000L)
             it.delete().await()
         }

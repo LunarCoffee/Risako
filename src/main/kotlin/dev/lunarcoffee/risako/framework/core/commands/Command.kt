@@ -21,7 +21,7 @@ internal interface Command : Dispatchable<CommandContext, DispatchableArgs>, Has
     var deleteSender: Boolean
     var noArgParsing: Boolean
 
-    var execute: suspend (CommandContext, DispatchableArgs) -> Unit
+    var execute: suspend CommandContext.(DispatchableArgs) -> Unit
 
-    fun execute(func: suspend (CommandContext, DispatchableArgs) -> Unit)
+    fun execute(func: suspend CommandContext.(DispatchableArgs) -> Unit)
 }

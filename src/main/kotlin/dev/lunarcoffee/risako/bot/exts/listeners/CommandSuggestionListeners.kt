@@ -3,7 +3,7 @@
 package dev.lunarcoffee.risako.bot.exts.listeners
 
 import dev.lunarcoffee.risako.framework.api.extensions.await
-import dev.lunarcoffee.risako.framework.api.extensions.error
+import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.annotations.ListenerGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import kotlinx.coroutines.*
@@ -42,7 +42,7 @@ internal class CommandSuggestionListeners(
         for (alias in bot.commandNames) {
             if (nameDistance(name, alias) < 2) {
                 launch {
-                    channel.error("That's not a command... did you mean `$alias`?") {
+                    channel.sendError("That's not a command... did you mean `$alias`?") {
                         delay(5000L)
                         it.delete().await()
                     }
