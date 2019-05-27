@@ -12,7 +12,7 @@ import mu.KotlinLogging
 import net.dv8tion.jda.api.entities.ChannelType
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.events.GenericEvent
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
 internal class GuildDispatcher(
     override val bot: Bot,
@@ -32,18 +32,18 @@ internal class GuildDispatcher(
 
     override suspend fun handleEvent(event: GenericEvent) {
         if (
-            event !is GuildMessageReceivedEvent
-            || !event.message.contentRaw.startsWith(bot.config.prefix)
-            || event.author.isBot
-            || event.channel.type == ChannelType.PRIVATE
-            || event.channel.type == ChannelType.GROUP
+            event !is MessageReceivedEvent ||
+            !event.message.contentRaw.startsWith(bot.config.prefix) ||
+            event.author.isBot ||
+            event.channel.type == ChannelType.PRIVATE ||
+            event.channel.type == ChannelType.GROUP
         ) {
             log.debug { "Event ${event.javaClass.name} caught!" }
             return
         }
 
         val content = event.message.contentRaw
-        val channel = event.channel
+        val channel = event.textChannel
         val authorName = event.author.name
 
         val commandName = content.substringAfter(bot.config.prefix).substringBefore(" ")

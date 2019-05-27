@@ -1,8 +1,9 @@
 @file:Suppress("unused")
 
-package dev.lunarcoffee.risako.bot.exts.commands
+package dev.lunarcoffee.risako.bot.exts.commands.misc
 
 import dev.lunarcoffee.risako.bot.consts.Emoji
+import dev.lunarcoffee.risako.bot.exts.commands.misc.loc.CodeStats
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.extensions.*
@@ -10,14 +11,13 @@ import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrInt
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrWord
-import dev.lunarcoffee.risako.framework.core.trimToDescription
-import java.io.File
+import dev.lunarcoffee.risako.framework.core.std.HasBot
 import java.security.SecureRandom
 import kotlin.random.Random
 import kotlin.system.measureNanoTime
 
 @CommandGroup("Misc")
-internal class MiscCommands(private val bot: Bot) {
+internal class MiscCommands(override val bot: Bot) : HasBot {
     fun ping() = command("ping") {
         description = "Gets various info about how good I feel am today."
         aliases = arrayOf("pong", "peng", "latency")
@@ -28,7 +28,7 @@ internal class MiscCommands(private val bot: Bot) {
             |allocation latency (this one's just for fun and might not be accurate either).
         """
 
-        execute = { ctx, _ ->
+        execute { ctx, _ ->
             val apiLatency = ctx.jda.restPing.await()
             val stackLatency = measureNanoTime {
                 @Suppress("UNUSED_VARIABLE")
@@ -54,41 +54,20 @@ internal class MiscCommands(private val bot: Bot) {
             |number of files and folders I am, and the number of characters I'm written in.
         """
 
-        execute = { ctx, _ ->
-            val files = mutableListOf<File>()
-            var dirs = 0
-
-            File(ctx.bot.config.sourceRootDir).walk().forEach {
-                if (it.extension == "kt") {
-                    files += it
-                } else if (it.isDirectory) {
-                    dirs++
-                }
-            }
-
-            var linesOfCode = 0
-            var blankLines = 0
-            var characters = 0
-
-            files.asSequence().flatMap { it.readLines().asSequence() }.forEach {
-                if (it.isBlank()) {
-                    blankLines++
-                }
-                linesOfCode++
-                characters += it.length
-            }
-
+        execute { ctx, _ ->
             ctx.send(
                 embed {
-                    title = "${Emoji.OPEN_FILE_FOLDER}  Code statistics:"
-                    description = """
-                        **Lines of code**: $linesOfCode
-                        **Lines with content**: ${linesOfCode - blankLines}
-                        **Blank lines**: $blankLines
-                        **Characters**: $characters
-                        **Code files**: ${files.count()}
-                        **Directories**: $dirs
-                    """.trimIndent()
+                    CodeStats(bot).run {
+                        title = "${Emoji.OPEN_FILE_FOLDER}  Code stats:"
+                        description = """
+                            **Lines of code**: $linesOfCode
+                            **Lines with content**: ${linesOfCode - blankLines}
+                            **Blank lines**: $blankLines
+                            **Characters**: $characters
+                            **Code files**: $fileCount
+                            **Directories**: $dirs
+                        """.trimIndent()
+                    }
                 }
             )
         }
@@ -103,11 +82,11 @@ internal class MiscCommands(private val bot: Bot) {
         extDescription = """
             |`$name low high [-s]`\n
             |This command generates a random number within the closed interval [`low`, `high`]. If
-            |the `-s` flag is set, a secure source of randomness will be used.
-        """.trimToDescription()
+            |the `-s` flag is set, a more secure source of randomness will be used.
+        """
 
         expectedArgs = arrayOf(TrInt(), TrInt(), TrWord(true))
-        execute = { ctx, args ->
+        execute { ctx, args ->
             val lowerBound = args.get<Int>(0)
             val upperBound = args.get<Int>(1) + 1
             val secure = args.get<String>(2) == "-s"
@@ -131,9 +110,9 @@ internal class MiscCommands(private val bot: Bot) {
             |`$name`\n
             |Unless you are a developer, this command probably has no use. My code is licensed
             |under the MIT license.
-        """.trimToDescription()
+        """
 
-        execute = { ctx, _ ->
+        execute { ctx, _ ->
             ctx.success("<https://gitlab.com/LunarCoffee/risako>")
         }
     }

@@ -2,9 +2,9 @@ package dev.lunarcoffee.risako.framework.core.commands
 
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import net.dv8tion.jda.api.entities.TextChannel
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
 internal class GuildCommandContext(
-    override val event: GuildMessageReceivedEvent,
+    override val event: MessageReceivedEvent,
     override val bot: Bot
-) : CommandContext, TextChannel by event.channel
+) : CommandContext, TextChannel by event.textChannel

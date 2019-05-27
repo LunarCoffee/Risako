@@ -25,6 +25,10 @@ internal class GuildCommand(override val bot: Bot, override var name: String) : 
 
     override lateinit var execute: suspend (CommandContext, DispatchableArgs) -> Unit
 
+    override fun execute(func: suspend (CommandContext, DispatchableArgs) -> Unit) {
+        execute = func
+    }
+
     override suspend fun dispatch(ctx: CommandContext, args: DispatchableArgs) {
         execute(ctx, args)
     }

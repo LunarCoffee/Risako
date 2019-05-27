@@ -22,4 +22,6 @@ internal interface Command : Dispatchable<CommandContext, DispatchableArgs>, Has
     var noArgParsing: Boolean
 
     var execute: suspend (CommandContext, DispatchableArgs) -> Unit
+
+    fun execute(func: suspend (CommandContext, DispatchableArgs) -> Unit)
 }
