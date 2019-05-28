@@ -1,13 +1,11 @@
 package dev.lunarcoffee.risako.framework.core.services.reloaders
 
+import com.google.gson.Gson
 import dev.lunarcoffee.risako.framework.core.DB
 import dev.lunarcoffee.risako.framework.core.silence
-import dev.lunarcoffee.risako.framework.core.std.idgen.IdGenerator
 import kotlinx.coroutines.*
-import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
-import org.litote.kmongo.eq
 import java.io.File
 
 internal class ReloaderListener(
@@ -19,23 +17,27 @@ internal class ReloaderListener(
     override fun onReady(event: ReadyEvent) {
         for (c in loadReloadableClasses()) {
             val colName = reloadAnnotation(c).colName
-            val col = DB.getCollection<Reloadable>(colName)
+            val col = DB.getCollection<ReloadableJson>(colName)
 
             launch {
-                for (reloadable in col.find().toList()) {
+                for (reloadableJson in col.find().toList()) {
+                    // Get an instance of the original reloadable class and reassign its
+                    // ReloadableJsonID so we can identify it for removal.
+                    val reloadable = c
+                        .cast(GSON.fromJson(reloadableJson.json, c))
+                        .apply { rjid = reloadableJson.id }
+
                     if (reloadable.finished) {
-                        // Remove the reloadable from the collection and free its ID for other use.
-                        col.deleteOne(Reloadable::id eq reloadable.id)
-                        IdGenerator.delete(reloadable.id)
+                        reloadable.finish()
                     } else {
-                        reschedule(c, reloadable, event)
+                        reloadable.schedule(event)
                     }
                 }
             }
         }
     }
 
-    private fun loadReloadableClasses(): Sequence<Class<*>> {
+    private fun loadReloadableClasses(): Sequence<Class<out Reloadable>> {
         return File(sourceRootDir)
             .walk()
             .mapNotNull {
@@ -49,25 +51,16 @@ internal class ReloaderListener(
             }
             .filter { c ->
                 val isReloadable = c.superclass == Reloadable::class.java
-                isReloadable && c.annotations.any { it.annotationClass == ReloadFrom::class }
+                isReloadable && c.annotations.any { it is ReloadFrom }
             }
-    }
-
-    private suspend fun reschedule(c: Class<*>, reloadable: Reloadable, event: GenericEvent) {
-        val constructor = c.asSubclass(Reloadable::class.java).kotlin.constructors.first()
-
-        // The first argument of the constructor should always be a [Date] object, with the rest
-        // being optional (or a secondary constructor with only the first argument).
-        constructor.callBy(mapOf(constructor.parameters[0] to reloadable.time))
-            .apply {
-                data = reloadable.data
-                id = reloadable.id
-                finished = reloadable.finished
-            }
-            .schedule(event)
+            .map { it.asSubclass(Reloadable::class.java) }
     }
 
     private fun reloadAnnotation(c: Class<*>): ReloadFrom {
-        return c.annotations.find { it.annotationClass == ReloadFrom::class }!! as ReloadFrom
+        return c.annotations.find { it is ReloadFrom }!! as ReloadFrom
+    }
+
+    companion object {
+        private val GSON = Gson()
     }
 }

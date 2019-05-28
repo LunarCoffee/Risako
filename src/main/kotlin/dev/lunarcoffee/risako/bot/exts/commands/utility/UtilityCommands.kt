@@ -2,6 +2,7 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.utility
 
+import dev.lunarcoffee.risako.bot.consts.RCN
 import dev.lunarcoffee.risako.bot.exts.commands.utility.fact.FastFactorialCalculator
 import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpTextGenerator
 import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderReloader
@@ -9,11 +10,9 @@ import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculator
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
 import dev.lunarcoffee.risako.framework.api.extensions.*
-import dev.lunarcoffee.risako.framework.core.DB
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
-import dev.lunarcoffee.risako.framework.core.services.reloaders.Reloadable
 import dev.lunarcoffee.risako.framework.core.std.*
 import dev.lunarcoffee.risako.framework.core.trimToDescription
 import java.time.Instant
@@ -120,8 +119,6 @@ internal class UtilityCommands(private val bot: Bot) {
     }
 
     fun remind() = command("remind") {
-        val remindCol = DB.getCollection<Reloadable>("Reminders0")
-
         description = "Sets a reminder so you don't have to remember things!"
         aliases = arrayOf("remindme")
 
@@ -141,16 +138,14 @@ internal class UtilityCommands(private val bot: Bot) {
             val dateTime = time.localWithoutWeekday().replace(" at ", "` at `")
             sendSuccess("I'll remind you on `$dateTime`!")
 
-            val reminder = ReminderReloader(
+            scheduleReloadable<ReminderReloader>(
+                RCN.REMINDER,
                 Date.from(Instant.now().plusMillis(time.totalMs)),
                 event.guild.id,
                 event.channel.id,
                 event.author.asMention,
                 reason
             )
-
-            remindCol.insertOne(reminder)
-            reminder.schedule(event)
         }
     }
 
