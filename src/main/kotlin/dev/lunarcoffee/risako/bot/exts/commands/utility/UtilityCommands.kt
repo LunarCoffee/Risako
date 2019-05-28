@@ -4,16 +4,20 @@ package dev.lunarcoffee.risako.bot.exts.commands.utility
 
 import dev.lunarcoffee.risako.bot.exts.commands.utility.fact.FastFactorialCalculator
 import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpTextGenerator
+import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderReloader
 import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculator
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
 import dev.lunarcoffee.risako.framework.api.extensions.*
+import dev.lunarcoffee.risako.framework.core.DB
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
-import dev.lunarcoffee.risako.framework.core.std.OpError
-import dev.lunarcoffee.risako.framework.core.std.OpSuccess
+import dev.lunarcoffee.risako.framework.core.services.reloaders.Reloadable
+import dev.lunarcoffee.risako.framework.core.std.*
 import dev.lunarcoffee.risako.framework.core.trimToDescription
+import java.time.Instant
+import java.util.*
 
 @CommandGroup("Utility")
 internal class UtilityCommands(private val bot: Bot) {
@@ -112,6 +116,41 @@ internal class UtilityCommands(private val bot: Bot) {
             val charsOrWords = if (byWords) "words" else "characters"
 
             sendSuccess("Your text is `$length` $charsOrWords long.")
+        }
+    }
+
+    fun remind() = command("remind") {
+        val remindCol = DB.getCollection<Reloadable>("Reminders0")
+
+        description = "Sets a reminder so you don't have to remember things!"
+        aliases = arrayOf("remindme")
+
+        extDescription = """
+            |`$name time [reason]`\n
+            |This command takes a time string that looks something like `3h 40m` or `1m 30s` or
+            |`2d 4h 32m 58s`, and optionally, a reason to remind you of. After the amount of time
+            |specified in `time`, I should ping you in the channel you send the command in and
+            |remind you of what you told me.
+        """.trimToDescription()
+
+        expectedArgs = arrayOf(TrTime(), TrRest(true, "(no reason)"))
+        execute { args ->
+            val time = args.get<SplitTime>(0)
+            val reason = args.get<String>(1)
+
+            val dateTime = time.localWithoutWeekday().replace(" at ", "` at `")
+            sendSuccess("I'll remind you on `$dateTime`!")
+
+            val reminder = ReminderReloader(
+                Date.from(Instant.now().plusMillis(time.totalMs)),
+                event.guild.id,
+                event.channel.id,
+                event.author.asMention,
+                reason
+            )
+
+            remindCol.insertOne(reminder)
+            reminder.schedule(event)
         }
     }
 

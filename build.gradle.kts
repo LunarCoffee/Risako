@@ -1,4 +1,4 @@
-import org.jetbrains.kotlin.gradle.tasks.*
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 repositories {
     mavenCentral()
@@ -14,10 +14,10 @@ version = "0.1.0"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
-    
+
     // Loading commands/listeners.
     compile(kotlin("reflect"))
-    
+
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.2.1")
 
@@ -28,7 +28,11 @@ dependencies {
     implementation("org.slf4j:slf4j-api:1.7.26")
     implementation("org.slf4j:slf4j-jdk14:1.7.26")
 
+    implementation("org.litote.kmongo:kmongo-coroutine:3.10.1")
+
     implementation("org.yaml:snakeyaml:1.21")
+
+    implementation("com.google.code.gson:gson:2.8.5")
 }
 
 tasks.withType<KotlinCompile> {

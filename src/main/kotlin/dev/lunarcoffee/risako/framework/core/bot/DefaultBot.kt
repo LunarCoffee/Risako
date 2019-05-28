@@ -10,6 +10,7 @@ import dev.lunarcoffee.risako.framework.core.dispatchers.Dispatcher
 import dev.lunarcoffee.risako.framework.core.dispatchers.GuildDispatcher
 import dev.lunarcoffee.risako.framework.core.dispatchers.parsers.DefaultArgParser
 import dev.lunarcoffee.risako.framework.core.services.paginators.PaginationReactionListener
+import dev.lunarcoffee.risako.framework.core.services.reloaders.ReloaderListener
 import dev.lunarcoffee.risako.framework.core.services.waiters.WaitList
 import mu.KotlinLogging
 import net.dv8tion.jda.api.JDA
@@ -49,7 +50,13 @@ internal open class DefaultBot(configPath: String) : Bot {
         dispatcher = GuildDispatcher(this, DefaultArgParser())
 
         // Add all event listeners.
-        jda.addEventListener(*listeners.toTypedArray(), PaginationReactionListener, WaitList)
+        jda.addEventListener(
+            *listeners.toTypedArray(),              // User-defined [ListenerAdapter] classes.
+            PaginationReactionListener,             // Switches paginator pages from reactions.
+            WaitList,                               // Allows waiting for a user response.
+            ReloaderListener(config.sourceRootDir)  // Reloads things like reminders and unmutes.
+        )
+
         log.info {
             val groupNames = listeners.map { it.javaClass.name.substringAfterLast(".") }
             "Loaded listener groups: $groupNames"
