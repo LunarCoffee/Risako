@@ -2,10 +2,9 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.utility
 
-import dev.lunarcoffee.risako.bot.consts.RCN
 import dev.lunarcoffee.risako.bot.exts.commands.utility.fact.FastFactorialCalculator
 import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpTextGenerator
-import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderReloader
+import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderManager
 import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculator
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
@@ -15,8 +14,6 @@ import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
 import dev.lunarcoffee.risako.framework.core.std.*
 import dev.lunarcoffee.risako.framework.core.trimToDescription
-import java.time.Instant
-import java.util.*
 
 @CommandGroup("Utility")
 internal class UtilityCommands(private val bot: Bot) {
@@ -128,24 +125,72 @@ internal class UtilityCommands(private val bot: Bot) {
             |`2d 4h 32m 58s`, and optionally, a reason to remind you of. After the amount of time
             |specified in `time`, I should ping you in the channel you send the command in and
             |remind you of what you told me.
-        """.trimToDescription()
+        """
 
         expectedArgs = arrayOf(TrTime(), TrRest(true, "(no reason)"))
         execute { args ->
             val time = args.get<SplitTime>(0)
             val reason = args.get<String>(1)
-
             val dateTime = time.localWithoutWeekday().replace(" at ", "` at `")
-            sendSuccess("I'll remind you on `$dateTime`!")
 
-            scheduleReloadable<ReminderReloader>(
-                RCN.REMINDER,
-                Date.from(Instant.now().plusMillis(time.totalMs)),
-                event.guild.id,
-                event.channel.id,
-                event.author.asMention,
-                reason
-            )
+            sendSuccess("I'll remind you on `$dateTime`!")
+            ReminderManager(this).scheduleReminder(time, reason)
+        }
+    }
+
+    fun remindl() = command("remindl") {
+        val allowedOperations = arrayOf("list", "cancel")
+
+        description = "Lets you view and cancel your reminders."
+        aliases = arrayOf("remindlist")
+
+        extDescription = """
+            |`$name [list|cancel] [id|range]`\n
+            |This command is for managing reminders made by the `remind` command. You can view and
+            |cancel any of your reminders here.
+            |&{Viewing reminders:}
+            |Seeing your active reminders is easy. Just use the command without arguments (i.e.
+            |`..remindlist`), and I will list out all of your active reminders. Each entry will
+            |have the reminder's reason and the time it will be fired at.
+            |&{Cancelling reminders:}
+            |Reminder cancellation is also easy. The first argument must be `cancel`, and the
+            |second argument can be either a number or range of numbers (i.e. `1-5` or `4-6`). I
+            |will cancel the reminders with the IDs you specify (either `id` or `range`).
+        """.trimToDescription()
+
+        expectedArgs = arrayOf(TrWord(true, "list"), TrWord(true))
+        execute { args ->
+            val operation = args.get<String>(0)
+            val idOrRange = args.get<String>(1)
+
+            if (operation !in allowedOperations) {
+                sendError("That isn't a valid operation!")
+                return@execute
+            }
+
+            // This command lets users remove either a single reminder or reminders within a range
+            // of IDs. This here tries to use the input as a range first, then as a single number.
+            val potentialId = idOrRange.toIntOrNull()
+            val range = TrIntRange(true).transform(this, mutableListOf(idOrRange)).run {
+                when {
+                    this is OpSuccess -> when {
+                        this.result == 0..0 && potentialId != null -> potentialId..potentialId
+                        this.result == 0..0 && operation != "list" -> {
+                            sendError("That isn't a valid number or range!")
+                            return@execute
+                        }
+                        else -> this.result
+                    }
+                    // Will never be [OpError] because the argument is optional.
+                    else -> throw IllegalStateException()
+                }
+            }
+
+            if (operation == "list") {
+                ReminderManager(this).sendRemindersEmbed()
+            } else if (operation == "cancel") {
+                ReminderManager(this).cancelReminders(range)
+            }
         }
     }
 
@@ -183,13 +228,11 @@ internal class UtilityCommands(private val bot: Bot) {
                 return@execute
             }
 
-            send(
-                if (command == null) {
-                    HelpTextGenerator(this).listCommandsEmbed()
-                } else {
-                    HelpTextGenerator(this).detailedCommandHelpEmbed(command, flags)
-                }
-            )
+            if (command == null) {
+                HelpTextGenerator(this).sendListEmbed()
+            } else {
+                HelpTextGenerator(this).sendDetailedHelpEmbed(command, flags)
+            }
         }
     }
 }

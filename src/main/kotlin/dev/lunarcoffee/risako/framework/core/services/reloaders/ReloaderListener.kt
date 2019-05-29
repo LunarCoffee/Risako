@@ -27,11 +27,9 @@ internal class ReloaderListener(
                         .cast(GSON.fromJson(reloadableJson.json, c))
                         .apply { rjid = reloadableJson.id }
 
-                    if (reloadable.finished) {
-                        reloadable.finish()
-                    } else {
-                        reloadable.schedule(event)
-                    }
+                    // Reschedule the reloadable. Each reloadable is responsible for calling
+                    // [Reloadable#finish] to clean itself up.
+                    reloadable.schedule(event, ReloadableCollection(colName, c.kotlin))
                 }
             }
         }

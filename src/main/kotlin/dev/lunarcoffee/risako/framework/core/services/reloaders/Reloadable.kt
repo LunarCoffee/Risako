@@ -13,14 +13,16 @@ internal open class Reloadable(val time: Date) {
     // adding the reloadable to the DB and scheduling it.
     var rjid = 0L
 
+    // This is the name the collection with these objects in the DB.
     lateinit var colName: String
-    var finished = false
 
-    open suspend fun schedule(event: GenericEvent): Unit = throw IllegalArgumentException()
+    // Extending classes must override this method.
+    open suspend fun schedule(event: GenericEvent, col: ReloadableCollection<Reloadable>) {
+        throw IllegalArgumentException()
+    }
 
     // Delete this [Reloadable] from the DB and free its ID (stored in [rjid]).
     suspend fun finish() {
-        finished = true
         val col = DB.getCollection<ReloadableJson>(colName)
 
         col.deleteOne(ReloadableJson::id eq rjid)
