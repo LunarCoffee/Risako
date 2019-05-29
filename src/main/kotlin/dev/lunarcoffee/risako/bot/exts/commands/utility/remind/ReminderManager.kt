@@ -1,7 +1,7 @@
 package dev.lunarcoffee.risako.bot.exts.commands.utility.remind
 
 import dev.lunarcoffee.risako.bot.consts.Emoji
-import dev.lunarcoffee.risako.bot.consts.RCN
+import dev.lunarcoffee.risako.bot.consts.ColName
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.dsl.embedPaginator
 import dev.lunarcoffee.risako.framework.api.extensions.*
@@ -15,7 +15,7 @@ internal class ReminderManager(private val ctx: CommandContext) {
     suspend fun scheduleReminder(time: SplitTime, reason: String) {
         ctx.run {
             scheduleReloadable<ReminderReloader>(
-                RCN.REMINDER,
+                ColName.REMINDER,
                 Date.from(Instant.now().plusMillis(time.totalMs)),
                 event.author.asMention,
                 reason,
@@ -82,6 +82,6 @@ internal class ReminderManager(private val ctx: CommandContext) {
     private suspend fun getReminders() = col.find { it.mention == ctx.event.author.asMention }
 
     companion object {
-        private val col = ReloadableCollection(RCN.REMINDER, ReminderReloader::class)
+        private val col = ReloadableCollection(ColName.REMINDER, ReminderReloader::class)
     }
 }

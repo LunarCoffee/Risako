@@ -1,14 +1,14 @@
 package dev.lunarcoffee.risako.bot.exts.commands.utility.remind
 
 import dev.lunarcoffee.risako.bot.consts.DEFAULT_TIMER
-import dev.lunarcoffee.risako.bot.consts.RCN
+import dev.lunarcoffee.risako.bot.consts.ColName
 import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
 import dev.lunarcoffee.risako.framework.core.scheduleNoInline
 import dev.lunarcoffee.risako.framework.core.services.reloaders.*
 import net.dv8tion.jda.api.events.GenericEvent
 import java.util.*
 
-@ReloadFrom(RCN.REMINDER)
+@ReloadFrom(ColName.REMINDER)
 internal class ReminderReloader(
     time: Date,
     val mention: String = "",
@@ -18,7 +18,7 @@ internal class ReminderReloader(
 ) : Reloadable(time) {
 
     init {
-        colName = RCN.REMINDER
+        colName = ColName.REMINDER
     }
 
     override suspend fun schedule(event: GenericEvent, col: ReloadableCollection<Reloadable>) {

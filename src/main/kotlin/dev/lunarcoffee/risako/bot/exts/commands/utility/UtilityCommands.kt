@@ -6,6 +6,7 @@ import dev.lunarcoffee.risako.bot.exts.commands.utility.fact.FastFactorialCalcul
 import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpTextGenerator
 import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderManager
 import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculator
+import dev.lunarcoffee.risako.bot.exts.commands.utility.tags.TagManager
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
 import dev.lunarcoffee.risako.framework.api.extensions.*
@@ -13,7 +14,6 @@ import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
 import dev.lunarcoffee.risako.framework.core.std.*
-import dev.lunarcoffee.risako.framework.core.trimToDescription
 
 @CommandGroup("Utility")
 internal class UtilityCommands(private val bot: Bot) {
@@ -25,7 +25,7 @@ internal class UtilityCommands(private val bot: Bot) {
             |`$name expression`\n
             |Calculates the result of a expression in reverse Polish notation (postfix notation).
             |The supported operators are: [`+`, `-`, `*`, `/`, `**`, `%`, `&`, `|`, `^`]
-        """.trimToDescription()
+        """
 
         expectedArgs = arrayOf(TrSplit())
         execute { args ->
@@ -33,7 +33,7 @@ internal class UtilityCommands(private val bot: Bot) {
 
             when (val result = RPNCalculator(expression).calculate()) {
                 is OpSuccess -> sendSuccess("The result of the calculation is `${result.result}`!")
-                is OpError -> sendError("Something was wrong with your expression!")
+                else -> sendError("Something was wrong with your expression!")
             }
         }
     }
@@ -46,7 +46,7 @@ internal class UtilityCommands(private val bot: Bot) {
             |`$name text [-w]`\n
             |Reverses the given text, letter by letter if the `-w` flag is not specified, and word
             |by word if it is specified (the text is simply split by spaces).
-        """.trimToDescription()
+        """
 
         expectedArgs = arrayOf(TrRest())
         execute { args ->
@@ -58,7 +58,6 @@ internal class UtilityCommands(private val bot: Bot) {
             } else {
                 rawText.reversed()
             }
-
             sendSuccess("Your text reversed is `$text`")
         }
     }
@@ -72,7 +71,7 @@ internal class UtilityCommands(private val bot: Bot) {
             |A lot of online calculators stop giving you factorials in whole numbers after quite an
             |early point, usually around `15!` or so. Unlike them, I'll calculate factorials up to
             |50000 and happily provide them in all their glory.
-        """.trimToDescription()
+        """
 
         expectedArgs = arrayOf(TrInt())
         execute { args ->
@@ -101,7 +100,7 @@ internal class UtilityCommands(private val bot: Bot) {
             |`$name text [-w]`\n
             |Counts the characters in the given text if the `-w` flag is not specified, and counts
             |words if it is specified (the text is simply split by spaces).
-        """.trimToDescription()
+        """
 
         expectedArgs = arrayOf(TrRest())
         execute { args ->
@@ -156,7 +155,7 @@ internal class UtilityCommands(private val bot: Bot) {
             |Reminder cancellation is also easy. The first argument must be `cancel`, and the
             |second argument can be either a number or range of numbers (i.e. `1-5` or `4-6`). I
             |will cancel the reminders with the IDs you specify (either `id` or `range`).
-        """.trimToDescription()
+        """
 
         expectedArgs = arrayOf(TrWord(true, "list"), TrWord(true))
         execute { args ->
@@ -190,6 +189,55 @@ internal class UtilityCommands(private val bot: Bot) {
                 ReminderManager(this).sendRemindersEmbed()
             } else if (operation == "cancel") {
                 ReminderManager(this).cancelReminders(range)
+            }
+        }
+    }
+
+    fun tags() = command("tags") {
+        description = "Create textual tags to save!"
+        aliases = arrayOf("notes")
+
+        extDescription = """
+            |`$name [action] [tag name] [tag content]`\n
+            |This command lets you save information in tags. These tags have a name and can store
+            |a lot of content. They also store the person who created them and the time at which
+            |the tag was created.
+            |&{Viewing tags:}
+            |To view all the tags on the current server, use the command with no arguments (as in
+            |`..$name` only). To view a specific tag, action should be `view` and `tag name` should
+            |be the name of the tag you want to view.
+            |&{Adding tags:}
+            |To add a tag, `action` should be `add`, `tag name` should be the name you want to
+            |give the tag, and `tag content` should be the content of the tag. The name cannot be
+            |longer than 30 characters, and the content cannot be longer than 1000 characters.
+            |&{Editing tags:}
+            |If you ever want to change one of your tags, you can do so by making `action` the word
+            |`edit`, `tag name` the name of the tag you want to edit (you have to have created it),
+            |and `tag content` the updated content of the tag.
+            |&{Deleting tags:}
+            |To remove a tag, `action` has to be `delete`, and `tag name` has to be the name of the
+            |tag you want to delete (which has to have been created by you).
+        """
+
+        expectedArgs = arrayOf(TrWord(true), TrWord(true), TrRest(true))
+        execute { args ->
+            val action = args.get<String>(0)
+            if (action.isEmpty()) {
+                TagManager(this).sendTags()
+                return@execute
+            }
+
+            val tagName = args.get<String>(1)
+            val tagContent = args.get<String>(2)
+
+            TagManager(this).run {
+                when (action) {
+                    "view" -> sendSingleTag(tagName)
+                    "add" -> addTag(tagName, tagContent)
+                    "edit" -> editTag(tagName, tagContent)
+                    "delete" -> deleteTag(tagName)
+                    else -> sendError("That isn't a valid operation!")
+                }
             }
         }
     }

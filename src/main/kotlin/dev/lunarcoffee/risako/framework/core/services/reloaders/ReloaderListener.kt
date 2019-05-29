@@ -4,6 +4,7 @@ import com.google.gson.Gson
 import dev.lunarcoffee.risako.framework.core.DB
 import dev.lunarcoffee.risako.framework.core.silence
 import kotlinx.coroutines.*
+import mu.KotlinLogging
 import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.io.File
@@ -20,7 +21,8 @@ internal class ReloaderListener(
             val col = DB.getCollection<ReloadableJson>(colName)
 
             launch {
-                for (reloadableJson in col.find().toList()) {
+                val reloadables = col.find().toList()
+                for (reloadableJson in reloadables) {
                     // Get an instance of the original reloadable class and reassign its
                     // ReloadableJsonID so we can identify it for removal.
                     val reloadable = c
@@ -31,6 +33,7 @@ internal class ReloaderListener(
                     // [Reloadable#finish] to clean itself up.
                     reloadable.schedule(event, ReloadableCollection(colName, c.kotlin))
                 }
+                log.info { "Reloaded ${reloadables.size} reloadables from `$colName`!" }
             }
         }
     }
@@ -59,6 +62,7 @@ internal class ReloaderListener(
     }
 
     companion object {
+        private val log = KotlinLogging.logger {}
         private val GSON = Gson()
     }
 }
