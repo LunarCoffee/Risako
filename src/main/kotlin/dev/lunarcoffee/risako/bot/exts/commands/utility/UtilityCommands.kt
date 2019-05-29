@@ -3,9 +3,10 @@
 package dev.lunarcoffee.risako.bot.exts.commands.utility
 
 import dev.lunarcoffee.risako.bot.exts.commands.utility.fact.FastFactorialCalculator
-import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpTextGenerator
+import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpDetailSender
+import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpListSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderManager
-import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculator
+import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculationSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.tags.TagManager
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
@@ -13,7 +14,8 @@ import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
-import dev.lunarcoffee.risako.framework.core.std.*
+import dev.lunarcoffee.risako.framework.core.std.OpSuccess
+import dev.lunarcoffee.risako.framework.core.std.SplitTime
 
 @CommandGroup("Utility")
 internal class UtilityCommands(private val bot: Bot) {
@@ -30,11 +32,7 @@ internal class UtilityCommands(private val bot: Bot) {
         expectedArgs = arrayOf(TrSplit())
         execute { args ->
             val expression = args.get<List<String>>(0)
-
-            when (val result = RPNCalculator(expression).calculate()) {
-                is OpSuccess -> sendSuccess("The result of the calculation is `${result.result}`!")
-                else -> sendError("Something was wrong with your expression!")
-            }
+            RPNCalculationSender(expression).send(this)
         }
     }
 
@@ -277,9 +275,9 @@ internal class UtilityCommands(private val bot: Bot) {
             }
 
             if (command == null) {
-                HelpTextGenerator(this).sendListEmbed()
+                HelpListSender().send(this)
             } else {
-                HelpTextGenerator(this).sendDetailedHelpEmbed(command, flags)
+                HelpDetailSender(command, flags).send(this)
             }
         }
     }

@@ -19,11 +19,7 @@ internal class CommandSuggestionListeners(
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         val notRisakoCommand = !event.message.contentRaw.startsWith(bot.config.prefix)
-//        val noCommandSuggestions = runBlocking {
-//            GUILD_OVERRIDES.findOne(GO::id eq event.guild.id)?.noSuggestCommands
-//        } ?: false
-
-        if (notRisakoCommand || event.author.isBot /*|| noCommandSuggestions*/) {
+        if (notRisakoCommand || event.author.isBot) {
             return
         }
 

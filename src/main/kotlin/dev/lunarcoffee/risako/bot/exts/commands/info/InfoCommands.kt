@@ -2,19 +2,21 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.info
 
-import dev.lunarcoffee.risako.bot.constToEng
-import dev.lunarcoffee.risako.bot.consts.Emoji
-import dev.lunarcoffee.risako.bot.consts.TIME_FORMATTER
-import dev.lunarcoffee.risako.bot.toYesNo
-import dev.lunarcoffee.risako.framework.api.dsl.*
-import dev.lunarcoffee.risako.framework.api.extensions.send
+import dev.lunarcoffee.risako.bot.exts.commands.info.ci.ChannelInfoSender
+import dev.lunarcoffee.risako.bot.exts.commands.info.ei.EmoteInfoSender
+import dev.lunarcoffee.risako.bot.exts.commands.info.mi.MemberInfoSender
+import dev.lunarcoffee.risako.bot.exts.commands.info.ri.RoleInfoSender
+import dev.lunarcoffee.risako.bot.exts.commands.info.si.ServerInfoSender
+import dev.lunarcoffee.risako.bot.exts.commands.info.ui.UserInfoSender
+import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrUser
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrWord
-import dev.lunarcoffee.risako.framework.core.std.*
-import net.dv8tion.jda.api.entities.*
+import dev.lunarcoffee.risako.framework.core.std.OpResult
+import dev.lunarcoffee.risako.framework.core.std.OpSuccess
+import net.dv8tion.jda.api.entities.User
 
 @CommandGroup("Info")
 internal class InfoCommands(private val bot: Bot) {
@@ -38,24 +40,7 @@ internal class InfoCommands(private val bot: Bot) {
                     return@execute
                 }
             }
-
-            send(
-                embed {
-                    user.run {
-                        val botOrUser = if (isBot) "bot" else "user"
-
-                        title = "${Emoji.MAG_GLASS}  Info on $botOrUser **$asTag**:"
-                        description = """
-                            |**User ID**: $id
-                            |**Creation time**: ${timeCreated.format(TIME_FORMATTER)}
-                            |**Avatar ID**: ${avatarId ?: "(none)"}
-                            |**Mention**: $asMention
-                        """.trimMargin()
-
-                        thumbnail { url = avatarUrl ?: defaultAvatarUrl }
-                    }
-                }
-            )
+            UserInfoSender(user).send(this)
         }
     }
 
@@ -85,36 +70,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("That user is not a member of this server!")
                 return@execute
             }
-
-            send(
-                embed {
-                    member.run {
-                        val botOrMember = if (user.isBot) "bot" else "member"
-                        val activity = activities.firstOrNull()?.name ?: "(none)"
-
-                        val userRoles = if (roles.isNotEmpty()) {
-                            "[${roles.joinToString { it.asMention }}]"
-                        } else {
-                            "(none)"
-                        }
-
-                        title = "${Emoji.MAG_GLASS}  Info on $botOrMember **${user.asTag}**:"
-                        description = """
-                            |**User ID**: $id
-                            |**Nickname**: ${nickname ?: "(none)"}
-                            |**Status**: ${onlineStatus.key}
-                            |**Activity**: $activity
-                            |**Creation time**: ${timeCreated.format(TIME_FORMATTER)}
-                            |**Join time**: ${timeJoined.format(TIME_FORMATTER)}
-                            |**Avatar ID**: ${user.avatarId ?: "(none)"}
-                            |**Mention**: $asMention
-                            |**Roles**: ${userRoles.ifEmpty { "(none)" }}
-                        """.trimMargin()
-
-                        thumbnail { url = user.avatarUrl ?: user.defaultAvatarUrl }
-                    }
-                }
-            )
+            MemberInfoSender(member).send(this)
         }
     }
 
@@ -147,48 +103,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("I can't find a text or voice channel with that name or ID!")
                 return@execute
             }
-
-            send(
-                embed {
-                    channel.run {
-                        when (this) {
-                            is TextChannel -> {
-                                val slowmode = if (slowmode != 0) {
-                                    SplitTime(slowmode.toLong()).toString()
-                                } else {
-                                    "(none)"
-                                }
-
-                                title = "${Emoji.MAG_GLASS}  Info on text channel **#$name**:"
-                                description = """
-                                    |**Channel ID**: $id
-                                    |**Server**: ${guild.name}
-                                    |**Topic**: ${topic ?: "(none)"}
-                                    |**Slowmode**: $slowmode
-                                    |**NSFW**: ${isNSFW.toYesNo()}
-                                    |**Mention**: $asMention
-                                    |**Category**: ${parent?.name ?: "(none)"}
-                                    |**Creation time**: ${timeCreated.format(TIME_FORMATTER)}
-                                """.trimMargin()
-                            }
-                            is VoiceChannel -> {
-                                val limit = if (userLimit == 0) "(none)" else userLimit.toString()
-
-                                title = "${Emoji.MAG_GLASS}  Info on voice channel **#$name**:"
-                                description = """
-                                    |**Channel ID**: $id
-                                    |**Server**: ${guild.name}
-                                    |**Bitrate**: ${bitrate / 1_000}kb/s
-                                    |**User limit**: $limit users
-                                    |**Mention**: <#$id>
-                                    |**Category**: ${parent?.name ?: "(none)"}
-                                    |**Creation time**: ${timeCreated.format(TIME_FORMATTER)}
-                                """.trimMargin()
-                            }
-                        }
-                    }
-                }
-            )
+            ChannelInfoSender(channel).send(this)
         }
     }
 
@@ -219,25 +134,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("I can't find an emote with that name or ID!")
                 return@execute
             }
-
-            send(
-                embed {
-                    emote.run {
-                        val animated = if (isAnimated) " animated" else ""
-
-                        title = "${Emoji.MAG_GLASS}  Info on$animated emote **$name**:"
-                        description = """
-                            |**Emote ID**: $id
-                            |**Server** ${guild?.name ?: "(none)"}
-                            |**Managed**: ${isManaged.toYesNo()}
-                            |**Creation time**: ${timeCreated.format(TIME_FORMATTER)}
-                            |**Required roles**: ${roles.ifEmpty { "(none)" }}
-                        """.trimMargin()
-
-                        thumbnail { url = imageUrl }
-                    }
-                }
-            )
+            EmoteInfoSender(emote).send(this)
         }
     }
 
@@ -267,33 +164,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("I can't find a role with that name or ID!")
                 return@execute
             }
-
-            send(
-                embed {
-                    role.run {
-                        val roleName = if (role.isPublicRole) {
-                            "the public role"
-                        } else {
-                            "role **@$name**"
-                        }
-                        val authorGuildId = event.guild.id
-                        val mention = if (guild.id == authorGuildId) asMention else "(unavailable)"
-                        val permissions = permissions.map { it.constToEng() }.ifEmpty { "(none)" }
-
-                        title = "${Emoji.MAG_GLASS}  Info on $roleName:"
-                        description = """
-                            |**Role ID**: $id
-                            |**Server**: ${guild.name}
-                            |**Displayed separately**: ${isHoisted.toYesNo()}
-                            |**Normally mentionable**: ${isMentionable.toYesNo()}
-                            |**Mention**: $mention
-                            |**Creation time**: ${timeCreated.format(TIME_FORMATTER)}
-                            |**Managed**: ${isManaged.toYesNo()}
-                            |**Permissions**: $permissions
-                        """.trimMargin()
-                    }
-                }
-            )
+            RoleInfoSender(role).send(this)
         }
     }
 
@@ -322,55 +193,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("I can't find a server with that name or ID!")
                 return@execute
             }
-
-            send(
-                embedPaginator(event.author) {
-                    guild.run {
-                        page(
-                            embed {
-                                val afkChannel = afkChannel?.id?.run { "<#$this>" } ?: "(none)"
-                                val features = features.map { it.constToEng() }
-
-                                title = "${Emoji.MAG_GLASS}  Info on server **$name**:"
-                                description = """
-                                    |**Guild ID**: $id
-                                    |**Total members**: ${members.size} members
-                                    |**Total emotes**: ${emotes.size} emotes
-                                    |**Total channels**: ${channels.size} channels
-                                    |**Text channels**: ${textChannels.size} text channels
-                                    |**Voice channels**: ${voiceChannels.size} voice channels
-                                    |**AFK channel**: $afkChannel
-                                    |**NSFW filter:** ${explicitContentLevel.description}
-                                    |**Special features**: ${features.ifEmpty { "(none)" }}
-                                """.trimMargin()
-
-                                thumbnail { url = iconUrl }
-                            }
-                        )
-                        page(
-                            embed {
-                                val roles = if (guild.id == event.guild.id) {
-                                    roles.map { it.asMention }.toString()
-                                } else {
-                                    "(unavailable)"
-                                }
-
-                                title = "${Emoji.MAG_GLASS}  Info on server **$name**:"
-                                description = """
-                                    |**Owner**: ${owner?.user?.asTag ?: "(none)"}
-                                    |**Voice region**: ${region.getName()}
-                                    |**Roles**: ${roles.ifEmpty { "(none)" }}
-                                    |**Verification level**: ${verificationLevel.constToEng()}
-                                    |**MFA level**: ${requiredMFALevel.constToEng()}
-                                    |**Icon ID**: ${iconId ?: "(no icon)"}
-                                """.trimMargin()
-
-                                thumbnail { url = iconUrl }
-                            }
-                        )
-                    }
-                }
-            )
+            ServerInfoSender(guild).send(this)
         }
     }
 }

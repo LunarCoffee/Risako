@@ -4,7 +4,9 @@ package dev.lunarcoffee.risako.bot.exts.commands.misc
 
 import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.bot.exts.commands.misc.loc.CodeStats
+import dev.lunarcoffee.risako.bot.exts.commands.misc.loc.CodeStatsSender
 import dev.lunarcoffee.risako.bot.exts.commands.misc.stats.SystemStats
+import dev.lunarcoffee.risako.bot.exts.commands.misc.stats.SystemStatsSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.extensions.*
@@ -44,35 +46,6 @@ internal class MiscCommands(private val bot: Bot) {
         }
     }
 
-    fun loc() = command("loc") {
-        description = "Gets stats and info about my code!"
-        aliases = arrayOf("linesofcode")
-
-        extDescription = """
-            |`$name`\n
-            |This command shows various stats about my code, like how many lines I'm made of, the
-            |number of files and folders I am, and the number of characters I'm written in.
-        """
-
-        execute {
-            send(
-                embed {
-                    CodeStats(bot).run {
-                        title = "${Emoji.OPEN_FILE_FOLDER}  Code stats:"
-                        description = """
-                            **Lines of code**: $linesOfCode
-                            **Lines with content**: ${linesOfCode - blankLines}
-                            **Blank lines**: $blankLines
-                            **Characters**: $characters
-                            **Code files**: $fileCount
-                            **Directories**: $dirs
-                        """.trimIndent()
-                    }
-                }
-            )
-        }
-    }
-
     fun rng() = command("rng") {
         val secureRandom = SecureRandom()
 
@@ -102,6 +75,19 @@ internal class MiscCommands(private val bot: Bot) {
         }
     }
 
+    fun loc() = command("loc") {
+        description = "Gets stats and info about my code!"
+        aliases = arrayOf("linesofcode")
+
+        extDescription = """
+            |`$name`\n
+            |This command shows various stats about my code, like how many lines I'm made of, the
+            |number of files and folders I am, and the number of characters I'm written in.
+        """
+
+        execute { CodeStatsSender(CodeStats(bot)).send(this) }
+    }
+
     fun git() = command("git") {
         description = "Gets my GitLab repo URL."
         aliases = arrayOf("repo", "github")
@@ -125,28 +111,6 @@ internal class MiscCommands(private val bot: Bot) {
             |in, how long I've been awake, and what architecture the CPU I'm running on is.
         """
 
-        execute {
-            send(
-                embed {
-                    SystemStats().run {
-                        val creatorTag = jda.getUserById(bot.config.ownerId)!!.asTag
-
-                        title = "${Emoji.LAPTOP_COMPUTER}  System statistics:"
-                        description = """
-                            |**Memory usage**: ${totalMemory - freeMemory}/$totalMemory MB
-                            |**Language**: $language
-                            |**Creator**: $creatorTag
-                            |**JVM version**: $jvmVersion
-                            |**Operating system**: $osName
-                            |**Uptime**: $uptime
-                            |**CPU architecture**: $cpuArchitecture
-                            |**Logical cores available**: $logicalProcessors
-                            |**Total threads**: $totalThreads
-                            |**Running threads**: $runningThreads
-                        """.trimMargin()
-                    }
-                }
-            )
-        }
+        execute { SystemStatsSender(SystemStats()).send(this) }
     }
 }

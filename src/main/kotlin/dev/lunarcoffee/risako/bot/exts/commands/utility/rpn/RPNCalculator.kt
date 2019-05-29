@@ -1,12 +1,15 @@
 package dev.lunarcoffee.risako.bot.exts.commands.utility.rpn
 
-import dev.lunarcoffee.risako.framework.core.std.*
+import dev.lunarcoffee.risako.framework.api.extensions.sendError
+import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
+import dev.lunarcoffee.risako.framework.core.commands.CommandContext
+import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import java.util.*
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-internal class RPNCalculator(private val expression: List<String>) {
-    fun calculate(): OpResult<Double> {
+internal class RPNCalculationSender(private val expression: List<String>) : ContentSender {
+    override suspend fun send(ctx: CommandContext) {
         val stack = Stack<Double>()
 
         for (token in expression) {
@@ -17,13 +20,15 @@ internal class RPNCalculator(private val expression: List<String>) {
             }
 
             if (token !in operators) {
-                return OpError()
+                ctx.sendError()
+                return
             }
 
             val (op2, op1) = try {
                 Pair(stack.pop(), stack.pop())
             } catch (e: EmptyStackException) {
-                return OpError()
+                ctx.sendError()
+                return
             }
 
             stack.push(
@@ -49,11 +54,15 @@ internal class RPNCalculator(private val expression: List<String>) {
             )
         }
 
-        return try {
-            OpSuccess(stack.pop())
+        try {
+            ctx.sendSuccess("The result of the calculation is `${stack.pop()}`!")
         } catch (e: EmptyStackException) {
-            OpError()
+            ctx.sendError()
         }
+    }
+
+    private suspend fun CommandContext.sendError() {
+        sendError("Something was wrong with your expression!")
     }
 
     companion object {
