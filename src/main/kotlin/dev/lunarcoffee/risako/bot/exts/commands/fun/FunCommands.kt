@@ -2,14 +2,17 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.`fun`
 
+import dev.lunarcoffee.risako.bot.consts.Emoji
+import dev.lunarcoffee.risako.bot.exts.commands.`fun`.eightball.EightBallSender
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.flip.CoinFlipSender
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.roll.*
 import dev.lunarcoffee.risako.framework.api.dsl.command
+import dev.lunarcoffee.risako.framework.api.dsl.embed
+import dev.lunarcoffee.risako.framework.api.extensions.send
 import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
-import dev.lunarcoffee.risako.framework.core.commands.transformers.TrGreedy
-import dev.lunarcoffee.risako.framework.core.commands.transformers.TrInt
+import dev.lunarcoffee.risako.framework.core.commands.transformers.*
 
 @CommandGroup("Fun")
 internal class FunCommands(private val bot: Bot) {
@@ -73,5 +76,47 @@ internal class FunCommands(private val bot: Bot) {
             }
             DiceRollSender(diceRolls).send(this)
         }
+    }
+
+    fun pick() = command("pick") {
+        description = "Picks a value from the options you give."
+        aliases = arrayOf("select", "choose")
+
+        extDescription = """
+            |`$name options...`\n
+            |Picks a value from `options`, which is a list of choices. To have an option name with
+            |a space, wrap the name in quotes "like this." This also applies to other commands.
+        """
+
+        expectedArgs = arrayOf(TrSplit())
+        execute { args ->
+            val options = args.get<List<String>>(0)
+            if (options.size < 2) {
+                sendError("I need at least 2 options to choose from!")
+                return@execute
+            }
+
+            send(
+                embed {
+                    title = "${Emoji.THINKING}  I choose **${options.random()}**!"
+                    description = options.toString()
+                }
+            )
+        }
+    }
+
+    fun eightBall() = command("8ball") {
+        description = "Uncover secrets with the 100% reliable Magic 8 Ball!"
+        aliases = arrayOf("magic8ball", "magiceightball")
+
+        extDescription = """
+            |`$name question`\n
+            |Ask the Magic 8 Ball a question and it will undoubtedly tell you the truth (unless
+            |it's tired and wants to sleep and not answer your question, in which case you should
+            |simply ask again, politely).
+        """
+
+        expectedArgs = arrayOf(TrRest())
+        execute { EightBallSender().send(this) }
     }
 }
