@@ -6,6 +6,8 @@ import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.eightball.EightBallSender
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.flip.CoinFlipSender
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.roll.*
+import dev.lunarcoffee.risako.bot.exts.commands.`fun`.rplace.RPlaceCanvas
+import dev.lunarcoffee.risako.bot.exts.commands.`fun`.steal.EmoteStealerSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.extensions.send
@@ -118,5 +120,75 @@ internal class FunCommands(private val bot: Bot) {
 
         expectedArgs = arrayOf(TrRest())
         execute { EightBallSender().send(this) }
+    }
+
+    fun steal() = command("steal") {
+        description = "Gets custom emotes from the history of the current channel."
+        aliases = arrayOf("stealemotes")
+
+        extDescription = """
+            |`$name [limit]`\n
+            |Steals custom emotes from the current channel's history. If `limit` is specified, this
+            |command will attempt to steal all emotes from the past `limit` messages. If not, the
+            |default is the past 100 messages.
+        """
+
+        expectedArgs = arrayOf(TrInt(true, 100))
+        execute { args ->
+            val historyToSearch = args.get<Int>(0)
+            if (historyToSearch !in 1..1_000) {
+                sendError("I can't steal from that many messages in history!")
+                return@execute
+            }
+            EmoteStealerSender(historyToSearch).send(this)
+        }
+    }
+
+    fun rplace() = command("rplace") {
+        description = "An open drawing canvas similar to r/place."
+        aliases = arrayOf("redditplace")
+
+        extDescription = """
+            |`$name [nogrid|raw|colors|put|snap|dsnap|gallery] [x] [y] [color|snapshotname]`\n
+            |A small r/place in Discord! The first argument should be an action to perform.
+            |&{Viewing the canvas:}
+            |If the action is empty, I will send you a picture of the canvas as of now.\n
+            |If it is `nogrid`, I'll send you an image of the canvas without the grid, as well the
+            |stats embed.\n
+            |If it is `raw`, I'll send you only the image of the canvas.
+            |&{Drawing on the canvas:}
+            |It the action is `colors`, I'll send you all the available colors you can use.\n
+            |If it is `put`, you should specify three more arguments: the `x` coordinate, `y`
+            |coordinate, and `color` you want your pixel to be. Like on a cartesian plane, the x
+            |axis goes horizontally and the y axis goes vertically.
+            |&{Taking and viewing snapshots:}
+            |If the action is `snap`, I will save the current canvas as an image with the name
+            |given by `snapshotname`, which can be accessed using the `gallery` action.\n
+            |If it is `dsnap`, I will delete the snapshot with the name `snapshotname`. For safety
+            |reasons, only my owner can delete snapshots.\n
+            |Finally, if the action is `gallery`, I will list all previously taken snapshots of the
+            |canvas, with their names and the times at which they were taken.
+            |&{Notes:}
+            |You can only place a pixel every 5 minutes, and that the canvas is shared
+            |across all the servers I'm in (meaning any changes anyone else makes is reflected
+            |everywhere).
+        """
+
+        expectedArgs = arrayOf(TrWord(true), TrInt(true), TrInt(true), TrWord(true))
+        execute { args ->
+            RPlaceCanvas.apply {
+                when (args.get<String>(0)) {
+                    "" -> sendCanvas(this@execute)
+                    "nogrid" -> sendCanvas(this@execute, false)
+                    "raw" -> sendCanvas(this@execute, null)
+                    "colors" -> sendColors(this@execute)
+                    "put" -> drawPixel(this@execute, args)
+                    "snap" -> takeSnapshot(this@execute, args)
+                    "dsnap" -> deleteSnapshot(this@execute, args)
+                    "gallery" -> sendGallery(this@execute, args)
+                    else -> sendError("That's not a valid operation!")
+                }
+            }
+        }
     }
 }

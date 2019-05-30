@@ -1,6 +1,7 @@
 package dev.lunarcoffee.risako.framework.core.services.paginators
 
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent
+import net.dv8tion.jda.api.exceptions.PermissionException
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.util.concurrent.TimeUnit
 
@@ -31,7 +32,11 @@ internal object PaginationReactionListener : ListenerAdapter() {
             }
         )
 
-        // Add a delay to prevent spam from making the paginator appear choppy.
-        event.reaction.removeReaction(event.user).queueAfter(450, TimeUnit.MILLISECONDS)
+        try {
+            // Add a delay to prevent spam from making the paginator appear choppy.
+            event.reaction.removeReaction(event.user).queueAfter(450, TimeUnit.MILLISECONDS)
+        } catch (e: PermissionException) {
+            // This usually happens in a PM channel.
+        }
     }
 }

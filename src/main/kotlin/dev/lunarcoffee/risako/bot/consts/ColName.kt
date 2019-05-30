@@ -4,4 +4,6 @@ package dev.lunarcoffee.risako.bot.consts
 internal object ColName {
     const val REMINDER = "Reminders0"
     const val TAGS = "Tags0"
+    const val RPLACE_CANVAS = "RPlaceCanvas0"
+    const val RPLACE_COOLDOWN = "RPlaceCooldown0"
 }

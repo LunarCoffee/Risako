@@ -1,5 +1,6 @@
 package dev.lunarcoffee.risako.framework.core.services.paginators
 
+import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.framework.api.extensions.await
 import net.dv8tion.jda.api.entities.*
 import java.util.*
@@ -51,7 +52,13 @@ internal abstract class Paginator {
     }
 
     fun close() {
-        message.clearReactions().queue()
+        if (message.channelType == ChannelType.PRIVATE) {
+            // Since you can't remove user reactions in a PM channel, add an X emoji to indicate
+            // that the paginator is closed.
+            message.addReaction(Emoji.INDICATOR_X).queue()
+        } else {
+            message.clearReactions().queue()
+        }
         active -= message.id
         closeTask.cancel()
     }

@@ -14,8 +14,9 @@ internal class ReloadableCollection<T : Reloadable>(
 
     suspend fun find() = col.find().toList().mapToT()
     suspend fun find(filter: (T) -> Boolean) = find().filter(filter)
+    suspend fun findOne(filter: (T) -> Boolean) = find(filter).firstOrNull()
 
-    suspend fun contains(filter: (T) -> Boolean) = find(filter).firstOrNull() != null
+    suspend fun contains(filter: (T) -> Boolean) = findOne(filter) != null
     suspend fun contains(element: T) = contains { it.rjid == element.rjid }
 
     suspend fun deleteOne(filter: (T) -> Boolean): DeleteResult {

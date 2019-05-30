@@ -14,6 +14,7 @@ internal object Emoji {
     const val COFFEE = "\u2615"
     const val SATELLITE = "\uD83D\uDEF0️"
     const val INDICATOR_F = "\uD83C\uDDEB"
+    const val INDICATOR_X = "\uD83C\uDDFD"
     const val HAMMER_AND_WRENCH = "\uD83D\uDEE0️"
     const val SCALES = "\u2696"
     const val ALARM_CLOCK = "\u23F0"
@@ -29,4 +30,5 @@ internal object Emoji {
     const val BOOKMARK = "\uD83D\uDD16"
     const val CARD_BOX = "\uD83D\uDDC3️"
     const val FLOWER_CARDS = "\uD83C\uDFB4"
+    const val SPY = "\uD83D\uDD75"
 }
