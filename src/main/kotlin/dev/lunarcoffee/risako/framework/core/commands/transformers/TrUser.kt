@@ -14,8 +14,8 @@ internal class TrUser(
         args: MutableList<String>
     ): OpResult<User?> {
 
-        if (optional && args.isEmpty()) {
-            return OpSuccess(default)
+        if (args.isEmpty()) {
+            return if (optional) OpSuccess(default) else OpError()
         }
 
         val input = args.removeAt(0)
@@ -27,7 +27,7 @@ internal class TrUser(
                 input.matches(USER_TAG) -> ctx.jda.getUserByTag(input)
                 mentionMatch != null -> ctx.jda.getUserById(mentionMatch.groupValues[1])
                 else -> ctx.jda.getUsersByName(input, true).firstOrNull()
-            } ?: return OpError()
+            } ?: UserNotFound
         )
     }
 

@@ -58,8 +58,7 @@ internal class TagManager(private val ctx: CommandContext) {
                 tag.run {
                     val authorTag = ctx.jda.getUserById(authorId)?.asTag ?: "(none)"
                     val timeMs = timeCreated.toInstant().toEpochMilli()
-                    val time = SplitTime(timeMs - System.currentTimeMillis())
-                        .localWithoutWeekday()
+                    val time = SplitTime(timeMs - System.currentTimeMillis()).localWithoutWeekday()
 
                     title = "${Emoji.BOOKMARK}  Tag **${this@run.name}**:"
                     description = """
@@ -67,9 +66,11 @@ internal class TagManager(private val ctx: CommandContext) {
                         |**Time created**: $time
                     """.trimMargin()
 
-                    field {
-                        this@field.name = "Content:"
-                        content = this@run.content.removeSuffix(attachments)
+                    if (textContent.isNotBlank()) {
+                        field {
+                            this@field.name = "Content:"
+                            content = textContent
+                        }
                     }
 
                     if (attachments.isNotEmpty()) {

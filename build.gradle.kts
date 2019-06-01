@@ -31,8 +31,11 @@ dependencies {
     implementation("org.litote.kmongo:kmongo-coroutine:3.10.1")
 
     implementation("org.yaml:snakeyaml:1.21")
-
     implementation("com.google.code.gson:gson:2.8.5")
+
+    implementation("com.github.kittinunf.fuel:fuel:2.1.0")
+    implementation("com.github.kittinunf.fuel:fuel-coroutines:2.1.0")
+    implementation("com.github.kittinunf.fuel:fuel-gson:2.1.0")
 }
 
 tasks.withType<KotlinCompile> {

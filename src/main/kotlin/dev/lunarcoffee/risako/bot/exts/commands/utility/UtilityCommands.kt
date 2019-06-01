@@ -7,6 +7,7 @@ import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpDetailSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpListSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderManager
 import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculationSender
+import dev.lunarcoffee.risako.bot.exts.commands.utility.steal.EmoteStealerSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.tags.TagManager
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
@@ -109,6 +110,28 @@ internal class UtilityCommands(private val bot: Bot) {
             val charsOrWords = if (byWords) "words" else "characters"
 
             sendSuccess("Your text is `$length` $charsOrWords long.")
+        }
+    }
+
+    fun steal() = command("steal") {
+        description = "Gets custom emotes from the history of the current channel."
+        aliases = arrayOf("stealemotes")
+
+        extDescription = """
+            |`$name [limit]`\n
+            |Steals custom emotes from the current channel's history. If `limit` is specified, this
+            |command will attempt to steal all emotes from the past `limit` messages. If not, the
+            |default is the past 100 messages.
+        """
+
+        expectedArgs = arrayOf(TrInt(true, 100))
+        execute { args ->
+            val historyToSearch = args.get<Int>(0)
+            if (historyToSearch !in 1..1_000) {
+                sendError("I can't steal from that many messages in history!")
+                return@execute
+            }
+            EmoteStealerSender(historyToSearch).send(this)
         }
     }
 

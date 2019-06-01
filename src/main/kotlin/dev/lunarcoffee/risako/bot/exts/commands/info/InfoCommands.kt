@@ -14,8 +14,7 @@ import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrUser
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrWord
-import dev.lunarcoffee.risako.framework.core.std.OpResult
-import dev.lunarcoffee.risako.framework.core.std.OpSuccess
+import dev.lunarcoffee.risako.framework.core.std.UserNotFound
 import net.dv8tion.jda.api.entities.User
 
 @CommandGroup("Info")
@@ -33,12 +32,13 @@ internal class InfoCommands(private val bot: Bot) {
 
         expectedArgs = arrayOf(TrUser(true))
         execute { args ->
-            val user = when (val result = args.get<OpResult<User?>>(0)) {
-                is OpSuccess -> result.result ?: event.author
-                else -> {
+            val user = when (val result = args.get<User?>(0)) {
+                null -> event.author
+                UserNotFound -> {
                     sendError("I can't find that user!")
                     return@execute
                 }
+                else -> result
             }
             UserInfoSender(user).send(this)
         }
@@ -58,13 +58,16 @@ internal class InfoCommands(private val bot: Bot) {
 
         expectedArgs = arrayOf(TrUser(true))
         execute { args ->
-            val member = when (val result = args.get<OpResult<User?>>(0)) {
-                is OpSuccess -> event.guild.getMember(result.result ?: event.author)
-                else -> {
-                    sendError("I can't find that user!")
-                    return@execute
+            val member = event.guild.getMember(
+                when (val result = args.get<User?>(0)) {
+                    null -> event.author
+                    UserNotFound -> {
+                        sendError("I can't find that user!")
+                        return@execute
+                    }
+                    else -> result
                 }
-            }
+            )
 
             if (member == null) {
                 sendError("That user is not a member of this server!")

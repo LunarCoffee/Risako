@@ -1,4 +1,4 @@
-package dev.lunarcoffee.risako.bot.exts.commands.`fun`.steal
+package dev.lunarcoffee.risako.bot.exts.commands.utility.steal
 
 import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.framework.api.dsl.embed

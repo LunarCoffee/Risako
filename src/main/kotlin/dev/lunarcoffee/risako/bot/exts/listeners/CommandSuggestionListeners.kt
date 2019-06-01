@@ -2,6 +2,8 @@
 
 package dev.lunarcoffee.risako.bot.exts.listeners
 
+import dev.lunarcoffee.risako.bot.consts.GUILD_OVERRIDES
+import dev.lunarcoffee.risako.bot.std.GuildOverrides
 import dev.lunarcoffee.risako.framework.api.extensions.await
 import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.annotations.ListenerGroup
@@ -10,6 +12,7 @@ import kotlinx.coroutines.*
 import net.dv8tion.jda.api.entities.TextChannel
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
+import org.litote.kmongo.eq
 import kotlin.math.min
 
 @ListenerGroup
@@ -19,7 +22,11 @@ internal class CommandSuggestionListeners(
 
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         val notRisakoCommand = !event.message.contentRaw.startsWith(bot.config.prefix)
-        if (notRisakoCommand || event.author.isBot) {
+        val noCommandSuggestions = runBlocking {
+            GUILD_OVERRIDES.findOne(GuildOverrides::guildId eq event.guild.id)?.noSuggestCommands
+        } ?: false
+
+        if (notRisakoCommand || event.author.isBot || noCommandSuggestions) {
             return
         }
 

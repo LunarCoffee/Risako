@@ -5,9 +5,9 @@ package dev.lunarcoffee.risako.bot.exts.commands.`fun`
 import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.eightball.EightBallSender
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.flip.CoinFlipSender
+import dev.lunarcoffee.risako.bot.exts.commands.`fun`.msp.MinesweeperGenerator
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.roll.*
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.rplace.RPlaceCanvas
-import dev.lunarcoffee.risako.bot.exts.commands.`fun`.steal.EmoteStealerSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.extensions.send
@@ -122,25 +122,32 @@ internal class FunCommands(private val bot: Bot) {
         execute { EightBallSender().send(this) }
     }
 
-    fun steal() = command("steal") {
-        description = "Gets custom emotes from the history of the current channel."
-        aliases = arrayOf("stealemotes")
+    fun msp() = command("msp") {
+        description = "Generates a minesweeper game."
+        aliases = arrayOf("minesweeper")
 
         extDescription = """
-            |`$name [limit]`\n
-            |Steals custom emotes from the current channel's history. If `limit` is specified, this
-            |command will attempt to steal all emotes from the past `limit` messages. If not, the
-            |default is the past 100 messages.
+            |`$name [size] [mines]`\n
+            |Gives you a minesweeper game made with spoiler tags. By default, the board is 8x8 and
+            |has 10 mines, but you can change the number of mines by specifying `mines`, a number
+            |between 6 and 12 (inclusive).
         """
 
-        expectedArgs = arrayOf(TrInt(true, 100))
+        expectedArgs = arrayOf(TrInt(true, 8), TrInt(true, 10))
         execute { args ->
-            val historyToSearch = args.get<Int>(0)
-            if (historyToSearch !in 1..1_000) {
-                sendError("I can't steal from that many messages in history!")
+            val size = args.get<Int>(0)
+            val mines = args.get<Int>(1)
+
+            if (size !in 6..12) {
+                sendError("I can't make the grid that size!")
                 return@execute
             }
-            EmoteStealerSender(historyToSearch).send(this)
+
+            if (mines !in 1 until size * size) {
+                sendError("I can't add that many mines!")
+                return@execute
+            }
+            send(MinesweeperGenerator(size, mines).generateEmbed())
         }
     }
 

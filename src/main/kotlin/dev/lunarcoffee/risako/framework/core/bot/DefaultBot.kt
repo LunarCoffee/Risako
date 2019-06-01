@@ -28,8 +28,10 @@ internal open class DefaultBot(configPath: String) : Bot {
     final override val jda: JDA
     final override val dispatcher: Dispatcher
 
-    final override val config = Yaml()
-        .loadAs(File(configPath).readText(), DefaultConfig::class.java)!!
+    final override val config = Yaml().loadAs(
+        File(configPath).readText(),
+        DefaultConfig::class.java
+    )!!
 
     private val commandLoader = CommandLoader(this)
 

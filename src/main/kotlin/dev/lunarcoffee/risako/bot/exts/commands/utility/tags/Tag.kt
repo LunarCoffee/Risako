@@ -9,6 +9,8 @@ internal class Tag(
     var content: String,
     val timeCreated: Date
 ) {
+    val textContent get() = content.removeSuffix(attachments)
+
     val attachments
         get() = content
             .split("\n")
