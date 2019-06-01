@@ -23,6 +23,11 @@ internal class EmoteStealerSender(private val historyToSearch: Int) : ContentSen
             .chunked(16)
             .map { it.joinToString("\n") }
 
+        if (emotePages.isEmpty()) {
+            ctx.sendError("There were no emotes in the last `$historyToSearch` messages!")
+            return
+        }
+
         pmChannel.send(
             ctx.embedPaginator {
                 for (emotePage in emotePages) {

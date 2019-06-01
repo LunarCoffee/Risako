@@ -24,6 +24,7 @@ internal object IssStatsSender : ContentSender {
                         |**Velocity**: $velocity km/h
                     """.trimMargin()
                 }
+                image { url = "attachment://${imageFile.name}" }
             }
         ).addFile(imageFile).await()
     }
