@@ -3,6 +3,8 @@
 package dev.lunarcoffee.risako.bot.exts.commands.service
 
 import dev.lunarcoffee.risako.bot.exts.commands.service.iss.IssStatsSender
+import dev.lunarcoffee.risako.bot.exts.commands.service.osu.beatmap.OsuBeatmapSender
+import dev.lunarcoffee.risako.bot.exts.commands.service.osu.user.OsuUserSender
 import dev.lunarcoffee.risako.bot.exts.commands.service.xkcd.XkcdRequester
 import dev.lunarcoffee.risako.bot.exts.commands.service.xkcd.XkcdSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
@@ -56,5 +58,48 @@ internal class ServiceCommands(private val bot: Bot) {
         """
 
         execute { IssStatsSender.send(this) }
+    }
+
+    fun osu() = command("osu") {
+        description = "Does lots of osu! related stuff!"
+        aliases = arrayOf("ous")
+
+        extDescription = """
+            |`$name action username|userid|beatmapid [mode]`\n
+            |This command does osu! related stuff depending on the provided `action`.\n
+            |&{Getting user info:}
+            |If the action is `user`, I will get info for for the user with the provided `username`
+            |or `userid`. This info includes things like their rank, accuracy, PP, and more.
+            |&{Getting beatmap info:}
+            |If the action is `beatmap`, I will get info of the beatmap with the provided id of
+            |`beatmapid`. This info includes the creator, star rating, BPM, AR, drain, and more.
+            |&{Selecting a gamemode:}
+            |With the `mode` argument, you can specify what mode to get info about. It should be
+            |`normal`, `taiko`, `catch`, or `mania`. If the action is `user`, I will get the user's
+            |stats in your selected gamemode, and if the action is `beatmap`, I will get the
+            |beatmaps of that gamemode for the set you specified.
+        """
+
+        expectedArgs = arrayOf(TrWord(), TrWord(), TrWord(true))
+        execute { args ->
+            val action = args.get<String>(0)
+            val userOrBeatmap = args.get<String>(1)
+            val mode = when (args.get<String>(2).toLowerCase()) {
+                "", "normal" -> 0
+                "taiko" -> 1
+                "catch" -> 2
+                "mania" -> 3
+                else -> {
+                    sendError("That isn't a valid gamemode!")
+                    return@execute
+                }
+            }
+
+            when (action) {
+                "user" -> OsuUserSender(userOrBeatmap, mode).send(this)
+                "beatmap" -> OsuBeatmapSender(userOrBeatmap, mode).send(this)
+                else -> sendError("That's an invalid operation!")
+            }
+        }
     }
 }
