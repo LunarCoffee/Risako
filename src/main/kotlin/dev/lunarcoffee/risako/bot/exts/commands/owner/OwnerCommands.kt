@@ -4,7 +4,10 @@ package dev.lunarcoffee.risako.bot.exts.commands.owner
 
 import dev.lunarcoffee.risako.bot.consts.EMBED_COLOR
 import dev.lunarcoffee.risako.bot.consts.Emoji
-import dev.lunarcoffee.risako.bot.exts.commands.owner.ex.FileContentSender
+import dev.lunarcoffee.risako.bot.exts.commands.owner.ex.ExecResultSender
+import dev.lunarcoffee.risako.bot.exts.commands.owner.ex.executors.KotlinExecutor
+import dev.lunarcoffee.risako.bot.exts.commands.owner.ex.executors.ShellScriptExecutor
+import dev.lunarcoffee.risako.bot.exts.commands.owner.file.FileContentSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.extensions.*
@@ -146,7 +149,7 @@ internal class OwnerCommands(private val bot: Bot) {
             delay(2000)
             jda.shutdownNow()
 
-            // Give JDA some time to shut down in case I'm in China with a 10 b/s connection. Oh,
+            // Give JDA some time to shut down in case I'm in China with a 10 kb/s connection. Oh,
             // wait... I wouldn't be able to access Discord without a VPN anyway.
             delay(1000)
             exitProcess(0)
@@ -171,6 +174,44 @@ internal class OwnerCommands(private val bot: Bot) {
             val filename = args.get<String>(0)
             val flags = args.get<String>(1)
             FileContentSender(filename, flags).send(this)
+        }
+    }
+
+    fun ex() = command("ex") {
+        description = "Executes arbitrary code. Only my owner can use this."
+        aliases = arrayOf("exec", "execute")
+
+        ownerOnly = true
+        noArgParsing = true
+
+        extDescription = """
+            |`$name code`\n
+            |Executes Kotlin code in an unconstrained environment. This command can only be used by
+            |my owner, for obvious security reasons. The only available global is `ctx`, the
+            |`CommandContext` object associated with the current command execution. The event and
+            |bot objects can be accessed from the command context. Note that star/wildcard imports
+            |are not supported because I am lazy.
+        """
+
+        expectedArgs = arrayOf(TrRest())
+        execute { args ->
+            val code = args.get<String>(0)
+            var language: String
+
+            val script = code
+                .removeSurrounding("```")
+                .also { language = it.substringBefore("\n") }
+                .substringAfter("\n")
+
+            val result = when (language) {
+                "kotlin" -> KotlinExecutor(script.split("\n")).execute(this)
+                "sh" -> ShellScriptExecutor(script).execute(this)
+                else -> {
+                    sendError("You must specify a valid language in a code block!")
+                    return@execute
+                }
+            }
+            ExecResultSender(result).send(this)
         }
     }
 }

@@ -1,0 +1,10 @@
+build.gradle.kts
+gradle
+gradle.properties
+gradlew
+gradlew.bat
+LICENSE
+out
+README.md
+settings.gradle
+src

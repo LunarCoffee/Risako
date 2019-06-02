@@ -36,6 +36,12 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel:2.1.0")
     implementation("com.github.kittinunf.fuel:fuel-coroutines:2.1.0")
     implementation("com.github.kittinunf.fuel:fuel-gson:2.1.0")
+
+    implementation("org.jetbrains.kotlin:kotlin-script-util:1.3.21")
+    implementation("org.jetbrains.kotlin:kotlin-script-runtime:1.3.21")
+    implementation("org.jetbrains.kotlin:kotlin-compiler:1.3.21")
+    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.3.21")
+    runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.3.21")
 }
 
 tasks.withType<KotlinCompile> {

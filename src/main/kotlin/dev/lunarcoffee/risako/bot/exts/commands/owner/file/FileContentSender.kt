@@ -1,4 +1,4 @@
-package dev.lunarcoffee.risako.bot.exts.commands.owner.ex
+package dev.lunarcoffee.risako.bot.exts.commands.owner.file
 
 import dev.lunarcoffee.risako.bot.consts.RISAKO_CONFIG
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator

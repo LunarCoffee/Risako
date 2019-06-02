@@ -1,0 +1,11 @@
+import dev.lunarcoffee.risako.framework.api.extensions.*;import kotlinx.coroutines.*;import net.dv8tion.jda.api.entities.*;import net.dv8tion.jda.api.events.GenericEvent;import net.dv8tion.jda.api.events.message.*
+
+interface DispatchableContext { val event: GenericEvent }
+interface CommandContext : DispatchableContext, MessageChannel { override val event: MessageReceivedEvent }
+class GuildCommandContext(override val event: MessageReceivedEvent, override val bot: Bot) : CommandContext, TextChannel by event.textChannel
+
+%s
+internal val ctx=bindings["ctx"] as GuildCommandContext
+internal var _____________________r:Any?=Any()
+internal val _____________________TIME=kotlin.system.measureTimeMillis{_____________________r={%s}()}
+Pair(_____________________TIME,_____________________r)
