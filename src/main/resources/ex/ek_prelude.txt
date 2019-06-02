@@ -9,3 +9,5 @@ internal val ctx=bindings["ctx"] as GuildCommandContext
 internal var _____________________r:Any?=Any()
 internal val _____________________TIME=kotlin.system.measureTimeMillis{_____________________r={%s}()}
 Pair(_____________________TIME,_____________________r)
+
+TODO: Make custom class without [Bot] object.

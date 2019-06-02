@@ -10,7 +10,7 @@ import kotlin.system.measureNanoTime
 
 internal class ShellScriptExecutor(private val script: String) : CodeExecutor {
     override suspend fun execute(ctx: CommandContext): ExecResult {
-        File("$SCRIPT_ROOT/ex.sh").writeText("#!/bin/bash\n$script")
+        File("$SCRIPT_ROOT/script.sh").writeText("#!/bin/bash\n$script")
 
         // Can't leave this uninitialized, maybe contracts will help in the future?
         var process: Process? = null
