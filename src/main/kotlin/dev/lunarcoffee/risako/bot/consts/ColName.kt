@@ -6,6 +6,6 @@ internal object ColName {
     const val TAGS = "Tags0"
     const val RPLACE_CANVAS = "RPlaceCanvas0"
     const val RPLACE_COOLDOWN = "RPlaceCooldown0"
-    const val MUTE = "Mutes0"
+    const val MUTE = "Mutes1"
     const val GUILD_OVERRIDES = "GuildOverrides0"
 }

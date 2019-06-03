@@ -25,10 +25,9 @@ internal object RPlaceCooldownManager {
             LocalDateTime.now().plusMinutes(5).atZone(ZoneId.systemDefault()).toInstant()
         )
 
-        ctx.scheduleReloadable<RPlaceCooldownReloader>(
+        ctx.scheduleReloadable(
             ColName.RPLACE_COOLDOWN,
-            inFiveMinutes,
-            userId
+            RPlaceCooldownReloader(inFiveMinutes, userId)
         )
     }
 }

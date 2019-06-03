@@ -29,7 +29,6 @@ internal object Emoji {
     const val OPEN_BOOK = "\uD83D\uDCD6"
     const val BOOKMARK = "\uD83D\uDD16"
     const val CARD_BOX = "\uD83D\uDDC3️"
-    const val FLOWER_CARDS = "\uD83C\uDFB4"
     const val SPY = "\uD83D\uDD75"
     const val EXPLODE = "\uD83D\uDCA5"
 }

@@ -30,8 +30,8 @@ internal class CommandSuggestionListeners(
             return
         }
 
-        val name = event.message.contentRaw.substringAfter(bot.config.prefix).substringBefore(" ")
-        if (name !in bot.commands.flatMap { it.names.toList() }) {
+        val name = event.message.contentRaw.substringAfter(bot.config.prefix).trim()
+        if (name !in bot.commandNames) {
             suggestCommandNames(event.channel, name)
         }
     }

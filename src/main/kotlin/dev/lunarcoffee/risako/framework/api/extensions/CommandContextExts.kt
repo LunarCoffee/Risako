@@ -9,11 +9,8 @@ import dev.lunarcoffee.risako.framework.core.std.idgen.IdGenerator
 // Schedules a [Reloadable] so that it can be rescheduled upon a bot restart.
 internal suspend inline fun <reified T : Reloadable> CommandContext.scheduleReloadable(
     colName: String,
-    vararg args: Any?
+    reloadable: T
 ) {
-    // Construct a new instance of the [Reloadable] represented by the provided type parameter,
-    // which should be a user defined class extending [Reloadable].
-    val reloadable = T::class.constructors.first().call(*args)
     val col = DB.getCollection<ReloadableJson>(colName)
 
     // Set the RJID of the reloadable to allow identification after being retrieved from the DB

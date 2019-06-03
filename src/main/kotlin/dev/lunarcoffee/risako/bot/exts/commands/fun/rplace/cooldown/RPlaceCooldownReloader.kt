@@ -9,6 +9,10 @@ import java.util.*
 
 @ReloadFrom(ColName.RPLACE_COOLDOWN)
 internal class RPlaceCooldownReloader(time: Date, val userId: String) : Reloadable(time) {
+    init {
+        colName = ColName.RPLACE_COOLDOWN
+    }
+
     override suspend fun schedule(event: GenericEvent, col: ReloadableCollection<Reloadable>) {
         DEFAULT_TIMER.scheduleNoInline(time) { col.deleteOne { it.rjid == rjid } }
     }
