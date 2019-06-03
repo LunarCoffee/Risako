@@ -1,10 +1,17 @@
-build.gradle.kts
-gradle
-gradle.properties
-gradlew
-gradlew.bat
-LICENSE
-out
-README.md
-settings.gradle
-src
+total 68K
+drwxrwxr-x  8 lunarcoffee lunarcoffee 4.0K Jun  2 11:17 .
+drwxrwxr-x 10 lunarcoffee lunarcoffee 4.0K May 24 20:08 ..
+-rw-rw-r--  1 lunarcoffee lunarcoffee 1.5K Jun  2 00:25 build.gradle.kts
+drwxrwxr-x  8 lunarcoffee lunarcoffee 4.0K Jun  2 11:17 .git
+-rw-rw-r--  1 lunarcoffee lunarcoffee  143 Jun  2 11:15 .gitignore
+drwxrwxr-x  3 lunarcoffee lunarcoffee 4.0K May 24 20:09 gradle
+drwxrwxr-x  5 lunarcoffee lunarcoffee 4.0K May 24 20:09 .gradle
+-rw-rw-r--  1 lunarcoffee lunarcoffee   26 May 24 20:08 gradle.properties
+-rwxrwxr-x  1 lunarcoffee lunarcoffee 5.2K May 24 20:09 gradlew
+-rw-rw-r--  1 lunarcoffee lunarcoffee 2.3K May 24 20:09 gradlew.bat
+drwxrwxr-x  5 lunarcoffee lunarcoffee 4.0K Jun  2 11:17 .idea
+-rw-rw-r--  1 lunarcoffee lunarcoffee 1.1K May 27 07:29 LICENSE
+drwxrwxr-x  3 lunarcoffee lunarcoffee 4.0K May 25 12:18 out
+-rw-rw-r--  1 lunarcoffee lunarcoffee  133 May 27 07:29 README.md
+-rw-rw-r--  1 lunarcoffee lunarcoffee   28 May 25 00:23 settings.gradle
+drwxrwxr-x  4 lunarcoffee lunarcoffee 4.0K May 24 20:18 src

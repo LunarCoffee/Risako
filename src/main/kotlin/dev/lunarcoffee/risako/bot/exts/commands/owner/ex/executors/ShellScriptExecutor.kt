@@ -19,7 +19,7 @@ internal class ShellScriptExecutor(private val script: String) : CodeExecutor {
 
         val time = measureNanoTime {
             try {
-                process = ProcessBuilder("bash", "$SCRIPT_ROOT/ex.sh")
+                process = ProcessBuilder("bash", "$SCRIPT_ROOT/script.sh")
                     .redirectOutput(ProcessBuilder.Redirect.to(fileOut))
                     .redirectError(ProcessBuilder.Redirect.to(fileErr))
                     .start()
