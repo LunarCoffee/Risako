@@ -2,6 +2,7 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.mod
 
+import dev.lunarcoffee.risako.bot.exts.commands.mod.logs.AuditLogSender
 import dev.lunarcoffee.risako.bot.exts.commands.mod.mute.MuteController
 import dev.lunarcoffee.risako.bot.exts.commands.mod.mutel.MuteDetailsSender
 import dev.lunarcoffee.risako.bot.exts.commands.mod.mutel.MuteListSender
@@ -14,6 +15,8 @@ import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import dev.lunarcoffee.risako.framework.core.std.UserNotFound
+import dev.lunarcoffee.risako.framework.core.trimToDescription
+import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
 
 @CommandGroup("Mod")
@@ -64,7 +67,7 @@ internal class ModCommands(private val bot: Bot) {
 
     fun mutel() = command("mutel") {
         description = "Shows the muted members on the current server."
-        aliases = arrayOf("silencelist", "softbanlist")
+        aliases = arrayOf("mutelist", "silencel", "silencelist", "softbanl", "softbanlist")
 
         extDescription = """
             |`$name [user]`\n
@@ -104,7 +107,7 @@ internal class ModCommands(private val bot: Bot) {
         expectedArgs = arrayOf(TrInt(), TrUser(true))
         execute { args ->
             val limit = args.get<Int>(0)
-            val user = args.get<User?>(0)
+            val user = args.get<User?>(1)
             val purger = ChannelPurger(this, limit)
 
             when (user) {
@@ -135,6 +138,11 @@ internal class ModCommands(private val bot: Bot) {
             val slowmode = args.get<SplitTime>(0)
             val slowmodeSeconds = slowmode.totalMs.toInt() / 1_000
 
+            if (!event.guild.getMember(event.author)!!.hasPermission(Permission.MANAGE_CHANNEL)) {
+                sendError("You need to be able to manage channels to use this command!")
+                return@execute
+            }
+
             if (slowmodeSeconds !in 0..21_600) {
                 sendError("I can't set this channel's slowmode to that amount of time!")
                 return@execute
@@ -145,6 +153,33 @@ internal class ModCommands(private val bot: Bot) {
 
             val slowmodeRepr = if (slowmode.totalMs > 0) "`$slowmode`" else "disabled"
             sendSuccess("This channel's slowmode time is now $slowmodeRepr!")
+        }
+    }
+
+    fun logs() = command("logs") {
+        description = "Gets this server's audit log history."
+        aliases = arrayOf("audits", "auditlogs")
+
+        extDescription = """
+            |`$name [limit]`\n
+            |This command retrieves the last `limit` entries in the audit log. If `limit` is not
+            |given, I will get the last ten entries. For each audit log entry, I'll show the type
+            |of the audit, the user that initiated it, the affected target type and name, the time
+            |at which it took place, and the reason (when a user is banned, for example).
+            |&{Limitations:}
+            |I won't show you what actually changed, since that would require more effort for me to
+            |do than for you to open up the audit logs in the server settings. You need to be able
+            |to view the logs already to use this command, anyway.
+        """.trimToDescription()
+
+        expectedArgs = arrayOf(TrInt(true, 10))
+        execute { args ->
+            val limit = args.get<Int>(0)
+            if (limit !in 1..100) {
+                sendError("I can't get that many log entries!")
+                return@execute
+            }
+            AuditLogSender(limit).send(this)
         }
     }
 }

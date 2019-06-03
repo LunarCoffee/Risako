@@ -18,6 +18,12 @@ internal class MuteController(private val ctx: CommandContext) {
         if (!checkInitiatorPermissions()) {
             return
         }
+
+        if (col.contains { it.userId == user.id }) {
+            ctx.sendError("That member is already muted!")
+            return
+        }
+
         val offender = getOffender(user) ?: return
         val mutedRole = getMutedRole() ?: return
         val oldRoles = offender.roles

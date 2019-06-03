@@ -8,7 +8,10 @@ import net.dv8tion.jda.api.exceptions.PermissionException
 
 internal class ChannelPurger(private val ctx: CommandContext, private val limit: Int) {
     suspend fun purgeAll() {
-        checkParameters()
+        if (!checkParameters()) {
+            return
+        }
+
         try {
             ctx.purgeMessages(ctx.event.channel.iterableHistory.take(limit + 1))
         } catch (e: IllegalArgumentException) {
@@ -19,8 +22,14 @@ internal class ChannelPurger(private val ctx: CommandContext, private val limit:
     }
 
     suspend fun purgeFromUser(user: User, isAuthor: Boolean) {
-        checkParameters()
+        if (!checkParameters()) {
+            return
+        }
+
         try {
+            // Purge messages from [user]. If [user] is the initiator, delete one more of their
+            // messages than they specify, since the command invocation message shouldn't be
+            // included.
             ctx.purgeMessages(
                 ctx.event
                     .channel
@@ -37,18 +46,19 @@ internal class ChannelPurger(private val ctx: CommandContext, private val limit:
         }
     }
 
-    private suspend fun checkParameters() {
+    private suspend fun checkParameters(): Boolean {
         // Make sure the author can manage messages.
-        val guildAuthor = ctx.event.guild.getMember(ctx.event.author) ?: return
+        val guildAuthor = ctx.event.guild.getMember(ctx.event.author) ?: return false
         if (!guildAuthor.hasPermission(Permission.MESSAGE_MANAGE)) {
             ctx.sendError("You need to be able to manage messages!")
-            return
+            return false
         }
 
         // Don't get rate limited!
-        if (limit !in 1..1_000) {
+        if (limit !in 1..100) {
             ctx.sendError("I can't purge that amount of messages!")
-            return
+            return false
         }
+        return true
     }
 }

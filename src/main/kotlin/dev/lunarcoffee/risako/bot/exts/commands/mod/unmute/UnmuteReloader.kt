@@ -57,7 +57,7 @@ internal class UnmuteReloader(
                         title = "${Emoji.HAMMER_AND_WRENCH}  You were automatically unmuted!"
                         description = """
                             |**Server name**: ${guild.name}
-                            |**Roles regained**: ${prevRoles.map { it.asMention }}
+                            |**Roles regained**: ${prevRoles.size} roles
                         """.trimMargin()
                     }
                 )
