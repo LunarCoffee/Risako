@@ -39,14 +39,11 @@ internal class UnmuteReloader(
                 val prevRoles = prevRoleIds.mapNotNull { guild.getRoleById(it) }
 
                 // Remove muted role and re-add original roles.
-                guild
-                    .controller
-                    .modifyMemberRoles(
-                        guild.getMember(user)!!,
-                        prevRoles,
-                        listOf(guild.getRoleById(mutedRole))
-                    )
-                    .await()
+                guild.modifyMemberRoles(
+                    guild.getMember(user)!!,
+                    prevRoles,
+                    listOf(guild.getRoleById(mutedRole))
+                ).await()
 
                 val channel = guild.getTextChannelById(channelId)!!
                 val pm = event.jda.getUserById(userId)!!.openPrivateChannel().await()

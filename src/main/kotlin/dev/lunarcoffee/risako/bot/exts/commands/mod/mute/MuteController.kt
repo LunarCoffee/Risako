@@ -30,11 +30,7 @@ internal class MuteController(private val ctx: CommandContext) {
 
         try {
             // Add muted role, remove original roles.
-            ctx.event
-                .guild
-                .controller
-                .modifyMemberRoles(offender, listOf(mutedRole), oldRoles)
-                .await()
+            ctx.event.guild.modifyMemberRoles(offender, listOf(mutedRole), oldRoles).await()
         } catch (e: IllegalArgumentException) {
             ctx.sendError("I can't remove managed roles!")
             return
@@ -74,11 +70,7 @@ internal class MuteController(private val ctx: CommandContext) {
 
         try {
             // Remove muted role, add original roles.
-            ctx.event
-                .guild
-                .controller
-                .modifyMemberRoles(offender, originalRoles, listOf(mutedRole))
-                .await()
+            ctx.event.guild.modifyMemberRoles(offender, originalRoles, listOf(mutedRole)).await()
         } catch (e: PermissionException) {
             ctx.sendError("I don't have enough permissions to do that!")
             return

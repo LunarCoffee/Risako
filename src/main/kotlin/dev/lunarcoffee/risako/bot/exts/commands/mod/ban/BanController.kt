@@ -29,7 +29,7 @@ internal class BanController(private val ctx: CommandContext) {
 
         try {
             ctx.send(BanInfoSender(user, reason))
-            guild.controller.ban(offender, 0, reason).await()
+            guild.ban(offender, 0, reason).await()
         } catch (e: PermissionException) {
             ctx.sendError("I don't have enough permissions to do that!")
         }
@@ -43,7 +43,7 @@ internal class BanController(private val ctx: CommandContext) {
 
         try {
             ctx.send(UnbanInfoSender(user))
-            guild.controller.unban(user).await()
+            guild.unban(user).await()
         } catch (e: PermissionException) {
             ctx.sendError("I don't have enough permissions to do that!")
         }

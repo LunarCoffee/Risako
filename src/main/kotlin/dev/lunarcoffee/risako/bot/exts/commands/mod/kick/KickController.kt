@@ -30,7 +30,7 @@ internal class KickController(private val ctx: CommandContext) {
 
         try {
             ctx.send(KickInfoSender(user, reason))
-            guild.controller.kick(offender, reason).await()
+            guild.kick(offender, reason).await()
         } catch (e: PermissionException) {
             ctx.sendError("I don't have enough permissions to do that!")
         }
