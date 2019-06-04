@@ -22,7 +22,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.2.1")
 
     // Discord API wrapper.
-    implementation("net.dv8tion:JDA:4.ALPHA.0_89")
+    implementation("net.dv8tion:JDA:4.ALPHA.0_96")
 
     implementation("io.github.microutils:kotlin-logging:1.6.24")
     implementation("org.slf4j:slf4j-api:1.7.26")

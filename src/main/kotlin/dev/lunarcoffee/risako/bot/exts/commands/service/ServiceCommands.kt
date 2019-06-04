@@ -8,6 +8,7 @@ import dev.lunarcoffee.risako.bot.exts.commands.service.osu.user.OsuUserSender
 import dev.lunarcoffee.risako.bot.exts.commands.service.xkcd.XkcdRequester
 import dev.lunarcoffee.risako.bot.exts.commands.service.xkcd.XkcdSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
+import dev.lunarcoffee.risako.framework.api.extensions.send
 import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
@@ -42,7 +43,7 @@ internal class ServiceCommands(private val bot: Bot) {
                 sendError("I can't get the comic with that number!")
                 return@execute
             }
-            XkcdSender(which).send(this)
+            send(XkcdSender(which))
         }
     }
 
@@ -57,7 +58,7 @@ internal class ServiceCommands(private val bot: Bot) {
             |fetched using the `Where the ISS at?` API.
         """
 
-        execute { IssStatsSender.send(this) }
+        execute { send(IssStatsSender) }
     }
 
     fun osu() = command("osu") {
@@ -95,11 +96,16 @@ internal class ServiceCommands(private val bot: Bot) {
                 }
             }
 
-            when (action) {
-                "user" -> OsuUserSender(userOrBeatmap, mode).send(this)
-                "beatmap" -> OsuBeatmapSender(userOrBeatmap, mode).send(this)
-                else -> sendError("That's an invalid operation!")
-            }
+            send(
+                when (action) {
+                    "user" -> OsuUserSender(userOrBeatmap, mode)
+                    "beatmap" -> OsuBeatmapSender(userOrBeatmap, mode)
+                    else -> {
+                        sendError("That's an invalid operation!")
+                        return@execute
+                    }
+                }
+            )
         }
     }
 }

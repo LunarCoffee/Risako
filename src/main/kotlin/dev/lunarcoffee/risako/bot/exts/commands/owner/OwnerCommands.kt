@@ -173,7 +173,7 @@ internal class OwnerCommands(private val bot: Bot) {
         execute { args ->
             val filename = args.get<String>(0)
             val flags = args.get<String>(1)
-            FileContentSender(filename, flags).send(this)
+            send(FileContentSender(filename, flags))
         }
     }
 
@@ -211,7 +211,7 @@ internal class OwnerCommands(private val bot: Bot) {
                     return@execute
                 }
             }
-            ExecResultSender(result).send(this)
+            send(ExecResultSender(result))
         }
     }
 }

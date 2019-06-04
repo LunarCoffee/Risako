@@ -28,7 +28,6 @@ internal object Emoji {
     const val SNOW_CAPPED_MOUNTAIN = "\uD83C\uDFD4"
     const val OPEN_BOOK = "\uD83D\uDCD6"
     const val BOOKMARK = "\uD83D\uDD16"
-    const val CARD_BOX = "\uD83D\uDDC3️"
     const val SPY = "\uD83D\uDD75"
     const val EXPLODE = "\uD83D\uDCA5"
 }

@@ -2,14 +2,15 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.mod
 
+import dev.lunarcoffee.risako.bot.exts.commands.mod.ban.BanController
+import dev.lunarcoffee.risako.bot.exts.commands.mod.kick.KickController
 import dev.lunarcoffee.risako.bot.exts.commands.mod.logs.AuditLogSender
 import dev.lunarcoffee.risako.bot.exts.commands.mod.mute.MuteController
 import dev.lunarcoffee.risako.bot.exts.commands.mod.mutel.MuteDetailsSender
 import dev.lunarcoffee.risako.bot.exts.commands.mod.mutel.MuteListSender
 import dev.lunarcoffee.risako.bot.exts.commands.mod.purge.ChannelPurger
 import dev.lunarcoffee.risako.framework.api.dsl.command
-import dev.lunarcoffee.risako.framework.api.extensions.sendError
-import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
+import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
@@ -86,10 +87,81 @@ internal class ModCommands(private val bot: Bot) {
             }
 
             if (user != null) {
-                MuteDetailsSender(user).send(this)
+                send(MuteDetailsSender(user))
                 return@execute
             }
-            MuteListSender().send(this)
+            send(MuteListSender())
+        }
+    }
+
+    fun kick() = command("kick") {
+        description = "Kicks a member from the current server."
+        extDescription = """
+            |`$name user [reason]`\n
+            |Kicks a user from the current server. I must be have the permission to kick members.
+            |When a member is kicked, they will be sent a message with `reason` (or `(no reason)`)
+            |if no reason is specified and the user that kicked them. You must be able to kick
+            |members to use this command.
+        """.trimToDescription()
+
+        expectedArgs = arrayOf(TrUser(), TrRest(true, "(no reason)"))
+        execute { args ->
+            val user = args.get<User>(0)
+            if (user is UserNotFound) {
+                sendError("I can't find that user!")
+                return@execute
+            }
+            val reason = args.get<String>(1)
+            KickController(this).kick(user, reason)
+        }
+    }
+
+    fun ban() = command("ban") {
+        description = "Permanently bans a member from a server."
+        extDescription = """
+            |`$name user [reason]`\n
+            |Bans a user from the current server. I must be have the permission to ban members.
+            |When a member is banned, they will be sent a message with `reason` (or `(no reason)`)
+            |if no reason is specified and the user that banned them. You must be able to ban
+            |members to use this command.
+        """
+
+        expectedArgs = arrayOf(TrUser(), TrRest(true, "(no reason)"))
+        execute { args ->
+            val user = args.get<User>(0)
+            if (user is UserNotFound) {
+                sendError("I can't find that user!")
+                return@execute
+            }
+            val reason = args.get<String>(1)
+            BanController(this).ban(user, reason)
+        }
+    }
+
+    fun unban() = command("unban") {
+        description = "Unbans a member from the current server."
+        extDescription = """
+            |`$name name|id`\n
+            |Unbans a banned user from the current server. I must have the permission to ban
+            |members. When a member is unbanned, they might be sent a message with the person who
+            |unbanned them. This only happens if I am in a server that they are also in. You must
+            |be able to ban members to use this command.
+        """
+
+        expectedArgs = arrayOf(TrWord())
+        execute { args ->
+            val nameOrId = args.get<String>(0)
+            val user = event
+                .guild
+                .retrieveBanList()
+                .await()
+                .find { nameOrId in arrayOf(it.user.id, it.user.name, it.user.asTag) }
+                ?.user
+            if (user == null) {
+                sendError("Either that user is not banned, or doesn't exist!")
+                return@execute
+            }
+            BanController(this).unban(user)
         }
     }
 
@@ -179,7 +251,7 @@ internal class ModCommands(private val bot: Bot) {
                 sendError("I can't get that many log entries!")
                 return@execute
             }
-            AuditLogSender(limit).send(this)
+            send(AuditLogSender(limit))
         }
     }
 }

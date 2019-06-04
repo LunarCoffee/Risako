@@ -85,7 +85,7 @@ internal class MiscCommands(private val bot: Bot) {
             |number of files and folders I am, and the number of characters I'm written in.
         """
 
-        execute { CodeStatsSender(CodeStats(bot)).send(this) }
+        execute { send(CodeStatsSender(CodeStats(bot))) }
     }
 
     fun git() = command("git") {
@@ -111,6 +111,6 @@ internal class MiscCommands(private val bot: Bot) {
             |in, how long I've been awake, and what architecture the CPU I'm running on is.
         """
 
-        execute { SystemStatsSender(SystemStats()).send(this) }
+        execute { send(SystemStatsSender(SystemStats())) }
     }
 }

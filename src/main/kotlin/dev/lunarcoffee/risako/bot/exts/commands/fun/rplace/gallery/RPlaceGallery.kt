@@ -2,8 +2,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.`fun`.rplace.gallery
 
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.rplace.RPlaceCanvas
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.rplace.RPlaceCanvasSaver
-import dev.lunarcoffee.risako.framework.api.extensions.sendError
-import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
+import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.dispatchers.DispatchableArgs
 import kotlinx.coroutines.*
@@ -85,7 +84,7 @@ internal class RPlaceGallery(private val canvas: Array<Array<Color>>) {
     }
 
     suspend fun sendGallery(ctx: CommandContext, args: DispatchableArgs) {
-        RPlaceGallerySender(args).send(ctx)
+        ctx.send(RPlaceGallerySender(args))
     }
 
     private fun toBufferedImage(image: Image): BufferedImage {

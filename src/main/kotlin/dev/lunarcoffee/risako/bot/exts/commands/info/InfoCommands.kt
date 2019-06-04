@@ -9,6 +9,7 @@ import dev.lunarcoffee.risako.bot.exts.commands.info.ri.RoleInfoSender
 import dev.lunarcoffee.risako.bot.exts.commands.info.si.ServerInfoSender
 import dev.lunarcoffee.risako.bot.exts.commands.info.ui.UserInfoSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
+import dev.lunarcoffee.risako.framework.api.extensions.send
 import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
@@ -40,7 +41,7 @@ internal class InfoCommands(private val bot: Bot) {
                 }
                 else -> result
             }
-            UserInfoSender(user).send(this)
+            send(UserInfoSender(user))
         }
     }
 
@@ -73,7 +74,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("That user is not a member of this server!")
                 return@execute
             }
-            MemberInfoSender(member).send(this)
+            send(MemberInfoSender(member))
         }
     }
 
@@ -106,7 +107,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("I can't find a text or voice channel with that name or ID!")
                 return@execute
             }
-            ChannelInfoSender(channel).send(this)
+            send(ChannelInfoSender(channel))
         }
     }
 
@@ -137,7 +138,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("I can't find an emote with that name or ID!")
                 return@execute
             }
-            EmoteInfoSender(emote).send(this)
+            send(EmoteInfoSender(emote))
         }
     }
 
@@ -167,7 +168,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("I can't find a role with that name or ID!")
                 return@execute
             }
-            RoleInfoSender(role).send(this)
+            send(RoleInfoSender(role))
         }
     }
 
@@ -196,7 +197,7 @@ internal class InfoCommands(private val bot: Bot) {
                 sendError("I can't find a server with that name or ID!")
                 return@execute
             }
-            ServerInfoSender(guild).send(this)
+            send(ServerInfoSender(guild))
         }
     }
 }

@@ -7,7 +7,7 @@ import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal class EmoteStealerSender(private val historyToSearch: Int) : ContentSender {
+internal class EmoteStealerSender(private val limit: Int) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val pmChannel = ctx.event.author.openPrivateChannel().await()
         pmChannel.sendSuccess("Your emotes are being processed!")
@@ -16,7 +16,7 @@ internal class EmoteStealerSender(private val historyToSearch: Int) : ContentSen
             .event
             .channel
             .iterableHistory
-            .take(historyToSearch)
+            .take(limit)
             .flatMap { it.emotes }
             .distinct()
             .map { "**${it.name}**: [image link](${it.imageUrl})" }
@@ -24,7 +24,7 @@ internal class EmoteStealerSender(private val historyToSearch: Int) : ContentSen
             .map { it.joinToString("\n") }
 
         if (emotePages.isEmpty()) {
-            ctx.sendError("There were no emotes in the last `$historyToSearch` messages!")
+            ctx.sendError("There were no emotes in the last `$limit` messages!")
             return
         }
 

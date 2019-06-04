@@ -43,7 +43,7 @@ internal class MuteController(private val ctx: CommandContext) {
             return
         }
 
-        MuteInfoSender(offender, time, reason).send(ctx)
+        ctx.send(MuteInfoSender(offender, time, reason))
         ctx.scheduleReloadable(
             ColName.MUTE,
             UnmuteReloader(
@@ -84,7 +84,7 @@ internal class MuteController(private val ctx: CommandContext) {
             return
         }
 
-        UnmuteInfoSender(offender).send(ctx)
+        ctx.send(UnmuteInfoSender(offender))
         col.deleteOne { it.rjid == reloadable.rjid }
     }
 

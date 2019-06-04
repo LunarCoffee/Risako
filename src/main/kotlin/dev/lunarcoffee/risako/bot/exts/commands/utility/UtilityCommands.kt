@@ -33,7 +33,7 @@ internal class UtilityCommands(private val bot: Bot) {
         expectedArgs = arrayOf(TrSplit())
         execute { args ->
             val expression = args.get<List<String>>(0)
-            RPNCalculationSender(expression).send(this)
+            send(RPNCalculationSender(expression))
         }
     }
 
@@ -126,12 +126,12 @@ internal class UtilityCommands(private val bot: Bot) {
 
         expectedArgs = arrayOf(TrInt(true, 100))
         execute { args ->
-            val historyToSearch = args.get<Int>(0)
-            if (historyToSearch !in 1..1_000) {
+            val limit = args.get<Int>(0)
+            if (limit !in 1..1_000) {
                 sendError("I can't steal from that many messages in history!")
                 return@execute
             }
-            EmoteStealerSender(historyToSearch).send(this)
+            send(EmoteStealerSender(limit))
         }
     }
 
@@ -296,12 +296,7 @@ internal class UtilityCommands(private val bot: Bot) {
                 sendError("I can't find that command!")
                 return@execute
             }
-
-            if (command == null) {
-                HelpListSender().send(this)
-            } else {
-                HelpDetailSender(command, flags).send(this)
-            }
+            send(if (command == null) HelpListSender() else HelpDetailSender(command, flags))
         }
     }
 }

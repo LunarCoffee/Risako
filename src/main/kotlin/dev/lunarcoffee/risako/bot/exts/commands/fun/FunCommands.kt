@@ -36,7 +36,7 @@ internal class FunCommands(private val bot: Bot) {
                 sendError("I can't flip that number of coins!")
                 return@execute
             }
-            CoinFlipSender(times).send(this)
+            send(CoinFlipSender(times))
         }
     }
 
@@ -76,7 +76,7 @@ internal class FunCommands(private val bot: Bot) {
                     return@execute
                 }
             }
-            DiceRollSender(diceRolls).send(this)
+            send(DiceRollSender(diceRolls))
         }
     }
 
@@ -119,7 +119,7 @@ internal class FunCommands(private val bot: Bot) {
         """
 
         expectedArgs = arrayOf(TrRest())
-        execute { EightBallSender().send(this) }
+        execute { send(EightBallSender()) }
     }
 
     fun msp() = command("msp") {
