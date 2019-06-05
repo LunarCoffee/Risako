@@ -22,6 +22,7 @@ internal class RoleInfoSender(private val role: Role) : ContentSender {
                     }
                     val authorGuildId = ctx.event.guild.id
                     val mention = if (guild.id == authorGuildId) asMention else "(unavailable)"
+                    val peopleWith = guild.members.map { it.roles }.count { this in it }
                     val permissions = permissions.map { it.constToEng() }.ifEmpty { "(none)" }
 
                     title = "${Emoji.MAG_GLASS}  Info on $roleName:"
@@ -31,6 +32,7 @@ internal class RoleInfoSender(private val role: Role) : ContentSender {
                         |**Displayed separately**: ${isHoisted.toYesNo()}
                         |**Normally mentionable**: ${isMentionable.toYesNo()}
                         |**Mention**: $mention
+                        |**Members with role**: $peopleWith members
                         |**Creation time**: ${timeCreated.format(TIME_FORMATTER)}
                         |**Managed**: ${isManaged.toYesNo()}
                         |**Permissions**: $permissions

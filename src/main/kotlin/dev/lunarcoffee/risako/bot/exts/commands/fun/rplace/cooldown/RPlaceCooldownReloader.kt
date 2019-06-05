@@ -14,6 +14,6 @@ internal class RPlaceCooldownReloader(time: Date, val userId: String) : Reloadab
     }
 
     override suspend fun schedule(event: GenericEvent, col: ReloadableCollection<Reloadable>) {
-        DEFAULT_TIMER.scheduleNoInline(time) { col.deleteOne { it.rjid == rjid } }
+        DEFAULT_TIMER.scheduleNoInline(time) { finish() }
     }
 }
