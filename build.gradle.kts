@@ -42,6 +42,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-compiler:1.3.21")
     implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.3.21")
     runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.3.21")
+
+    implementation("com.sedmelluq:lavaplayer:1.3.17")
 }
 
 tasks.withType<KotlinCompile> {

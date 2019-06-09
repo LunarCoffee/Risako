@@ -13,75 +13,8 @@ import org.litote.kmongo.eq
 import java.util.*
 
 internal class TagManager(private val ctx: CommandContext) {
-    suspend fun sendTags() {
-        // Sort tag entries by the time they were created at.
-        val tags = col
-            .find(Tag::guildId eq ctx.event.guild.id)
-            .toList()
-            .sortedByDescending { it.timeCreated }
-            .chunked(16)
+    suspend fun sendSingleTag(name: String, raw: Boolean) {
 
-        if (tags.isEmpty()) {
-            ctx.sendSuccess("There are no tags in this server!")
-            return
-        }
-
-        ctx.send(
-            embedPaginator(ctx.event.author) {
-                for (tagPage in tags) {
-                    page(
-                        embed {
-                            title = "${Emoji.BOOKMARK}  Tags in this server:"
-                            description = tagPage.joinToString("\n") {
-                                val timeMs = it.timeCreated.toInstant().toEpochMilli()
-                                val time = SplitTime(timeMs - System.currentTimeMillis())
-                                    .localWithoutWeekday()
-
-                                "**${it.name}**: $time"
-                            }
-                        }
-                    )
-                }
-            }
-        )
-    }
-
-    suspend fun sendSingleTag(name: String) {
-        val tag = col.findOne(sameTag(name))
-        if (tag == null) {
-            ctx.sendError("There is no tag with that name!")
-            return
-        }
-
-        ctx.send(
-            embed {
-                tag.run {
-                    val authorTag = ctx.jda.getUserById(authorId)?.asTag ?: "(none)"
-                    val timeMs = timeCreated.toInstant().toEpochMilli()
-                    val time = SplitTime(timeMs - System.currentTimeMillis()).localWithoutWeekday()
-
-                    title = "${Emoji.BOOKMARK}  Tag **${this@run.name}**:"
-                    description = """
-                        |**Author**: $authorTag
-                        |**Time created**: $time
-                    """.trimMargin()
-
-                    if (textContent.isNotBlank()) {
-                        field {
-                            this@field.name = "Content:"
-                            content = textContent
-                        }
-                    }
-
-                    if (attachments.isNotEmpty()) {
-                        field {
-                            this@field.name = "Attachments:"
-                            content = namedAttachments
-                        }
-                    }
-                }
-            }
-        )
     }
 
     suspend fun addTag(name: String, content: String) {

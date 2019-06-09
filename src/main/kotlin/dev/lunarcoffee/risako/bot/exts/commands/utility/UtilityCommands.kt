@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpListSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderManager
 import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculationSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.steal.EmoteStealerSender
-import dev.lunarcoffee.risako.bot.exts.commands.utility.tags.TagManager
+import dev.lunarcoffee.risako.bot.exts.commands.utility.tags.*
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
 import dev.lunarcoffee.risako.framework.api.extensions.*
@@ -219,14 +219,15 @@ internal class UtilityCommands(private val bot: Bot) {
         aliases = arrayOf("notes")
 
         extDescription = """
-            |`$name [action] [tag name] [tag content]`\n
+            |`$name [action] [tag name] [tag content] [-r]`\n
             |This command lets you save information in tags. These tags have a name and can store
             |a lot of content. They also store the person who created them and the time at which
             |the tag was created.
             |&{Viewing tags:}
             |To view all the tags on the current server, use the command with no arguments (as in
             |`..$name` only). To view a specific tag, action should be `view` and `tag name` should
-            |be the name of the tag you want to view.
+            |be the name of the tag you want to view. This will send a fancy embed with the author
+            |and tag creation time. If you want only the tag content, add `-r` at the end.
             |&{Adding tags:}
             |To add a tag, `action` should be `add`, `tag name` should be the name you want to
             |give the tag, and `tag content` should be the content of the tag. The name cannot be
@@ -244,18 +245,18 @@ internal class UtilityCommands(private val bot: Bot) {
         execute { args ->
             val action = args.get<String>(0)
             if (action.isEmpty()) {
-                TagManager(this).sendTags()
+                send(TagListSender())
                 return@execute
             }
 
             val tagName = args.get<String>(1)
-            val tagContent = args.get<String>(2)
+            val tagContentOrRawFlag = args.get<String>(2)
 
             TagManager(this).run {
                 when (action) {
-                    "view" -> sendSingleTag(tagName)
-                    "add" -> addTag(tagName, tagContent)
-                    "edit" -> editTag(tagName, tagContent)
+                    "view" -> send(SingleTagSender(tagName, tagContentOrRawFlag == "-r"))
+                    "add" -> addTag(tagName, tagContentOrRawFlag)
+                    "edit" -> editTag(tagName, tagContentOrRawFlag)
                     "delete" -> deleteTag(tagName)
                     else -> sendError("That isn't a valid operation!")
                 }

@@ -16,7 +16,6 @@ import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import dev.lunarcoffee.risako.framework.core.std.UserNotFound
-import dev.lunarcoffee.risako.framework.core.trimToDescription
 import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
 
@@ -102,7 +101,7 @@ internal class ModCommands(private val bot: Bot) {
             |When a member is kicked, they will be sent a message with `reason` (or `(no reason)`)
             |if no reason is specified and the user that kicked them. You must be able to kick
             |members to use this command.
-        """.trimToDescription()
+        """
 
         expectedArgs = arrayOf(TrUser(), TrRest(true, "(no reason)"))
         execute { args ->
@@ -242,7 +241,7 @@ internal class ModCommands(private val bot: Bot) {
             |I won't show you what actually changed, since that would require more effort for me to
             |do than for you to open up the audit logs in the server settings. You need to be able
             |to view the logs already to use this command, anyway.
-        """.trimToDescription()
+        """
 
         expectedArgs = arrayOf(TrInt(true, 10))
         execute { args ->
