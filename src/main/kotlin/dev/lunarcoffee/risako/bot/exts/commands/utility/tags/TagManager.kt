@@ -1,22 +1,15 @@
 package dev.lunarcoffee.risako.bot.exts.commands.utility.tags
 
 import dev.lunarcoffee.risako.bot.consts.ColName
-import dev.lunarcoffee.risako.bot.consts.Emoji
-import dev.lunarcoffee.risako.framework.api.dsl.embed
-import dev.lunarcoffee.risako.framework.api.dsl.embedPaginator
-import dev.lunarcoffee.risako.framework.api.extensions.*
+import dev.lunarcoffee.risako.framework.api.extensions.sendError
+import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
 import dev.lunarcoffee.risako.framework.core.DB
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
-import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import java.util.*
 
 internal class TagManager(private val ctx: CommandContext) {
-    suspend fun sendSingleTag(name: String, raw: Boolean) {
-
-    }
-
     suspend fun addTag(name: String, content: String) {
         if (name.length > 30 || content.length > 1_000) {
             ctx.sendError("The name or content of your tag is too long!")
