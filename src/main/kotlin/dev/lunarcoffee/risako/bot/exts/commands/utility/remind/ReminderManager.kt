@@ -28,7 +28,7 @@ internal class ReminderManager(private val ctx: CommandContext) {
     }
 
     suspend fun sendRemindersEmbed() {
-        val list = getReminders().sortedBy { it.time }
+        val list = getReminders()
         if (list.isEmpty()) {
             ctx.sendSuccess("You have no reminders!")
             return
@@ -81,7 +81,9 @@ internal class ReminderManager(private val ctx: CommandContext) {
         ctx.sendSuccess("I've removed $pluralThat!")
     }
 
-    private suspend fun getReminders() = col.find { it.mention == ctx.event.author.asMention }
+    private suspend fun getReminders(): List<ReminderReloader> {
+        return col.find { it.mention == ctx.event.author.asMention }.sortedBy { it.time }
+    }
 
     companion object {
         private val col = ReloadableCollection(ColName.REMINDER, ReminderReloader::class)

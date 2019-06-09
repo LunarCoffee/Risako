@@ -23,7 +23,7 @@ internal class UserInfoSender(val user: User) : ContentSender {
                         |**Mention**: $asMention
                     """.trimMargin()
 
-                    thumbnail { url = avatarUrl ?: defaultAvatarUrl }
+                    thumbnail { url = effectiveAvatarUrl }
                 }
             }
         )

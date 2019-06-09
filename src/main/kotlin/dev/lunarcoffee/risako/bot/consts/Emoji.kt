@@ -30,5 +30,4 @@ internal object Emoji {
     const val BOOKMARK = "\uD83D\uDD16"
     const val SPY = "\uD83D\uDD75"
     const val EXPLODE = "\uD83D\uDCA5"
-    const val MUSICAL_NOTES = "\uD83C\uDFB6"
 }

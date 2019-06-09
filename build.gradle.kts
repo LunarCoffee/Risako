@@ -44,6 +44,7 @@ dependencies {
     runtimeOnly("org.jetbrains.kotlin:kotlin-scripting-compiler-embeddable:1.3.21")
 
     implementation("com.sedmelluq:lavaplayer:1.3.17")
+    implementation("club.minnced:discord-webhooks:0.1.7")
 }
 
 tasks.withType<KotlinCompile> {

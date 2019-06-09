@@ -113,6 +113,34 @@ internal class UtilityCommands(private val bot: Bot) {
         }
     }
 
+    fun emt() = command("emt") {
+        description = "Sends one or more custom emotes from any server I am in."
+        aliases = arrayOf("emote")
+        deleteSender = true
+
+        extDescription = """
+            |`$name names...`\n
+            |Sends one or more emotes to the command user's channel. If an emote is not found, I
+            |simply don't send that one.
+        """
+
+        expectedArgs = arrayOf(TrSplit())
+        execute { args ->
+            val emoteNames = args.get<List<String>>(0)
+            val emotes = emoteNames
+                .mapNotNull { jda.getEmotesByName(it, true).firstOrNull()?.asMention }
+                .joinToString(" ")
+
+            if (emotes.isEmpty()) {
+                sendError("I don't have any of those emotes!")
+                return@execute
+            }
+
+            // Cannot use [sendAsAuthor] since webhooks cannot access custom emotes.
+            send(emotes)
+        }
+    }
+
     fun steal() = command("steal") {
         description = "Gets custom emotes from the history of the current channel."
         aliases = arrayOf("stealemotes")
@@ -121,7 +149,9 @@ internal class UtilityCommands(private val bot: Bot) {
             |`$name [limit]`\n
             |Steals custom emotes from the current channel's history. If `limit` is specified, this
             |command will attempt to steal all emotes from the past `limit` messages. If not, the
-            |default is the past 100 messages.
+            |default is the past 100 messages. Stealing just means getting the image links for each
+            |emote, not anything remotely illegal or suspicious. Yeah.
+            |
         """
 
         expectedArgs = arrayOf(TrInt(true, 100))

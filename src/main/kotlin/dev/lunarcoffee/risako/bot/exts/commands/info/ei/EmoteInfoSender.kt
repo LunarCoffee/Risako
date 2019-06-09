@@ -19,7 +19,7 @@ internal class EmoteInfoSender(private val emote: Emote) : ContentSender {
                     title = "${Emoji.MAG_GLASS}  Info on$animated emote **$name**:"
                     description = """
                         |**Emote ID**: $id
-                        |**Server** ${guild?.name ?: "(none)"}
+                        |**Server**: ${guild?.name ?: "(none)"}
                         |**Managed**: ${isManaged.toYesNo()}
                         |**Creation time**: ${timeCreated.format(TIME_FORMATTER)}
                         |**Required roles**: ${roles.ifEmpty { "(none)" }}

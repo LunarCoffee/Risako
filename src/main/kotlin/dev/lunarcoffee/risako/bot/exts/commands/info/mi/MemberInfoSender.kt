@@ -35,7 +35,7 @@ internal class MemberInfoSender(private val member: Member) : ContentSender {
                         |**Roles**: ${userRoles.ifEmpty { "(none)" }}
                     """.trimMargin()
 
-                    thumbnail { url = user.avatarUrl ?: user.defaultAvatarUrl }
+                    thumbnail { url = user.effectiveAvatarUrl }
                 }
             }
         )

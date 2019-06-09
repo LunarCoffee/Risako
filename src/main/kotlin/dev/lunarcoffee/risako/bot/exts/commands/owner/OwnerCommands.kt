@@ -37,36 +37,6 @@ internal class OwnerCommands(private val bot: Bot) {
         execute { send(it.get<String>(0)) }
     }
 
-    fun semt() = command("semt") {
-        description = "Sends one or more emotes. Only my owner can use this."
-        aliases = arrayOf("sendemote")
-
-        ownerOnly = true
-        deleteSender = true
-
-        extDescription = """
-            |`$name names...`\n
-            |Sends one or more emotes to the command user's channel. This is an owner only command
-            |for... hm. I'm not too sure why this is an owner only command. I guess you'll have to
-            |stick with the `emotes` command. Anyway, if an emote is not found, I simply don't send
-            |that one (unlike with `emotes`).
-        """
-
-        expectedArgs = arrayOf(TrSplit())
-        execute { args ->
-            val emoteNames = args.get<List<String>>(0)
-            val emotes = emoteNames
-                .mapNotNull { jda.getEmotesByName(it, true).firstOrNull()?.asMention }
-                .joinToString(" ")
-
-            if (emotes.isEmpty()) {
-                sendError("I don't have any of those emotes!")
-                return@execute
-            }
-            send(emotes)
-        }
-    }
-
     fun sebd() = command("sebd") {
         description = "Sends an embed. Only my owner can use this."
         aliases = arrayOf("sendembed")
