@@ -113,9 +113,9 @@ internal class UtilityCommands(private val bot: Bot) {
         }
     }
 
-    fun emt() = command("emt") {
+    fun emote() = command("emote") {
         description = "Sends one or more custom emotes from any server I am in."
-        aliases = arrayOf("emote")
+        aliases = arrayOf("sendemote")
         deleteSender = true
 
         extDescription = """
