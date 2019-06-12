@@ -12,10 +12,6 @@ import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
-import dev.lunarcoffee.risako.framework.core.commands.transformers.TrInt
-import dev.lunarcoffee.risako.framework.core.commands.transformers.TrWord
-import java.security.SecureRandom
-import kotlin.random.Random
 import kotlin.system.measureNanoTime
 
 @CommandGroup("Misc")
@@ -43,35 +39,6 @@ internal class MiscCommands(private val bot: Bot) {
                     description = "[${jda.gatewayPing}ms, ${apiLatency}ms, ${stackLatency}ns]"
                 }
             )
-        }
-    }
-
-    fun rng() = command("rng") {
-        val secureRandom = SecureRandom()
-
-        description = "Gets you a random number between two numbers (inclusive)."
-        aliases = arrayOf("rand", "random")
-
-        extDescription = """
-            |`$name low high [-s]`\n
-            |This command generates a random number within the closed interval [`low`, `high`]. If
-            |the `-s` flag is set, a more secure source of randomness will be used.
-        """
-
-        expectedArgs = arrayOf(TrInt(), TrInt(), TrWord(true))
-        execute { args ->
-            val lowerBound = args.get<Int>(0)
-            val upperBound = args.get<Int>(1) + 1
-            val secure = args.get<String>(2) == "-s"
-
-            val number = if (secure) {
-                secureRandom.nextInt(upperBound - lowerBound) + lowerBound
-            } else {
-                Random.nextInt(lowerBound, upperBound)
-            }
-
-            val secureText = if (secure) " secure" else ""
-            sendSuccess("Your$secureText random number is `$number`!")
         }
     }
 

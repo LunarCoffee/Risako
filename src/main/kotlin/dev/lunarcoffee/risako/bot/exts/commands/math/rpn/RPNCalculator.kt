@@ -1,4 +1,4 @@
-package dev.lunarcoffee.risako.bot.exts.commands.utility.rpn
+package dev.lunarcoffee.risako.bot.exts.commands.math.rpn
 
 import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess

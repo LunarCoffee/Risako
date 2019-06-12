@@ -2,15 +2,12 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.utility
 
-import dev.lunarcoffee.risako.bot.exts.commands.utility.fact.FastFactorialCalculator
 import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpDetailSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.help.HelpListSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.remind.ReminderManager
-import dev.lunarcoffee.risako.bot.exts.commands.utility.rpn.RPNCalculationSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.steal.EmoteStealerSender
 import dev.lunarcoffee.risako.bot.exts.commands.utility.tags.*
 import dev.lunarcoffee.risako.framework.api.dsl.command
-import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
 import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
@@ -20,23 +17,6 @@ import dev.lunarcoffee.risako.framework.core.std.SplitTime
 
 @CommandGroup("Utility")
 internal class UtilityCommands(private val bot: Bot) {
-    fun rpn() = command("rpn") {
-        description = "Reverse polish notation calculator! I'm not sure why this exists."
-        aliases = arrayOf("reversepolish")
-
-        extDescription = """
-            |`$name expression`\n
-            |Calculates the result of a expression in reverse Polish notation (postfix notation).
-            |The supported operators are: [`+`, `-`, `*`, `/`, `**`, `%`, `&`, `|`, `^`]
-        """
-
-        expectedArgs = arrayOf(TrSplit())
-        execute { args ->
-            val expression = args.get<List<String>>(0)
-            send(RPNCalculationSender(expression))
-        }
-    }
-
     fun rev() = command("rev") {
         description = "Reverses the given text."
         aliases = arrayOf("reverse", "backwards")
@@ -58,36 +38,6 @@ internal class UtilityCommands(private val bot: Bot) {
                 rawText.reversed()
             }
             sendSuccess("Your text reversed is `$text`")
-        }
-    }
-
-    fun fact() = command("fact") {
-        description = "Calculates the factorial of a given number."
-        aliases = arrayOf("factorial")
-
-        extDescription = """
-            |`$name number`\n
-            |A lot of online calculators stop giving you factorials in whole numbers after quite an
-            |early point, usually around `15!` or so. Unlike them, I'll calculate factorials up to
-            |50000 and happily provide them in all their glory.
-        """
-
-        expectedArgs = arrayOf(TrInt())
-        execute { args ->
-            val number = args.get<Int>(0).toLong()
-            if (number !in 0..50_000) {
-                sendError("I can't calculate the factorial of that number!")
-                return@execute
-            }
-            val result = FastFactorialCalculator.factorial(number).toString().chunked(1_777)
-
-            send(
-                messagePaginator {
-                    for (chunk in result) {
-                        page("```$chunk```")
-                    }
-                }
-            )
         }
     }
 

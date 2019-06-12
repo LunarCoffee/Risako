@@ -1,4 +1,4 @@
-package dev.lunarcoffee.risako.bot.exts.commands.utility.fact
+package dev.lunarcoffee.risako.bot.exts.commands.math.fact
 
 import java.math.BigInteger
 import java.util.*
