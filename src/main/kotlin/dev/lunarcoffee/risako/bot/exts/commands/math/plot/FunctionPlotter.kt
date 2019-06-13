@@ -5,6 +5,7 @@ import java.awt.Graphics2D
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
+import kotlin.math.abs
 import kotlin.math.roundToInt
 import java.awt.RenderingHints as RH
 
@@ -60,10 +61,8 @@ internal class FunctionPlotter(val functionStrings: List<String>) {
                 else -> 12
             }
 
-            // Don't draw two 1 labels.
-            if (n != PRECISION / MULTIPLIER + 1) {
-                drawString((n - PRECISION / MULTIPLIER).toString(), xLabel, ORIGIN - 16)
-            }
+            // Draw interval labels.
+            drawString((n - PRECISION / MULTIPLIER).toString(), xLabel, ORIGIN - 16)
             drawString((PRECISION / MULTIPLIER - n).toString(), ORIGIN + 16, n * MULTIPLIER + 4)
         }
     }
@@ -72,11 +71,11 @@ internal class FunctionPlotter(val functionStrings: List<String>) {
         for ((index, string) in functionStrings.withIndex()) {
             val evaluator = FunctionEvaluator(string)
             for (x in -PRECISION until PRECISION) {
-                val y = (evaluator.evaluate(x / MULTIPLIER.toDouble())!! * INTERVAL) * MULTIPLIER
-                val nextY = (evaluator.evaluate((x + 1.0) / MULTIPLIER)!! * INTERVAL) * MULTIPLIER
+                val y = evaluator.evaluate(x.toDouble() / MULTIPLIER)!! * INTERVAL * MULTIPLIER
+                val nextY = evaluator.evaluate((x + 1.0) / MULTIPLIER)!! * INTERVAL * MULTIPLIER
 
-                // Ignore holes/asymptotes/gaps.
-                if (y.isNaN() || nextY.isNaN()) {
+                // Try to ignore holes/asymptotes/gaps.
+                if (y.isNaN() || nextY.isNaN() || abs(nextY - y) > 2_500) {
                     continue
                 }
 
@@ -96,7 +95,7 @@ internal class FunctionPlotter(val functionStrings: List<String>) {
         private const val ORIGIN = IMAGE_SIZE / 2
         private const val PRECISION = 400
         private const val INTERVAL = 1
-        private const val MULTIPLIER = 20
+        private const val MULTIPLIER = 40
 
         // Colors to use when plotting functions.
         private val COLORS = arrayOf(

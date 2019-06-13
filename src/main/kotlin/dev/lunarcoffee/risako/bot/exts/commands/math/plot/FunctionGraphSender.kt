@@ -24,15 +24,15 @@ internal class FunctionGraphSender(private val plotter: FunctionPlotter) : Conte
             embed {
                 val numFunctions = plotter.functionStrings.size
                 val functionOrNumber = if (numFunctions == 1) {
-                    "**${plotter.functionStrings[0]}**"
+                    "**${plotter.functionStrings[0].replace("*", "\\*")}**"
                 } else {
                     "**$numFunctions** functions"
                 }
 
                 title = "${Emoji.CHART_UPWARDS_TREND}  Graph of $functionOrNumber:"
-                description = plotter.functionStrings
-                    .mapIndexed { index, string -> "**#${index + 1}**: y=$string" }
-                    .joinToString("\n")
+                description = plotter.functionStrings.mapIndexed { index, string ->
+                    "**#${index + 1}**: y=${string.replace("*", "\\*")}"
+                }.joinToString("\n")
 
                 image { url = "attachment://${image.name}" }
             }

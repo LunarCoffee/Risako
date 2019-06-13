@@ -42,7 +42,7 @@ internal class GuildDispatcher(
             return
         }
 
-        val content = event.message.contentRaw
+        val content = event.message.contentRaw.replace("\u200B", "")
         val channel = event.textChannel
         val authorName = event.author.name
 

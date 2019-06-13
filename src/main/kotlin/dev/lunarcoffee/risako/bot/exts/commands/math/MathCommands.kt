@@ -99,10 +99,10 @@ internal class MathCommands(private val bot: Bot) {
 
         extDescription = """
             |`$name functions...`\n
-            |This command plots one to five functions of the form `y=<expression>` or
-            |`f(x)=<expression>`. These functions will be listed and colored in a certain order,
-            |which is red, blue, green, yellow, then magenta. The range of the axes is currently
-            |static at -20 to 20.
+            |This command plots one to five functions of the form `y=<expression>`. These functions
+            |will be listed and colored in a certain order, which is red, blue, green, yellow, then
+            |magenta. The range of the axes is currently static at -10 to 10. With many vertical
+            |asymptotes or very steep slopes, the plotted graph may not be accurate.
         """
 
         expectedArgs = arrayOf(TrSplit())
@@ -112,12 +112,7 @@ internal class MathCommands(private val bot: Bot) {
                 sendError("I can only plot up to five functions!")
                 return@execute
             }
-
-            // Take the right side of the given function, either after "y=" or "f(x)=."
-            val rightSides = functions.map {
-                it.substringAfter("y=", it.substringAfter("f(x)=", "y"))
-            }
-            send(FunctionGraphSender(FunctionPlotter(rightSides)))
+            send(FunctionGraphSender(FunctionPlotter(functions)))
         }
     }
 }

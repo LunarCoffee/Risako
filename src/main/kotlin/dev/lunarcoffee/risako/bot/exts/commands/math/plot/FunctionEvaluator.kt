@@ -1,22 +1,21 @@
 package dev.lunarcoffee.risako.bot.exts.commands.math.plot
 
-import dev.lunarcoffee.risako.framework.core.silence
 import net.objecthunter.exp4j.ExpressionBuilder
-import java.util.concurrent.Executors
 
 internal class FunctionEvaluator(private val exprString: String) {
+    // The loss of information during the conversion to [Double] isn't important, since the upper
+    // bound of the displayed y-axis is much lower.
     fun evaluate(x: Double): Double? {
-        return silence {
+        return try {
             ExpressionBuilder(exprString)
                 .variables("x")
                 .build()
                 .setVariable("x", x)
-                .evaluateAsync(executor)
-                .get()
+                .evaluate()
+        } catch (e: ArithmeticException) {
+            Double.POSITIVE_INFINITY
+        } catch (e: Exception) {
+            null
         }
-    }
-
-    companion object {
-        private val executor = Executors.newFixedThreadPool(4)
     }
 }
