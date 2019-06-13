@@ -45,6 +45,8 @@ dependencies {
 
     implementation("com.sedmelluq:lavaplayer:1.3.17")
     implementation("club.minnced:discord-webhooks:0.1.7")
+
+    implementation("net.objecthunter:exp4j:0.4.8")
 }
 
 tasks.withType<KotlinCompile> {

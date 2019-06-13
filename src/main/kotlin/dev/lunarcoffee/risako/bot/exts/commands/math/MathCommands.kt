@@ -3,6 +3,8 @@
 package dev.lunarcoffee.risako.bot.exts.commands.math
 
 import dev.lunarcoffee.risako.bot.exts.commands.math.fact.FastFactorialCalculator
+import dev.lunarcoffee.risako.bot.exts.commands.math.plot.FunctionGraphSender
+import dev.lunarcoffee.risako.bot.exts.commands.math.plot.FunctionPlotter
 import dev.lunarcoffee.risako.bot.exts.commands.math.rpn.RPNCalculationSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.messagePaginator
@@ -96,12 +98,26 @@ internal class MathCommands(private val bot: Bot) {
         aliases = arrayOf("graph", "plotfunc", "graphfunc")
 
         extDescription = """
-            |`$name functions...`
+            |`$name functions...`\n
+            |This command plots one to five functions of the form `y=<expression>` or
+            |`f(x)=<expression>`. These functions will be listed and colored in a certain order,
+            |which is red, blue, green, yellow, then magenta. The range of the axes is currently
+            |static at -20 to 20.
         """
 
         expectedArgs = arrayOf(TrSplit())
         execute { args ->
-            sendError("This command is not yet implemented!")
+            val functions = args.get<List<String>>(0)
+            if (functions.size > 5) {
+                sendError("I can only plot up to five functions!")
+                return@execute
+            }
+
+            // Take the right side of the given function, either after "y=" or "f(x)=."
+            val rightSides = functions.map {
+                it.substringAfter("y=", it.substringAfter("f(x)=", "y"))
+            }
+            send(FunctionGraphSender(FunctionPlotter(rightSides)))
         }
     }
 }
