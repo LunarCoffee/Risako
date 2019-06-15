@@ -115,6 +115,4 @@ internal class MathCommands(private val bot: Bot) {
             send(FunctionGraphSender(FunctionPlotter(functions)))
         }
     }
-
-
 }
