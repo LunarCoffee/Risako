@@ -1,4 +1,4 @@
-import dev.lunarcoffee.risako.framework.api.extensions.*;import kotlinx.coroutines.*;import net.dv8tion.jda.api.events.message.*
+import framework.api.extensions.*;import kotlinx.coroutines.*;import net.dv8tion.jda.api.events.message.*
 %s
 internal val event=bindings["event"] as MessageReceivedEvent
 internal var _____________________r:Any?=Any()

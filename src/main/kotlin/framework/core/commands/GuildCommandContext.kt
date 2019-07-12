@@ -1,0 +1,10 @@
+package framework.core.commands
+
+import framework.core.bot.Bot
+import net.dv8tion.jda.api.entities.TextChannel
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent
+
+internal class GuildCommandContext(
+    override val event: MessageReceivedEvent,
+    override val bot: Bot
+) : CommandContext, TextChannel by event.textChannel

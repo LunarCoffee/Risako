@@ -1,0 +1,8 @@
+package framework.core.commands
+
+import framework.core.dispatchers.DispatchableArgs
+
+internal class GuildCommandArgs(override val items: List<Any?>) : DispatchableArgs {
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> get(index: Int) = items[index] as T
+}
