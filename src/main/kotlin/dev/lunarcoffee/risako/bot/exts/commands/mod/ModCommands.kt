@@ -54,7 +54,7 @@ internal class ModCommands(private val bot: Bot) {
         extDescription = """
             |`$name user`\n
             |Unmutes a muted user. This only works if the user was muted with the `..mute` command
-            |from this bot. The unmuted user will be sent a message with the person who unmuted
+            |from this dev.lunarcoffee.risako.bot. The unmuted user will be sent a message with the person who unmuted
             |them. You must be able to manage roles to use this command.
         """
 

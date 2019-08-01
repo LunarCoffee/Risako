@@ -93,7 +93,7 @@ internal open class DefaultBot(configPath: String) : Bot {
     companion object {
         private val log = KotlinLogging.logger {}
 
-        // This shouldn't be used outside of the <framework> package.
+        // This shouldn't be used outside of the <dev.lunarcoffee.risako.framework> package.
         internal lateinit var instance: Bot
     }
 }

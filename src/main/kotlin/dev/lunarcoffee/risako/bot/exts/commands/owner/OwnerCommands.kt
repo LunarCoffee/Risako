@@ -102,12 +102,12 @@ internal class OwnerCommands(private val bot: Bot) {
     }
 
     fun shutdown() = command("shutdown") {
-        description = "Shuts down the bot. Only my owner can use this."
+        description = "Shuts down the dev.lunarcoffee.risako.bot. Only my owner can use this."
         ownerOnly = true
 
         extDescription = """
             |`$name`\n
-            |Shuts down the bot process. There is a roughly three second long period of time
+            |Shuts down the dev.lunarcoffee.risako.bot process. There is a roughly three second long period of time
             |between command usage and actual process termination. First, I wait two seconds and
             |call `shutdownNow` on my `JDA` instance. Then, I wait another second and terminate
             |myself. Tragic. This is owner only for obvious reasons.
@@ -159,7 +159,7 @@ internal class OwnerCommands(private val bot: Bot) {
             |Executes Kotlin code in an unconstrained environment. This command can only be used by
             |my owner, for obvious security reasons. The only available global is `ctx`, the
             |`CommandContext` object associated with the current command execution. The event and
-            |bot objects can be accessed from the command context. Note that star/wildcard imports
+            |dev.lunarcoffee.risako.bot objects can be accessed from the command context. Note that star/wildcard imports
             |are not supported because I am lazy.
         """
 

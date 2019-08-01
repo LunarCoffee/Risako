@@ -13,7 +13,7 @@ internal class UnbanInfoSender(private val user: User) : ContentSender {
 
         // Send PM to unbanned user with information. [user] is actually a fake JDA entity, so we
         // have to get the real representation. This only sends the message when the user is in a
-        // guild which the bot is already in, and if they are accepting PMs from those in mutual
+        // guild which the dev.lunarcoffee.risako.bot is already in, and if they are accepting PMs from those in mutual
         // guilds.
         ctx.jda.getUserById(user.id)?.openPrivateChannel()?.await()?.send(
             embed {

@@ -16,7 +16,7 @@ internal class MentionListeners(private val bot: Bot) : ListenerAdapter() {
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         val content = event.message.contentRaw
 
-        // React to the message if it contained a mention to the owner or the bot.
+        // React to the message if it contained a mention to the owner or the dev.lunarcoffee.risako.bot.
         if ("<@${bot.config.ownerId}>" in content) {
             event.message.addReaction(Emoji.COFFEE).queue()
         }

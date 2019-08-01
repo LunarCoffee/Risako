@@ -29,7 +29,7 @@ internal class FileContentSender(
     }
 
     override suspend fun send(ctx: CommandContext) {
-        // Having a raw path allows for getting non-bot files.
+        // Having a raw path allows for getting non-dev.lunarcoffee.risako.bot files.
         val file = if (rawPath) {
             silence { File(filename) }
         } else {

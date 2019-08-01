@@ -54,7 +54,7 @@ internal class MathCommands(private val bot: Bot) {
             |`$name number`\n
             |A lot of online calculators stop giving you factorials in whole numbers after quite an
             |early point, usually around `15!` or so. Unlike them, I'll calculate factorials up to
-            |50000 and happily provide them in all their glory.
+            |50000! and happily provide them in all their glory.
         """
 
         expectedArgs = arrayOf(TrInt())

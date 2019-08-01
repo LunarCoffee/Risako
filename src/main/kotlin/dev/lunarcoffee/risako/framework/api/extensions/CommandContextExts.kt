@@ -10,7 +10,7 @@ import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import dev.lunarcoffee.risako.framework.core.std.idgen.IdGenerator
 import kotlinx.coroutines.future.await
 
-// Schedules a [Reloadable] so that it can be rescheduled upon a bot restart.
+// Schedules a [Reloadable] so that it can be rescheduled upon a dev.lunarcoffee.risako.bot restart.
 internal suspend inline fun <reified T : Reloadable> CommandContext.scheduleReloadable(
     colName: String,
     reloadable: T
