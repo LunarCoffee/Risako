@@ -13,7 +13,7 @@ internal class OsuUserStrategy : FieldNamingStrategy {
             "ppRaw" -> "pp_raw"
             "accuracyRaw" -> "accuracy"
             "playTimeSeconds" -> "total_seconds_played"
-            "ssh", "ss", "ex/sh", "s", "a" -> "count_rank_${field.name}"
+            "ssh", "ss", "sh", "s", "a" -> "count_rank_${field.name}"
             else -> field.name
         }
     }
