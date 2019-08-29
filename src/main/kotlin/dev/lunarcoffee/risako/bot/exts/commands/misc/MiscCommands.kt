@@ -56,7 +56,7 @@ internal class MiscCommands(private val bot: Bot) {
     }
 
     fun git() = command("git") {
-        description = "Gets my GitLab repo URL."
+        description = "Gets my GitHub repo URL."
         aliases = arrayOf("repo", "github")
 
         extDescription = """
@@ -65,7 +65,7 @@ internal class MiscCommands(private val bot: Bot) {
             |under the MIT license.
         """
 
-        execute { sendSuccess("<https://gitlab.com/LunarCoffee/risako>") }
+        execute { sendSuccess("<https://github.com/LunarCoffee/Risako>") }
     }
 
     fun stats() = command("stats") {
