@@ -5,7 +5,7 @@ import dev.lunarcoffee.risako.framework.core.bot.DefaultBot
 import net.dv8tion.jda.api.OnlineStatus
 import net.dv8tion.jda.api.entities.Activity
 
-internal class DefaultBotDsl(configPath: String) : DefaultBot(configPath) {
+class DefaultBotDsl(configPath: String) : DefaultBot(configPath) {
     var activity: Activity?
         get() = jda.presence.activity
         set(value) {
@@ -17,7 +17,7 @@ internal class DefaultBotDsl(configPath: String) : DefaultBot(configPath) {
         set(value) = jda.presence.setStatus(value)
 }
 
-internal inline fun startBot(configPath: String, crossinline init: DefaultBotDsl.() -> Unit): Bot {
+inline fun startBot(configPath: String, crossinline init: DefaultBotDsl.() -> Unit): Bot {
     return DefaultBotDsl(configPath).apply {
         init()
         loadAllCommands()

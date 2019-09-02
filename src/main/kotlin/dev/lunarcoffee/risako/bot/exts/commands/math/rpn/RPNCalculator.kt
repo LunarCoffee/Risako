@@ -8,7 +8,7 @@ import java.util.*
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
-internal class RPNCalculationSender(private val expression: List<String>) : ContentSender {
+class RPNCalculationSender(private val expression: List<String>) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val stack = Stack<Double>()
 

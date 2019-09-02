@@ -7,7 +7,7 @@ import dev.lunarcoffee.risako.bot.consts.GSON
 import dev.lunarcoffee.risako.bot.consts.RISAKO_CONFIG
 import dev.lunarcoffee.risako.framework.core.std.Requester
 
-internal class OsuBeatmapRequester(
+class OsuBeatmapRequester(
     private val id: String,
     private val mode: Int
 ) : Requester<List<OsuBeatmapInfo>?> {

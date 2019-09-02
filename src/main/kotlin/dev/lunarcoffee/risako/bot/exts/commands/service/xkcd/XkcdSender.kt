@@ -6,7 +6,7 @@ import dev.lunarcoffee.risako.framework.api.extensions.send
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal class XkcdSender(private val which: Int?) : ContentSender {
+class XkcdSender(private val which: Int?) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.send(
             XkcdRequester(which).get().run {

@@ -6,10 +6,7 @@ import dev.lunarcoffee.risako.framework.core.DB
 import org.litote.kmongo.eq
 import kotlin.reflect.KClass
 
-internal class ReloadableCollection<T : Reloadable>(
-    colName: String,
-    private val c: KClass<out T>
-) {
+class ReloadableCollection<T : Reloadable>(colName: String, private val c: KClass<out T>) {
     private val col = DB.getCollection<ReloadableJson>(colName)
 
     suspend fun find() = col.find().toList().mapToT()

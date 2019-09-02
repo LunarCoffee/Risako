@@ -7,7 +7,7 @@ import kotlinx.coroutines.CoroutineScope
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.hooks.EventListener
 
-internal interface Dispatcher : CoroutineScope, EventListener, HasBot {
+interface Dispatcher : CoroutineScope, EventListener, HasBot {
     val commands: List<Command>
     val argParser: ArgParser
 

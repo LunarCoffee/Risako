@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import kotlin.random.Random
 
-internal class DiceRollSender(private val diceRolls: List<DiceRoll>) : ContentSender {
+class DiceRollSender(private val diceRolls: List<DiceRoll>) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         // Generate a list of lists that hold each result for each roll.
         val results = diceRolls.map { roll -> List(roll.times) { Random.nextInt(roll.sides) + 1 } }

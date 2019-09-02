@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import java.io.File
 
-internal class FunctionGraphSender(private val plotter: FunctionPlotter) : ContentSender {
+class FunctionGraphSender(private val plotter: FunctionPlotter) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         if (plotter.functionStrings.any { it.length >= 70 }) {
             ctx.sendError("Your function must be represented in less than 70 characters!")
@@ -28,11 +28,10 @@ internal class FunctionGraphSender(private val plotter: FunctionPlotter) : Conte
         ctx.sendMessage(
             embed {
                 val numFunctions = plotter.functionStrings.size
-                val functionOrNumber = if (numFunctions == 1) {
+                val functionOrNumber = if (numFunctions == 1)
                     "**${plotter.functionStrings[0].replace("*", "\\*")}**"
-                } else {
+                else
                     "**$numFunctions** functions"
-                }
 
                 title = "${Emoji.CHART_UPWARDS_TREND}  Graph of $functionOrNumber:"
                 description = plotter.functionStrings.mapIndexed { index, string ->

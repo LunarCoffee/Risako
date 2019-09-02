@@ -6,7 +6,7 @@ import dev.lunarcoffee.risako.framework.core.dispatchers.Dispatcher
 import net.dv8tion.jda.api.JDA
 import net.dv8tion.jda.api.hooks.EventListener
 
-internal interface Bot {
+interface Bot {
     val jda: JDA
     val config: BotConfig
     val dispatcher: Dispatcher

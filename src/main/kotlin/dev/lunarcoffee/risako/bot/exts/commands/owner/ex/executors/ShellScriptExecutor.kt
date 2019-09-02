@@ -8,7 +8,7 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import kotlin.system.measureNanoTime
 
-internal class ShellScriptExecutor(private val script: String) : CodeExecutor {
+class ShellScriptExecutor(private val script: String) : CodeExecutor {
     override suspend fun execute(ctx: CommandContext): ExecResult {
         File("$SCRIPT_ROOT/script.sh").writeText("#!/bin/bash\n$script")
 

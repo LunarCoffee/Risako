@@ -12,7 +12,7 @@ import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import org.litote.kmongo.eq
 
-internal class TagListSender : ContentSender {
+class TagListSender : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         // Sort tag entries by the time they were created at.
         val tags = col

@@ -1,6 +1,6 @@
 package dev.lunarcoffee.risako.framework.core.dispatchers.parsers
 
-internal class DefaultArgParser : ArgParser {
+class DefaultArgParser : ArgParser {
     override fun parseArgs(content: String): List<String> {
         val args = mutableListOf<String>()
         var pos = 0

@@ -7,7 +7,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import net.dv8tion.jda.api.entities.Member
 
-internal class UnmuteInfoSender(private val offender: Member) : ContentSender {
+class UnmuteInfoSender(private val offender: Member) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val pmChannel = offender.user.openPrivateChannel().await()
 

@@ -19,7 +19,7 @@ import java.util.regex.PatternSyntaxException
 import kotlin.system.exitProcess
 
 @CommandGroup("Owner")
-internal class OwnerCommands(private val bot: Bot) {
+class OwnerCommands(private val bot: Bot) {
     fun smsg() = command("smsg") {
         description = "Sends a message. Only my owner can use this."
         aliases = arrayOf("sendmsg")
@@ -108,20 +108,18 @@ internal class OwnerCommands(private val bot: Bot) {
         extDescription = """
             |`$name`\n
             |Shuts down the bot process. There is a roughly three second long period of time
-            |between command usage and actual process termination. First, I wait two seconds and
-            |call `shutdownNow` on my `JDA` instance. Then, I wait another second and terminate
+            |between command usage and actual process termination. First, I wait one second and
+            |call `shutdownNow` on my `JDA` instance. Then, I wait 500 milliseconds and terminate
             |myself. Tragic. This is owner only for obvious reasons.
         """
 
         execute {
             sendSuccess("Goodbye, world...")
 
-            delay(2000)
+            delay(1000)
             jda.shutdownNow()
 
-            // Give JDA some time to shut down in case I'm in China with a 10 kb/s connection. Oh,
-            // wait... I wouldn't be able to access Discord without a VPN anyway.
-            delay(1000)
+            delay(500)
             exitProcess(0)
         }
     }

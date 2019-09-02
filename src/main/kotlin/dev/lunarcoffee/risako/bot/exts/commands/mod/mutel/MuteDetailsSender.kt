@@ -13,7 +13,7 @@ import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import net.dv8tion.jda.api.entities.User
 import java.util.*
 
-internal class MuteDetailsSender(private val user: User) : ContentSender {
+class MuteDetailsSender(private val user: User) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val member = ctx.event.guild.getMember(user)
         if (member == null) {

@@ -13,11 +13,10 @@ import net.dv8tion.jda.api.exceptions.PermissionException
 import java.time.Instant
 import java.util.*
 
-internal class MuteController(private val ctx: CommandContext) {
+class MuteController(private val ctx: CommandContext) {
     suspend fun mute(user: User, time: SplitTime, reason: String) {
-        if (!checkInitiatorPermissions()) {
+        if (!checkInitiatorPermissions())
             return
-        }
 
         if (col.contains { it.userId == user.id }) {
             ctx.sendError("That member is already muted!")
@@ -55,9 +54,8 @@ internal class MuteController(private val ctx: CommandContext) {
     }
 
     suspend fun unmute(user: User) {
-        if (!checkInitiatorPermissions()) {
+        if (!checkInitiatorPermissions())
             return
-        }
         val offender = getOffender(user) ?: return
         val mutedRole = getMutedRole() ?: return
 

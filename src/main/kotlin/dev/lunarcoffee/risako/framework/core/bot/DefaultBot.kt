@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.yaml.snakeyaml.Yaml
 import java.io.File
 
-internal open class DefaultBot(configPath: String) : Bot {
+open class DefaultBot(configPath: String) : Bot {
     init {
         instance = this
     }
@@ -94,6 +94,6 @@ internal open class DefaultBot(configPath: String) : Bot {
         private val log = KotlinLogging.logger {}
 
         // This shouldn't be used outside of the <framework> package.
-        internal lateinit var instance: Bot
+        lateinit var instance: Bot
     }
 }

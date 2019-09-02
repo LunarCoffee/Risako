@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.schedule
 
 @ListenerGroup
-internal class PayRespectsListeners(
+class PayRespectsListeners(
     private val bot: Bot
 ) : CoroutineScope by CoroutineScope(Dispatchers.Default), ListenerAdapter() {
 
@@ -32,9 +32,8 @@ internal class PayRespectsListeners(
         } ?: false
 
         // The option to toggle the embed is provided by the <..togglef> command.
-        if (event.author.isBot || messageIsNotF || guildNoPayRespects) {
+        if (event.author.isBot || messageIsNotF || guildNoPayRespects)
             return
-        }
 
         event.message.delete().queue()
         launch {
@@ -56,17 +55,15 @@ internal class PayRespectsListeners(
 
     override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
         val emote = event.reactionEmote
-        if (event.user.isBot || emote.isEmoji && emote.emoji != Emoji.INDICATOR_F) {
+        if (event.user.isBot || emote.isEmoji && emote.emoji != Emoji.INDICATOR_F)
             return
-        }
 
         val message = active[event.messageId] ?: return
         val prev = message.embeds[0].description!!
 
         // Return if the user already paid their respects.
-        if (event.user.asTag in prev) {
+        if (event.user.asTag in prev)
             return
-        }
 
         event.reaction.removeReaction(event.user).queue()
         launch {

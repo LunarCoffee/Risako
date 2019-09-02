@@ -7,7 +7,7 @@ import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-internal class MinesweeperGenerator(private val size: Int, private val mines: Int) {
+class MinesweeperGenerator(private val size: Int, private val mines: Int) {
     private val board = Array(size) { IntArray(size) }
 
     fun generateEmbed(): MessageEmbed {
@@ -24,33 +24,26 @@ internal class MinesweeperGenerator(private val size: Int, private val mines: In
 
     private fun generateBoard() {
         repeat(mines) { placeMine(Random.nextInt(size), Random.nextInt(size)) }
-        for (i in 0 until size) {
-            for (j in 0 until size) {
-                if (board[j][i] != -1) {
+        for (i in 0 until size)
+            for (j in 0 until size)
+                if (board[j][i] != -1)
                     board[j][i] = countNeighbouringMines(i, j)
-                }
-            }
-        }
     }
 
     // Tries to place a mine at a location, picking a new one when a mine is already present.
     private fun placeMine(x: Int, y: Int) {
-        if (board[y][x] == -1) {
+        if (board[y][x] == -1)
             placeMine(Random.nextInt(size), Random.nextInt(size))
-        } else {
+        else
             board[y][x] = -1
-        }
     }
 
     private fun countNeighbouringMines(x: Int, y: Int): Int {
         var mines = 0
-        for (i in max(0, x - 1)..min(size - 1, x + 1)) {
-            for (j in max(0, y - 1)..min(size - 1, y + 1)) {
-                if (board[j][i] == -1) {
+        for (i in max(0, x - 1)..min(size - 1, x + 1))
+            for (j in max(0, y - 1)..min(size - 1, y + 1))
+                if (board[j][i] == -1)
                     mines++
-                }
-            }
-        }
         return mines
     }
 

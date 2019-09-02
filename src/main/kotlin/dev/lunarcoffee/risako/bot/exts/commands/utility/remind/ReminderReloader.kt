@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.events.GenericEvent
 import java.util.*
 
 @ReloadFrom(ColName.REMINDER)
-internal class ReminderReloader(
+class ReminderReloader(
     time: Date,
     val mention: String = "",
     val reason: String = "",
@@ -24,9 +24,8 @@ internal class ReminderReloader(
     override suspend fun schedule(event: GenericEvent, col: ReloadableCollection<Reloadable>) {
         DEFAULT_TIMER.scheduleNoInline(time) {
             // Make sure the user hasn't already cancelled the reminder.
-            if (!col.contains(this@ReminderReloader)) {
+            if (!col.contains(this@ReminderReloader))
                 return@scheduleNoInline
-            }
 
             try {
                 val channel = event.jda.getGuildById(guildId)!!.getTextChannelById(channelId)!!

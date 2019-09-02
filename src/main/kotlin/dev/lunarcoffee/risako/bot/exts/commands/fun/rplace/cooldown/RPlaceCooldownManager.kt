@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.*
 
-internal object RPlaceCooldownManager {
+object RPlaceCooldownManager {
     private val col = ReloadableCollection(ColName.RPLACE_COOLDOWN, RPlaceCooldownReloader::class)
 
     // Gets the time remaining until the user with ID [userId] is again able to put a pixel.

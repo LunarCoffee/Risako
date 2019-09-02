@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal class OsuBeatmapSender(private val id: String, private val mode: Int) : ContentSender {
+class OsuBeatmapSender(private val id: String, private val mode: Int) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val beatmaps = OsuBeatmapRequester(id, mode).get()
         if (beatmaps == null) {

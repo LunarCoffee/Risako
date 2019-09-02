@@ -12,7 +12,7 @@ import org.litote.kmongo.eq
 import org.litote.kmongo.set
 
 @CommandGroup("Config")
-internal class ConfigCommands(private val bot: Bot) {
+class ConfigCommands(private val bot: Bot) {
     fun togglecs() = command("togglecs") {
         description = "Toggles suggestions for when you type something wrong."
         aliases = arrayOf("togglesuggestions", "togglecommandsuggestions")

@@ -1,6 +1,6 @@
 package dev.lunarcoffee.risako.framework.core.services.paginators
 
-internal enum class PaginatorButtons(val cp: String) {
+enum class PaginatorButtons(val cp: String) {
     FIRST("\u23EE"),
     JUMP_LEFT("\u23EA"),
     LEFT("\u25C0"),

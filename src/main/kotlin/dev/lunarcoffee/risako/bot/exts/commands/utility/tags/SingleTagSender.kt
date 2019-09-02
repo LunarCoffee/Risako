@@ -12,10 +12,7 @@ import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import org.litote.kmongo.and
 import org.litote.kmongo.eq
 
-internal class SingleTagSender(
-    private val name: String,
-    private val raw: Boolean
-) : ContentSender {
+class SingleTagSender(private val name: String, private val raw: Boolean) : ContentSender {
 
     override suspend fun send(ctx: CommandContext) {
         val tag = col.findOne(and(Tag::guildId eq ctx.event.guild.id, Tag::name eq name))

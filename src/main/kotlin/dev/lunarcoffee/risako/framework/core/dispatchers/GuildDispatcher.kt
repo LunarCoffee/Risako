@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 
-internal class GuildDispatcher(
+class GuildDispatcher(
     override val bot: Bot,
     override val argParser: ArgParser
 ) : CoroutineScope by CoroutineScope(Dispatchers.Default), Dispatcher {
@@ -61,13 +61,12 @@ internal class GuildDispatcher(
             return
         }
 
-        val transformerArgs = if (command.noArgParsing) {
-            mutableListOf(content.substringAfter("$commandName "))
-        } else {
-            // List of space separated words (unless a phrase is wrapped in double quotes).
-            argParser.parseArgs(content).toMutableList()
-        }
         val commandContext = GuildCommandContext(event, bot)
+        val transformerArgs = if (command.noArgParsing)
+            mutableListOf(content.substringAfter("$commandName "))
+        else
+        // List of space separated words (unless a phrase is wrapped in double quotes).
+            argParser.parseArgs(content).toMutableList()
 
         // Arguments that will be wrapped in a [CommandArgs] object and be passed to the [execute]
         // lambda of [command].
@@ -89,16 +88,21 @@ internal class GuildDispatcher(
             return
         }
 
-        if (command.deleteSender) {
+        if (command.deleteSender)
             event.message.delete().await()
-        }
 
         command.dispatch(commandContext, GuildCommandArgs(commandArgs))
         log.info { "$authorName used command `$commandName` with args $commandArgs" }
     }
 
     override fun onEvent(event: GenericEvent) {
-        launch { handleEvent(event) }
+        launch {
+            try {
+                handleEvent(event)
+            } catch (e: Exception) {
+                log.warn("Exception caught at the dispatcher level!")
+            }
+        }
     }
 
     // Tell the user to see the command's help message if the arguments were wrong.

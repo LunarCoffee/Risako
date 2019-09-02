@@ -16,7 +16,7 @@ import dev.lunarcoffee.risako.framework.core.std.OpSuccess
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 
 @CommandGroup("Utility")
-internal class UtilityCommands(private val bot: Bot) {
+class UtilityCommands(private val bot: Bot) {
     fun rev() = command("rev") {
         description = "Reverses the given text."
         aliases = arrayOf("reverse", "backwards")
@@ -32,11 +32,11 @@ internal class UtilityCommands(private val bot: Bot) {
             val rawText = args.get<String>(0)
             val byWords = rawText.endsWith(" -w")
 
-            val text = if (byWords) {
+            val text = if (byWords)
                 rawText.split(" ").dropLast(1).reversed().joinToString(" ")
-            } else {
+            else
                 rawText.reversed()
-            }
+
             sendSuccess("Your text reversed is `$text`")
         }
     }
@@ -186,11 +186,10 @@ internal class UtilityCommands(private val bot: Bot) {
                 }
             }
 
-            if (operation == "list") {
+            if (operation == "list")
                 ReminderManager(this).sendRemindersEmbed()
-            } else if (operation == "cancel") {
+            else if (operation == "cancel")
                 ReminderManager(this).cancelReminders(range)
-            }
         }
     }
 

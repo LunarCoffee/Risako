@@ -7,7 +7,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.concurrent.schedule
 
-internal abstract class Paginator {
+abstract class Paginator {
     abstract var message: Message
     abstract val creator: User
 
@@ -41,9 +41,8 @@ internal abstract class Paginator {
 
         // Add buttons.
         for (button in PaginatorButtons.values()) {
-            if (totalPages < 6 && button in JUMP_BUTTONS) {
+            if (totalPages < 6 && button in JUMP_BUTTONS)
                 continue
-            }
             message.addReaction(button.cp).queue()
         }
 
@@ -52,13 +51,13 @@ internal abstract class Paginator {
     }
 
     fun close() {
-        if (message.channelType == ChannelType.PRIVATE) {
+        if (message.channelType == ChannelType.PRIVATE)
             // Since you can't remove user reactions in a PM channel, add an X emoji to indicate
             // that the paginator is closed.
             message.addReaction(Emoji.INDICATOR_X).queue()
-        } else {
+        else
             message.clearReactions().queue()
-        }
+
         active -= message.id
         closeTask.cancel()
     }

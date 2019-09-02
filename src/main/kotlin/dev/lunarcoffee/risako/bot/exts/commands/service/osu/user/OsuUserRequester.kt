@@ -6,7 +6,7 @@ import com.google.gson.GsonBuilder
 import dev.lunarcoffee.risako.bot.consts.RISAKO_CONFIG
 import dev.lunarcoffee.risako.framework.core.std.Requester
 
-internal class OsuUserRequester(
+class OsuUserRequester(
     private val usernameOrId: String,
     private val mode: Int
 ) : Requester<OsuUserInfo?> {

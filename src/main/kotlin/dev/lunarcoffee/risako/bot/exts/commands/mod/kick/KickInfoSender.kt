@@ -7,7 +7,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import net.dv8tion.jda.api.entities.User
 
-internal class KickInfoSender(private val user: User, private val reason: String) : ContentSender {
+class KickInfoSender(private val user: User, private val reason: String) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val offenderName = ctx.event.guild.getMember(user)!!.user.asTag
         ctx.sendSuccess("`$offenderName` has been kicked!")

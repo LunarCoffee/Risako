@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.framework.core.commands.transformers
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.*
 
-internal class TrWord(
+class TrWord(
     override val optional: Boolean = false,
     override val default: String = ""
 ) : Transformer<String> {

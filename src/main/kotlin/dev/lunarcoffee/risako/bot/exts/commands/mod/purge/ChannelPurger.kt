@@ -6,11 +6,10 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.exceptions.PermissionException
 
-internal class ChannelPurger(private val ctx: CommandContext, private val limit: Int) {
+class ChannelPurger(private val ctx: CommandContext, private val limit: Int) {
     suspend fun purgeAll() {
-        if (!checkParameters()) {
+        if (!checkParameters())
             return
-        }
 
         try {
             ctx.purgeMessages(ctx.event.channel.iterableHistory.take(limit + 1))
@@ -22,9 +21,8 @@ internal class ChannelPurger(private val ctx: CommandContext, private val limit:
     }
 
     suspend fun purgeFromUser(user: User, isAuthor: Boolean) {
-        if (!checkParameters()) {
+        if (!checkParameters())
             return
-        }
 
         try {
             // Purge messages from [user]. If [user] is the initiator, delete one more of their

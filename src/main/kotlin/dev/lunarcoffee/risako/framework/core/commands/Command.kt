@@ -5,7 +5,7 @@ import dev.lunarcoffee.risako.framework.core.dispatchers.Dispatchable
 import dev.lunarcoffee.risako.framework.core.dispatchers.DispatchableArgs
 import dev.lunarcoffee.risako.framework.core.std.HasBot
 
-internal interface Command : Dispatchable<CommandContext, DispatchableArgs>, HasBot {
+interface Command : Dispatchable<CommandContext, DispatchableArgs>, HasBot {
     var name: String
     var groupName: String
     var description: String

@@ -16,7 +16,7 @@ import dev.lunarcoffee.risako.framework.core.commands.transformers.TrWord
 import kotlin.random.Random
 
 @CommandGroup("Service")
-internal class ServiceCommands(private val bot: Bot) {
+class ServiceCommands(private val bot: Bot) {
     fun xkcd() = command("xkcd") {
         description = "Gets an xkcd comic!"
         aliases = arrayOf("getxkcd")

@@ -6,16 +6,15 @@ import org.litote.kmongo.eq
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicLong
 
-internal object RPlaceInfoManager {
+object RPlaceInfoManager {
     private val canvasInfoCol = DB.getCollection<RPlaceCanvasInfo>("RPlaceCanvasInfo0")
     private val canvasInfo = runBlocking {
         canvasInfoCol.run {
             // Get or insert the existing [RPlaceCanvasInfo].
-            if (find().toList().isEmpty()) {
+            if (find().toList().isEmpty())
                 RPlaceCanvasInfo(0, mutableSetOf()).apply { org.litote.kmongo.insertOne(this) }
-            } else {
+            else
                 find().first()!!
-            }
         }
     }
 

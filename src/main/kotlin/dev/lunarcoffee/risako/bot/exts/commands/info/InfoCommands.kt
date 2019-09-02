@@ -19,7 +19,7 @@ import dev.lunarcoffee.risako.framework.core.std.UserNotFound
 import net.dv8tion.jda.api.entities.User
 
 @CommandGroup("Info")
-internal class InfoCommands(private val bot: Bot) {
+class InfoCommands(private val bot: Bot) {
     fun ui() = command("ui") {
         description = "Gets info about a user."
         aliases = arrayOf("userinfo")
@@ -96,12 +96,11 @@ internal class InfoCommands(private val bot: Bot) {
                 .ifEmpty { event.channel.id }
                 .replace("""[#<>]""".toRegex(), "")  // Trim channel mention prefix and suffix.
 
-            val channel = if (nameOrId.toLongOrNull() != null) {
+            val channel = if (nameOrId.toLongOrNull() != null)
                 jda.getTextChannelById(nameOrId) ?: jda.getVoiceChannelById(nameOrId)
-            } else {
+            else
                 jda.getTextChannelsByName(nameOrId, true).firstOrNull()
-                    ?: jda.getVoiceChannelByName(nameOrId, false).firstOrNull()
-            }
+                    ?: jda.getVoiceChannelsByName(nameOrId, false).firstOrNull()
 
             if (channel == null) {
                 sendError("I can't find a text or voice channel with that name or ID!")
@@ -187,11 +186,10 @@ internal class InfoCommands(private val bot: Bot) {
         expectedArgs = arrayOf(TrWord(true))
         execute { args ->
             val nameOrId = args.get<String>(0).ifEmpty { event.guild.id }
-            val guild = if (nameOrId.toLongOrNull() != null) {
+            val guild = if (nameOrId.toLongOrNull() != null)
                 jda.getGuildById(nameOrId)
-            } else {
+            else
                 jda.getGuildsByName(nameOrId, true).firstOrNull()
-            }
 
             if (guild == null) {
                 sendError("I can't find a server with that name or ID!")

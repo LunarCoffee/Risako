@@ -7,7 +7,7 @@ import java.io.File
 import javax.imageio.ImageIO
 import java.awt.RenderingHints as RH
 
-internal class IssMapSaver(private val stats: IssStats) {
+class IssMapSaver(private val stats: IssStats) {
     suspend fun saveImage(): File {
         val rawImage = IssMapImageRequester(stats).get()
 

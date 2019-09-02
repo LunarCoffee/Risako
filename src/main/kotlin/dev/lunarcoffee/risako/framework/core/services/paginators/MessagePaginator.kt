@@ -5,7 +5,7 @@ import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import java.util.*
 
-internal open class MessagePaginator(
+open class MessagePaginator(
     override val creator: User,
     override val closeTimer: Timer
 ) : Paginator() {
@@ -18,11 +18,10 @@ internal open class MessagePaginator(
 
     override fun formatMessage(): Message {
         return message {
-            content = if (totalPages == 1) {
+            content = if (totalPages == 1)
                 pages[currentPage].contentRaw
-            } else {
+            else
                 "[${currentPage + 1}/$totalPages]\n${pages[currentPage].contentRaw}"
-            }
         }
     }
 }

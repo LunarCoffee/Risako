@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.service.osu.beatmap
 import dev.lunarcoffee.risako.bot.exts.commands.service.osu.OsuHasMode
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 
-internal class OsuBeatmapInfo(
+class OsuBeatmapInfo(
     val beatmapId: String,
     val name: String,
     val artist: String,

@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.framework.core.commands.transformers
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.OpResult
 
-internal interface Transformer<T> {
+interface Transformer<T> {
     val optional: Boolean
     val default: T
 

@@ -2,7 +2,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.service.iss.stats
 
 import kotlin.math.abs
 
-internal class IssStats(
+class IssStats(
     val longitude: Double,
     val latitude: Double,
     val altitude: Double,

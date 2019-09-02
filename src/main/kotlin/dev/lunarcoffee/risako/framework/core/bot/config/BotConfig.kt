@@ -1,6 +1,6 @@
 package dev.lunarcoffee.risako.framework.core.bot.config
 
-internal interface BotConfig {
+interface BotConfig {
     val prefix: String
     val token: String
     val ownerId: String

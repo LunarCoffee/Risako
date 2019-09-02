@@ -13,11 +13,11 @@ import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import java.util.*
 
-internal class MuteListSender : ContentSender {
+class MuteListSender : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val mutedPages = col
             .find { it.guildId == ctx.event.guild.id }
-            .associate { it to ctx.event.guild.getMemberById(it.userId)!! }
+            .associateWith { ctx.event.guild.getMemberById(it.userId)!! }
             .map { (timer, member) ->
                 val time = SplitTime(timer.time.time - Date().time)
                 "**${member.user.asTag}**: $time"

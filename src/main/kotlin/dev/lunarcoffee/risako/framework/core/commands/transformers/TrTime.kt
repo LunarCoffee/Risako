@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.framework.core.commands.transformers
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.*
 
-internal class TrTime(
+class TrTime(
     override val optional: Boolean = false,
     override val default: SplitTime = SplitTime.NONE
 ) : Transformer<SplitTime> {
@@ -14,13 +14,9 @@ internal class TrTime(
     ): OpResult<SplitTime> {
 
         val isTime = args.takeWhile { it.matches(TIME_REGEX) }
-        if (isTime.isEmpty()) {
-            return if (optional) {
-                OpSuccess(default)
-            } else {
-                OpError()
-            }
-        }
+        if (isTime.isEmpty())
+            return if (optional) OpSuccess(default) else OpError()
+
         args.removeAll(isTime)
 
         val units = isTime.map { timePart ->

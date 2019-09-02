@@ -14,7 +14,7 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.audit.TargetType
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException
 
-internal class AuditLogSender(private val limit: Int) : ContentSender {
+class AuditLogSender(private val limit: Int) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         // Make sure the author can normally check audit logs.
         val guildAuthor = ctx.event.guild.getMember(ctx.event.author) ?: return

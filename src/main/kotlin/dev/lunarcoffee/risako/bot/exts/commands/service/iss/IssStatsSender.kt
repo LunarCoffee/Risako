@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.framework.api.extensions.await
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal object IssStatsSender : ContentSender {
+object IssStatsSender : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val stats = IssStatsRequester().get()
         val imageFile = IssMapSaver(stats).saveImage()

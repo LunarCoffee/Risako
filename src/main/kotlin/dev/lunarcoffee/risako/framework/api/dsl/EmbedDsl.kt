@@ -6,7 +6,7 @@ import dev.lunarcoffee.risako.bot.consts.EMBED_COLOR
 import net.dv8tion.jda.api.entities.EmbedType
 import net.dv8tion.jda.api.entities.MessageEmbed
 
-internal class EmbedDsl {
+class EmbedDsl {
     var url = ""
     var title = ""
     var description = ""
@@ -95,4 +95,4 @@ internal class EmbedDsl {
     }
 }
 
-internal inline fun embed(crossinline init: EmbedDsl.() -> Unit) = EmbedDsl().apply(init).create()
+inline fun embed(crossinline init: EmbedDsl.() -> Unit) = EmbedDsl().apply(init).create()

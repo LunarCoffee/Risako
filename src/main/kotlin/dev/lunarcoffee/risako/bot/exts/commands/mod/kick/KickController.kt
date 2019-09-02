@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.exceptions.PermissionException
 
-internal class KickController(private val ctx: CommandContext) {
+class KickController(private val ctx: CommandContext) {
     suspend fun kick(user: User, reason: String) {
         val guild = ctx.event.guild
 

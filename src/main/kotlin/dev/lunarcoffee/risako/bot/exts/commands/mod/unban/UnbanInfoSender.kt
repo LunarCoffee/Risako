@@ -7,7 +7,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import net.dv8tion.jda.api.entities.User
 
-internal class UnbanInfoSender(private val user: User) : ContentSender {
+class UnbanInfoSender(private val user: User) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.sendSuccess("`${user.asTag}` has been unbanned!")
 

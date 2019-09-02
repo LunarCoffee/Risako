@@ -8,22 +8,17 @@ import dev.lunarcoffee.risako.framework.core.commands.Command
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal class HelpDetailSender(
-    private val command: Command,
-    private val flags: String
-) : ContentSender {
-
+class HelpDetailSender(private val command: Command, private val flags: String) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.send(
             embed {
                 // The first line of the extended description should always be the command usage
                 // (i.e. `help [command name] [-v]`).
                 val usage = command.extDescription.substringBefore("\n")
-                val aliases = if (command.aliases.isEmpty()) {
+                val aliases = if (command.aliases.isEmpty())
                     "(none)"
-                } else {
+                else
                     command.aliases.toList().toString()
-                }
 
                 title = "${Emoji.PAGE_FACING_UP}  Info on **${command.name}**:"
                 description = """
@@ -32,11 +27,10 @@ internal class HelpDetailSender(
                     |**Usage**: $usage
                 """.trimMargin()
 
-                if (flags != "-v") {
+                if (flags != "-v")
                     footer { text = "Type '..help ${command.name} -v' for more info." }
-                } else {
+                else
                     addExtendedDescription(command)
-                }
             }
         )
     }
@@ -55,9 +49,8 @@ internal class HelpDetailSender(
         // (until the next field tag).
         val matcher = singleField.toPattern().matcher(extDescription)
         val descriptionFields = mutableMapOf<String, String>()
-        while (matcher.find()) {
+        while (matcher.find())
             descriptionFields[matcher.group(1)] = fieldContents.next()
-        }
 
         for ((fName, fContent) in descriptionFields) {
             field {

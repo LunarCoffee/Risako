@@ -17,14 +17,13 @@ import java.nio.file.Paths
 // Sends saved snapshots of the canvas. This part is relatively detached from the rest, interacting
 // only with the filesystem and no other [RPlace*] classes. A new instance should be constructed
 // for every command invocation.
-internal class RPlaceGallerySender(private val args: DispatchableArgs) : ContentSender {
+class RPlaceGallerySender(private val args: DispatchableArgs) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val name = args.get<String>(3)
-        if (name.isEmpty()) {
+        if (name.isEmpty())
             sendAllSnapshots(ctx)
-        } else {
+        else
             sendSingleSnapshot(ctx, name)
-        }
     }
 
     // Sends all taken snapshots, not including their images (that would stress the network too

@@ -15,7 +15,7 @@ import dev.lunarcoffee.risako.framework.core.bot.Bot
 import kotlin.system.measureNanoTime
 
 @CommandGroup("Misc")
-internal class MiscCommands(private val bot: Bot) {
+class MiscCommands(private val bot: Bot) {
     fun ping() = command("ping") {
         description = "Gets various info about how good I feel am today."
         aliases = arrayOf("pong", "peng", "latency")

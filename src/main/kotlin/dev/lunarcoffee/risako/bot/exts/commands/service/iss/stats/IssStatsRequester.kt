@@ -5,7 +5,7 @@ import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import dev.lunarcoffee.risako.bot.consts.GSON
 import dev.lunarcoffee.risako.framework.core.std.Requester
 
-internal class IssStatsRequester : Requester<IssStats> {
+class IssStatsRequester : Requester<IssStats> {
     override suspend fun get(): IssStats {
         return GSON.fromJson(Fuel.get(URL).awaitStringResult().get(), IssStats::class.java)
     }

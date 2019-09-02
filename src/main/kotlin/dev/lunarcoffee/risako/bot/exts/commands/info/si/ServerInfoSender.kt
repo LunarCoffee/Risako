@@ -10,7 +10,7 @@ import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.MessageEmbed
 
-internal class ServerInfoSender(private val guild: Guild) : ContentSender {
+class ServerInfoSender(private val guild: Guild) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.send(
             ctx.embedPaginator {
@@ -27,7 +27,7 @@ internal class ServerInfoSender(private val guild: Guild) : ContentSender {
                 val features = features.map { it.constToEng() }
 
                 title = "${Emoji.MAG_GLASS}  Info on server **$name**:"
-                description = """
+                this@embed.description = """
                     |**Guild ID**: $id
                     |**Total members**: ${members.size} members
                     |**Total emotes**: ${emotes.size} emotes
@@ -47,14 +47,13 @@ internal class ServerInfoSender(private val guild: Guild) : ContentSender {
     private fun otherInfoEmbed(ctx: CommandContext): MessageEmbed {
         return embed {
             guild.run {
-                val roles = if (guild.id == ctx.event.guild.id) {
+                val roles = if (guild.id == ctx.event.guild.id)
                     roles.map { it.asMention }.toString()
-                } else {
+                else
                     "(unavailable)"
-                }
 
                 title = "${Emoji.MAG_GLASS}  Info on server **$name**:"
-                description = """
+                this@embed.description = """
                     |**Owner**: ${owner?.user?.asTag ?: "(none)"}
                     |**Voice region**: ${region.getName()}
                     |**Roles**: ${roles.ifEmpty { "(none)" }}

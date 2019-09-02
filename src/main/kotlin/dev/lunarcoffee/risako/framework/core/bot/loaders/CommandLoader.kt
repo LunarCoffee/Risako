@@ -4,7 +4,7 @@ import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.Command
 
-internal class CommandLoader(override val bot: Bot) : ComponentClassLoader() {
+class CommandLoader(override val bot: Bot) : ComponentClassLoader() {
     private val commandGroups = loadClasses(bot.config.commandP)
         .filter { c -> c.annotations.any { it.annotationClass == CommandGroup::class } }
 

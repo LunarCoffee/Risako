@@ -10,7 +10,7 @@ import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import net.dv8tion.jda.api.entities.*
 
-internal class ChannelInfoSender(private val channel: GuildChannel) : ContentSender {
+class ChannelInfoSender(private val channel: GuildChannel) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.send(if (channel is TextChannel) textChannelEmbed() else voiceChannelEmbed())
     }
@@ -18,11 +18,10 @@ internal class ChannelInfoSender(private val channel: GuildChannel) : ContentSen
     private fun textChannelEmbed(): MessageEmbed {
         return embed {
             (channel as TextChannel).run {
-                val slowmode = if (slowmode != 0) {
+                val slowmode = if (slowmode != 0)
                     SplitTime(slowmode.toLong()).toString()
-                } else {
+                else
                     "(none)"
-                }
 
                 title = "${Emoji.MAG_GLASS}  Info on text channel **#$name**:"
                 description = """

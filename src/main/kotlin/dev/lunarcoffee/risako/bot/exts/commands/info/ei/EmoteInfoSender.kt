@@ -9,7 +9,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import net.dv8tion.jda.api.entities.Emote
 
-internal class EmoteInfoSender(private val emote: Emote) : ContentSender {
+class EmoteInfoSender(private val emote: Emote) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.send(
             embed {

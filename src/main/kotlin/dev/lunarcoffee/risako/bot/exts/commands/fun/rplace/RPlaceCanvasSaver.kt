@@ -8,7 +8,7 @@ import javax.imageio.ImageIO
 import java.awt.RenderingHints as RH
 
 // Saves the contents of the passed [canvas] to the disk. This does not update the DB.
-internal class RPlaceCanvasSaver(private val canvas: Array<Array<Color>>) {
+class RPlaceCanvasSaver(private val canvas: Array<Array<Color>>) {
     fun createAndSaveImage(grid: Boolean = false) {
         val file = File(RPlaceCanvas.IMAGE_PATH)
         val image = BufferedImage(IMAGE_SIZE, IMAGE_SIZE, BufferedImage.TYPE_INT_ARGB).apply {
@@ -20,11 +20,10 @@ internal class RPlaceCanvasSaver(private val canvas: Array<Array<Color>>) {
                 // Fill background with white.
                 fillRect(0, 0, IMAGE_SIZE, IMAGE_SIZE)
 
-                if (grid) {
+                if (grid)
                     drawWithGrid()
-                } else {
+                else
                     drawWithoutGrid()
-                }
             }
         }
         ImageIO.write(image, "png", file)

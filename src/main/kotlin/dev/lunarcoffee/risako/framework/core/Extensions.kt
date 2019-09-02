@@ -4,7 +4,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-internal inline fun <T> silence(crossinline f: () -> T): T? {
+inline fun <T> silence(crossinline f: () -> T): T? {
     return try {
         f()
     } catch (e: Exception) {

@@ -5,18 +5,16 @@ import net.dv8tion.jda.api.exceptions.PermissionException
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.util.concurrent.TimeUnit
 
-internal object PaginationReactionListener : ListenerAdapter() {
+object PaginationReactionListener : ListenerAdapter() {
     override fun onMessageReactionAdd(event: MessageReactionAddEvent) {
-        if (event.user.isBot) {
+        if (event.user.isBot)
             return
-        }
 
         // Find corresponding paginator, and return if it doesn't exist or if the reactor is not
         // the one that requested the paginator.
         val paginator = Paginator.active[event.messageId] ?: return
-        if (paginator.creator != event.user) {
+        if (paginator.creator != event.user)
             return
-        }
 
         val cp = paginator.currentPage
         paginator.changePage(

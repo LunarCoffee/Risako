@@ -8,12 +8,11 @@ import net.dv8tion.jda.api.entities.Guild
 import net.dv8tion.jda.api.entities.User
 import net.dv8tion.jda.api.exceptions.PermissionException
 
-internal class BanController(private val ctx: CommandContext) {
+class BanController(private val ctx: CommandContext) {
     suspend fun ban(user: User, reason: String) {
         val guild = ctx.event.guild
-        if (!checkPermissions(guild)) {
+        if (!checkPermissions(guild))
             return
-        }
 
         val offender = guild.getMember(user)
         if (offender == null) {
@@ -37,9 +36,8 @@ internal class BanController(private val ctx: CommandContext) {
 
     suspend fun unban(user: User) {
         val guild = ctx.event.guild
-        if (!checkPermissions(guild)) {
+        if (!checkPermissions(guild))
             return
-        }
 
         try {
             ctx.send(UnbanInfoSender(user))

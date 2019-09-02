@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.framework.core.commands.transformers
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.*
 
-internal class TrIntRange(
+class TrIntRange(
     override val optional: Boolean = false,
     override val default: IntRange = 0..0
 ) : Transformer<IntRange> {
@@ -23,9 +23,8 @@ internal class TrIntRange(
                 val start = startStr.toIntOrNull() ?: return returnOrThrow()
                 val end = endStr.toIntOrNull() ?: return returnOrThrow()
 
-                if (start >= end) {
+                if (start >= end)
                     return returnOrThrow()
-                }
                 start..end
             }
         )

@@ -17,7 +17,7 @@ import dev.lunarcoffee.risako.framework.core.bot.Bot
 import dev.lunarcoffee.risako.framework.core.commands.transformers.*
 
 @CommandGroup("Fun")
-internal class FunCommands(private val bot: Bot) {
+class FunCommands(private val bot: Bot) {
     fun flip() = command("flip") {
         description = "Flips coins."
         aliases = arrayOf("coin", "flipcoin")
@@ -90,7 +90,7 @@ internal class FunCommands(private val bot: Bot) {
             |a space, wrap the name in quotes "like this." This also applies to other commands.
         """
 
-        expectedArgs = arrayOf(TrSplit())
+        expectedArgs = arrayOf(TrRemaining())
         execute { args ->
             val options = args.get<List<String>>(0)
             if (options.size < 2) {

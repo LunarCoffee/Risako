@@ -6,7 +6,7 @@ import dev.lunarcoffee.risako.framework.api.extensions.send
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal class CodeStatsSender(private val stats: CodeStats) : ContentSender {
+class CodeStatsSender(private val stats: CodeStats) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.send(
             embed {

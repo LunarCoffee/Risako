@@ -5,13 +5,12 @@ import dev.lunarcoffee.risako.framework.api.extensions.send
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal class ExecResultSender(private val result: ExecResult) : ContentSender {
+class ExecResultSender(private val result: ExecResult) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
-        if (result == ExecResult.ERROR) {
+        if (result == ExecResult.ERROR)
             // No error message is required because the code execution function has already
             // taken care of that.
             return
-        }
 
         ctx.send(
             ctx.messagePaginator {

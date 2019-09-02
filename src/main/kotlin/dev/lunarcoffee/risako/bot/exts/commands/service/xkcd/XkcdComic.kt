@@ -1,6 +1,6 @@
 package dev.lunarcoffee.risako.bot.exts.commands.service.xkcd
 
-internal class XkcdComic(
+class XkcdComic(
     val num: String,
     val title: String,
     val alt: String,

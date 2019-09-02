@@ -8,11 +8,7 @@ import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal class OsuUserSender(
-    private val usernameOrId: String,
-    private val mode: Int
-) : ContentSender {
-
+class OsuUserSender(private val usernameOrId: String, private val mode: Int) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val info = OsuUserRequester(usernameOrId, mode).get()
         if (info == null) {

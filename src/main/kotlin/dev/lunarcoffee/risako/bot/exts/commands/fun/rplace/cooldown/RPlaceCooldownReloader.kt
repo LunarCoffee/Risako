@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.events.GenericEvent
 import java.util.*
 
 @ReloadFrom(ColName.RPLACE_COOLDOWN)
-internal class RPlaceCooldownReloader(time: Date, val userId: String) : Reloadable(time) {
+class RPlaceCooldownReloader(time: Date, val userId: String) : Reloadable(time) {
     init {
         colName = ColName.RPLACE_COOLDOWN
     }

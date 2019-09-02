@@ -5,7 +5,7 @@ import dev.lunarcoffee.risako.framework.core.commands.transformers.Transformer
 import dev.lunarcoffee.risako.framework.core.dispatchers.DispatchableArgs
 import dev.lunarcoffee.risako.framework.core.trimToDescription
 
-internal class GuildCommand(override val bot: Bot, override var name: String) : Command {
+class GuildCommand(override val bot: Bot, override var name: String) : Command {
     override var groupName = "Misc"
     override var description = "(none)"
     override var extDescription = "(none)"

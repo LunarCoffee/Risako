@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeoutException
 import kotlin.concurrent.schedule
 
-internal object WaitList : ListenerAdapter() {
+object WaitList : ListenerAdapter() {
     // User IDs and channel IDs in the format "<userid><channelid>" to their [DefaultWaitObject]s.
     private val toWait = ConcurrentHashMap<String, WaitObject>()
     private val timer = Timer(true)

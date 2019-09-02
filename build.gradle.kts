@@ -6,7 +6,7 @@ repositories {
 }
 
 plugins {
-    kotlin("jvm") version "1.3.31"
+    kotlin("jvm") version "1.3.50"
 }
 
 group = "dev.lunarcoffee"
@@ -18,11 +18,11 @@ dependencies {
     // Loading commands/listeners.
     compile(kotlin("reflect"))
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.2.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:1.3.0")
 
     // Discord API wrapper.
-    implementation("net.dv8tion:JDA:4.ALPHA.0_96")
+    implementation("net.dv8tion:JDA:4.0.0_45")
 
     implementation("io.github.microutils:kotlin-logging:1.6.24")
     implementation("org.slf4j:slf4j-api:1.7.26")

@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import kotlin.random.Random
 
-internal class CoinFlipSender(private val times: Int) : ContentSender {
+class CoinFlipSender(private val times: Int) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val flips = (1..times).map { if (Random.nextBoolean()) "heads" else "tails" }
 

@@ -7,7 +7,7 @@ import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-internal class EmoteStealerSender(private val limit: Int) : ContentSender {
+class EmoteStealerSender(private val limit: Int) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         val pmChannel = ctx.event.author.openPrivateChannel().await()
         pmChannel.sendSuccess("Your emotes are being processed!")

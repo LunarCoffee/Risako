@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.framework.core.dispatchers.DispatchableArgs
 import kotlinx.coroutines.runBlocking
 import java.awt.Color
 
-internal object RPlaceCanvas {
+object RPlaceCanvas {
     const val IMAGE_PATH = "src/main/resources/rplace/rplace_canvas.png"
     const val CANVAS_SIZE = 40
 
@@ -19,9 +19,8 @@ internal object RPlaceCanvas {
     init {
         runBlocking {
             // Fill with white if the canvas in the DB is empty.
-            if (canvasCol.find().toList().isEmpty()) {
+            if (canvasCol.find().toList().isEmpty())
                 canvasCol.insertMany(List(CANVAS_SIZE * CANVAS_SIZE) { Color.WHITE })
-            }
 
             // Load the canvas into the array in memory.
             val dbCanvas = canvasCol

@@ -1,6 +1,6 @@
 package dev.lunarcoffee.risako.bot.exts.commands.owner.ex
 
-internal class ExecResult(
+class ExecResult(
     val header: String,
     val stdout: String,
     val stderr: String,

@@ -5,7 +5,7 @@ import com.github.kittinunf.fuel.coroutines.awaitStringResult
 import dev.lunarcoffee.risako.bot.consts.GSON
 import dev.lunarcoffee.risako.framework.core.std.Requester
 
-internal class XkcdRequester(private val which: Int?) : Requester<XkcdComic> {
+class XkcdRequester(private val which: Int?) : Requester<XkcdComic> {
     override suspend fun get(): XkcdComic {
         return if (which == 404) {
             // Accessing the API endpoint for 404 results in, well, a 404. Despite that, the comic

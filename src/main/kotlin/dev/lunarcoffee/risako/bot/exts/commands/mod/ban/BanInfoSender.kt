@@ -7,11 +7,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import net.dv8tion.jda.api.entities.User
 
-internal class BanInfoSender(
-    private val offender: User,
-    private val reason: String
-) : ContentSender {
-
+class BanInfoSender(private val offender: User, private val reason: String) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.sendSuccess("`${offender.asTag}` has been banned!")
 

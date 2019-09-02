@@ -5,7 +5,7 @@ import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import java.time.LocalDateTime
 import kotlin.math.roundToInt
 
-internal class OsuUserInfo(
+class OsuUserInfo(
     val userId: String,
     val username: String,
     val globalRank: String,
@@ -27,6 +27,6 @@ internal class OsuUserInfo(
     val accuracy get() = "%.2f".format(accuracyRaw.toDouble())
     val pp get() = ppRaw.toDouble().roundToInt()
 
-    val joinTime get() = LocalDateTime.parse(joinTimeRaw.replace(" ", "T"))!!
+    val joinTime get() = LocalDateTime.parse(joinTimeRaw.replace(" ", "T"))
     val playTime get() = SplitTime(playTimeSeconds.toLong() * 1_000)
 }

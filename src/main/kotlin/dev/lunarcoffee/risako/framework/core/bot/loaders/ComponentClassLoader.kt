@@ -5,7 +5,7 @@ import dev.lunarcoffee.risako.framework.core.silence
 import dev.lunarcoffee.risako.framework.core.std.HasBot
 import java.io.File
 
-internal abstract class ComponentClassLoader : HasBot {
+abstract class ComponentClassLoader : HasBot {
     private val cl = ClassLoader.getSystemClassLoader()!!
 
     protected fun loadClasses(packagePath: String): Sequence<Class<*>> {

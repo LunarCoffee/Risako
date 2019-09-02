@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.framework.core.std.idgen
 import dev.lunarcoffee.risako.framework.core.DB
 import org.litote.kmongo.eq
 
-internal object IdDatabase {
+object IdDatabase {
     private val activeCol = DB.getCollection<GeneratedId>("ActiveIdGen0")
 
     suspend fun register(id: Long) = activeCol.insertOne(GeneratedId(id))

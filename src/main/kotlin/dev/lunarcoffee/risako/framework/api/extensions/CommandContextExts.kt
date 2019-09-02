@@ -11,7 +11,7 @@ import dev.lunarcoffee.risako.framework.core.std.idgen.IdGenerator
 import kotlinx.coroutines.future.await
 
 // Schedules a [Reloadable] so that it can be rescheduled upon a bot restart.
-internal suspend inline fun <reified T : Reloadable> CommandContext.scheduleReloadable(
+suspend inline fun <reified T : Reloadable> CommandContext.scheduleReloadable(
     colName: String,
     reloadable: T
 ) {
@@ -29,9 +29,9 @@ internal suspend inline fun <reified T : Reloadable> CommandContext.scheduleRelo
     reloadable.schedule(event, ReloadableCollection(colName, T::class))
 }
 
-internal suspend fun CommandContext.send(sender: ContentSender) = sender.send(this)
+suspend fun CommandContext.send(sender: ContentSender) = sender.send(this)
 
-internal suspend fun CommandContext.sendAsAuthor(content: String) {
+suspend fun CommandContext.sendAsAuthor(content: String) {
     val webhook = event.textChannel.createWebhook("tempUser").await()
     val webhookClient = WebhookClientBuilder(webhook.url).build()
 

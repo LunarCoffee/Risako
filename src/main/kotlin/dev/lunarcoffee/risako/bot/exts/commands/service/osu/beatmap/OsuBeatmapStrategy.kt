@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.service.osu.beatmap
 import com.google.gson.FieldNamingStrategy
 import java.lang.reflect.Field
 
-internal class OsuBeatmapStrategy : FieldNamingStrategy {
+class OsuBeatmapStrategy : FieldNamingStrategy {
     override fun translateName(field: Field): String {
         return when (field.name) {
             "name" -> "title"

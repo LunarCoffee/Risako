@@ -4,7 +4,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.*
 import net.dv8tion.jda.api.entities.User
 
-internal class TrUser(
+class TrUser(
     override val optional: Boolean = false,
     override var default: User? = null
 ) : Transformer<User?> {
@@ -14,9 +14,8 @@ internal class TrUser(
         args: MutableList<String>
     ): OpResult<User?> {
 
-        if (args.isEmpty()) {
+        if (args.isEmpty())
             return if (optional) OpSuccess(default) else OpError()
-        }
 
         val input = args.removeAt(0)
         val mentionMatch = USER_MENTION.matchEntire(input)

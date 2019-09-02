@@ -2,6 +2,6 @@ package dev.lunarcoffee.risako.framework.core.std
 
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 
-internal interface HasBot {
+interface HasBot {
     val bot: Bot
 }

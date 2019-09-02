@@ -2,7 +2,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.utility.tags
 
 import java.util.*
 
-internal class Tag(
+class Tag(
     val guildId: String,
     val authorId: String,
     val name: String,

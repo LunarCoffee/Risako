@@ -9,7 +9,7 @@ import org.litote.kmongo.and
 import org.litote.kmongo.eq
 import java.util.*
 
-internal class TagManager(private val ctx: CommandContext) {
+class TagManager(private val ctx: CommandContext) {
     suspend fun addTag(name: String, content: String) {
         if (name.length > 30 || content.length > 1_000) {
             ctx.sendError("The name or content of your tag is too long!")

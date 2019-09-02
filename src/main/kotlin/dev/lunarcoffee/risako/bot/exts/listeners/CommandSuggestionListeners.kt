@@ -16,7 +16,7 @@ import org.litote.kmongo.eq
 import kotlin.math.min
 
 @ListenerGroup
-internal class CommandSuggestionListeners(
+class CommandSuggestionListeners(
     private val bot: Bot
 ) : CoroutineScope by CoroutineScope(Dispatchers.Default), ListenerAdapter() {
 
@@ -26,21 +26,18 @@ internal class CommandSuggestionListeners(
             GUILD_OVERRIDES.findOne(GuildOverrides::guildId eq event.guild.id)?.noSuggestCommands
         } ?: false
 
-        if (notRisakoCommand || event.author.isBot || noCommandSuggestions) {
+        if (notRisakoCommand || event.author.isBot || noCommandSuggestions)
             return
-        }
 
         val name = event.message.contentRaw.substringAfter(bot.config.prefix).trim()
-        if (name !in bot.commandNames) {
+        if (name !in bot.commandNames)
             suggestCommandNames(event.channel, name)
-        }
     }
 
     private fun suggestCommandNames(channel: TextChannel, name: String) {
         // Don't do anything if the user sent only the prefix.
-        if (name.isBlank()) {
+        if (name.isBlank())
             return
-        }
 
         for (alias in bot.commandNames) {
             if (nameDistance(name, alias) < 2) {

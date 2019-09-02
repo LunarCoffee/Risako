@@ -12,7 +12,7 @@ import java.io.File
 // Sends either the contents of a canvas, or the colors that can be used for drawing. The canvas to
 // be sent should be passed as [canvas], and a new instance should be created every time the canvas
 // is changed.
-internal class RPlaceCanvasSender(private val canvas: Array<Array<Color>>) {
+class RPlaceCanvasSender(private val canvas: Array<Array<Color>>) {
     suspend fun sendCanvas(ctx: CommandContext, grid: Boolean? = true) {
         val saver = RPlaceCanvasSaver(canvas)
         saver.createAndSaveImage(grid ?: false)

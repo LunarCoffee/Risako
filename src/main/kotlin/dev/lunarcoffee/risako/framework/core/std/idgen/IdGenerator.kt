@@ -2,7 +2,7 @@ package dev.lunarcoffee.risako.framework.core.std.idgen
 
 import kotlin.random.Random
 
-internal object IdGenerator {
+object IdGenerator {
     suspend fun generate(): Long {
         var id: Long
         do {

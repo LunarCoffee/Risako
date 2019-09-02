@@ -9,7 +9,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 import java.awt.RenderingHints as RH
 
-internal class FunctionPlotter(val functionStrings: List<String>) {
+class FunctionPlotter(val functionStrings: List<String>) {
     private val imageName = "src/main/resources/plot/${functionStrings.hashCode()}.png"
 
     fun plot(): String {
@@ -45,9 +45,8 @@ internal class FunctionPlotter(val functionStrings: List<String>) {
         // Draw ticks and labels to mark intervals.
         for (n in 1 until 2 * PRECISION / MULTIPLIER) {
             // Avoid creating an extra cross or making labels that cover the crosses at the origin.
-            if (n == PRECISION / MULTIPLIER) {
+            if (n == PRECISION / MULTIPLIER)
                 continue
-            }
 
             // Draw ticks.
             drawLine(n * MULTIPLIER, ORIGIN - 8, n * MULTIPLIER, ORIGIN + 8)
@@ -75,9 +74,8 @@ internal class FunctionPlotter(val functionStrings: List<String>) {
                 val nextY = evaluator.evaluate((x + 1.0) / MULTIPLIER)!! * INTERVAL * MULTIPLIER
 
                 // Try to ignore holes/asymptotes/gaps.
-                if (y.isNaN() || nextY.isNaN() || abs(nextY - y) > 2_500) {
+                if (y.isNaN() || nextY.isNaN() || abs(nextY - y) > 2_500)
                     continue
-                }
 
                 paint = COLORS[index]
                 drawLine(

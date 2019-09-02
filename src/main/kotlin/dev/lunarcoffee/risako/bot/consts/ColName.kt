@@ -1,7 +1,7 @@
 package dev.lunarcoffee.risako.bot.consts
 
 // Names of the MongoDB collections used.
-internal object ColName {
+object ColName {
     const val REMINDER = "Reminders0"
     const val TAGS = "Tags0"
     const val RPLACE_CANVAS = "RPlaceCanvas0"

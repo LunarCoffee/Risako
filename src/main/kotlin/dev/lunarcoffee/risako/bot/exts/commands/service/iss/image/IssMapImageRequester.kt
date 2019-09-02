@@ -6,7 +6,7 @@ import dev.lunarcoffee.risako.bot.consts.RISAKO_CONFIG
 import dev.lunarcoffee.risako.bot.exts.commands.service.iss.stats.IssStats
 import dev.lunarcoffee.risako.framework.core.std.Requester
 
-internal class IssMapImageRequester(private val stats: IssStats) : Requester<ByteArray> {
+class IssMapImageRequester(private val stats: IssStats) : Requester<ByteArray> {
     override suspend fun get(): ByteArray {
         val args = "${stats.longitude},${stats.latitude},3/800x800"
         return Fuel

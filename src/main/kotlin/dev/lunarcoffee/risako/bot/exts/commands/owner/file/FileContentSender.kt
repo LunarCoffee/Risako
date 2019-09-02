@@ -8,11 +8,7 @@ import dev.lunarcoffee.risako.framework.core.silence
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import java.io.File
 
-internal class FileContentSender(
-    private val filename: String,
-    flags: String
-) : ContentSender {
-
+class FileContentSender(private val filename: String, flags: String) : ContentSender {
     private var upload = false
     private var rawPath = false
     private lateinit var apiTokens: Array<String>
@@ -30,11 +26,10 @@ internal class FileContentSender(
 
     override suspend fun send(ctx: CommandContext) {
         // Having a raw path allows for getting non-bot files.
-        val file = if (rawPath) {
+        val file = if (rawPath)
             silence { File(filename) }
-        } else {
+        else
             File(".").walk().find { it.name.equals(filename, true) }
-        }
 
         if (file == null) {
             ctx.sendError("I can't find a file with that name!")

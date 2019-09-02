@@ -1,6 +1,6 @@
 package dev.lunarcoffee.risako.bot.exts.commands.service.osu
 
-internal abstract class OsuHasMode {
+abstract class OsuHasMode {
     abstract var mode: Int
 
     val modeUrl

@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.events.GenericEvent
 import org.litote.kmongo.eq
 import java.util.*
 
-internal open class Reloadable(val time: Date) {
+open class Reloadable(val time: Date) {
     // ReloadableJsonID; a unique value representing this specific [Reloadable] and its DB form
     // (which is a [ReloadableJson] instance. This value is set externally by the extension
     // [CommandContext#scheduleReloadable] defined in <CommandContextExts.kt>, which also handles

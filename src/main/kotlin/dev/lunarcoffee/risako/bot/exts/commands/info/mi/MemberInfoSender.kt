@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import net.dv8tion.jda.api.entities.Member
 
-internal class MemberInfoSender(private val member: Member) : ContentSender {
+class MemberInfoSender(private val member: Member) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.send(
             embed {
@@ -16,11 +16,10 @@ internal class MemberInfoSender(private val member: Member) : ContentSender {
                     val botOrMember = if (user.isBot) "" else "member"
                     val activity = activities.firstOrNull()?.name ?: "(none)"
 
-                    val userRoles = if (roles.isNotEmpty()) {
+                    val userRoles = if (roles.isNotEmpty())
                         "[${roles.joinToString { it.asMention }}]"
-                    } else {
+                    else
                         "(none)"
-                    }
 
                     title = "${Emoji.MAG_GLASS}  Info on $botOrMember **${user.asTag}**:"
                     description = """

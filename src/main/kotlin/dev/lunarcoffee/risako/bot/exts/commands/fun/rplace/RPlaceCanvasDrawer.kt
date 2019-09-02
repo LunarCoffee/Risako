@@ -9,7 +9,7 @@ import java.awt.Color
 
 // Performs drawing operations on the passed [canvas], then loads them into the main [RPlaceCanvas]
 // object for later use. This is the only class that modifies the actual canvas.
-internal class RPlaceCanvasDrawer(private val canvas: Array<Array<Color>>) {
+class RPlaceCanvasDrawer(private val canvas: Array<Array<Color>>) {
     suspend fun putAndSavePixel(ctx: CommandContext, args: DispatchableArgs) {
         val x = args.get<Int>(1) - 1
         val y = args.get<Int>(2) - 1
@@ -41,9 +41,8 @@ internal class RPlaceCanvasDrawer(private val canvas: Array<Array<Color>>) {
             return
         }
 
-        if (drawPixel(ctx, x, y, color)) {
+        if (drawPixel(ctx, x, y, color))
             RPlaceCanvasSender(canvas).sendCanvas(ctx)
-        }
     }
 
     private suspend fun drawPixel(ctx: CommandContext, x: Int, y: Int, color: Color): Boolean {

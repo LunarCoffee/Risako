@@ -20,7 +20,7 @@ import net.dv8tion.jda.api.Permission
 import net.dv8tion.jda.api.entities.User
 
 @CommandGroup("Mod")
-internal class ModCommands(private val bot: Bot) {
+class ModCommands(private val bot: Bot) {
     fun mute() = command("mute") {
         description = "Mutes a member for a specified amount of time."
         aliases = arrayOf("silence", "softban")
@@ -156,6 +156,7 @@ internal class ModCommands(private val bot: Bot) {
                 .await()
                 .find { nameOrId in arrayOf(it.user.id, it.user.name, it.user.asTag) }
                 ?.user
+
             if (user == null) {
                 sendError("Either that user is not banned, or doesn't exist!")
                 return@execute

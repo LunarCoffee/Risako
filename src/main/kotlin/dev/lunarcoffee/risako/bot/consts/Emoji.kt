@@ -1,6 +1,6 @@
 package dev.lunarcoffee.risako.bot.consts
 
-internal object Emoji {
+object Emoji {
     const val PING_PONG = "\uD83C\uDFD3"
     const val OPEN_FILE_FOLDER = "\uD83D\uDCC2"
     const val RADIO_BUTTON = "\uD83D\uDD18"

@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.misc.loc
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import java.io.File
 
-internal class CodeStats(val bot: Bot) {
+class CodeStats(val bot: Bot) {
     var fileCount = 0
     var dirs = 0
     var linesOfCode = 0
@@ -17,9 +17,8 @@ internal class CodeStats(val bot: Bot) {
             } else if (file.extension == "kt") {
                 fileCount++
                 for (line in file.readLines()) {
-                    if (line.isBlank()) {
+                    if (line.isBlank())
                         blankLines++
-                    }
                     linesOfCode++
                     characters += line.length
                 }

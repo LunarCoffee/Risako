@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.framework.core.commands.transformers
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.*
 
-internal class TrInt(
+class TrInt(
     override val optional: Boolean = false,
     override val default: Int = 0
 ) : Transformer<Int> {

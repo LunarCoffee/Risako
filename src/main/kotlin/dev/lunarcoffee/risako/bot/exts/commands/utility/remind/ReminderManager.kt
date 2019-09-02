@@ -11,7 +11,7 @@ import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import java.time.Instant
 import java.util.*
 
-internal class ReminderManager(private val ctx: CommandContext) {
+class ReminderManager(private val ctx: CommandContext) {
     suspend fun scheduleReminder(time: SplitTime, reason: String) {
         ctx.run {
             scheduleReloadable(
@@ -62,11 +62,10 @@ internal class ReminderManager(private val ctx: CommandContext) {
         // Check that the reminder range exists.
         if (reminders.size + 1 in range) {
             ctx.sendError(
-                if (rangeIsMoreThanOne) {
+                if (rangeIsMoreThanOne)
                     "Some of those reminders don't exist!"
-                } else {
+                else
                     "A reminder with that number doesn't exist!"
-                }
             )
             return
         }

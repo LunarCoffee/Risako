@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.cli.common.environment.setIdeaIoUseFallback
 import java.io.*
 import javax.script.*
 
-internal class KotlinExecutor(private val lines: List<String>) : CodeExecutor {
+class KotlinExecutor(private val lines: List<String>) : CodeExecutor {
     override suspend fun execute(ctx: CommandContext): ExecResult {
         // Import statements in the code. These will be prepended to the command prelude.
         val imports = lines

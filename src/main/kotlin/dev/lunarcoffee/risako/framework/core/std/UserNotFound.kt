@@ -2,7 +2,7 @@ package dev.lunarcoffee.risako.framework.core.std
 
 import net.dv8tion.jda.api.entities.User
 
-internal object UserNotFound : User {
+object UserNotFound : User {
     override fun getDefaultAvatarId() = error()
     override fun getMutualGuilds() = error()
     override fun isBot() = error()

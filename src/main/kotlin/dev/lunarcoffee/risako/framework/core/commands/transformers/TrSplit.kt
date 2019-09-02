@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.framework.core.commands.transformers
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.*
 
-internal class TrSplit(
+class TrSplit(
     private val separator: String = " ",
     override val optional: Boolean = false,
     override val default: List<String> = emptyList()
@@ -14,10 +14,9 @@ internal class TrSplit(
         args: MutableList<String>
     ): OpResult<List<String>> {
 
-        return if (args.isEmpty()) {
+        return if (args.isEmpty())
             OpError()
-        } else {
+        else
             OpSuccess(args.joinToString(" ").split(separator).also { args.clear() })
-        }
     }
 }

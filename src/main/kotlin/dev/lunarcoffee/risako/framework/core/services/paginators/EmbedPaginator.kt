@@ -6,7 +6,7 @@ import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import java.util.*
 
-internal open class EmbedPaginator(
+open class EmbedPaginator(
     override val creator: User,
     override val closeTimer: Timer
 ) : Paginator() {

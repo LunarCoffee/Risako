@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.misc.stats
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import java.lang.management.ManagementFactory
 
-internal class SystemStats {
+class SystemStats {
     val totalMemory = Runtime.getRuntime().totalMemory() / 1_000_000
     val freeMemory = Runtime.getRuntime().freeMemory() / 1_000_000
 
@@ -13,7 +13,7 @@ internal class SystemStats {
     val logicalProcessors = Runtime.getRuntime().availableProcessors()
 
     val osName = System.getProperty("os.name") ?: "(unknown)"
-    val language = "Kotlin 1.3.31"
+    val language = "Kotlin 1.3.50"
     val jvmVersion = System.getProperty("java.version") ?: "(unknown)"
 
     var runningThreads: Int
@@ -30,11 +30,10 @@ internal class SystemStats {
             val cpuArch = System.getenv("PROCESSOR_ARCHITECTURE")
             val wow64Arch = System.getenv("PROCESSOR_ARCHITEW6432")
 
-            if (cpuArch != null && "64" in cpuArch || wow64Arch != null && "64" in wow64Arch) {
+            if (cpuArch != null && "64" in cpuArch || wow64Arch != null && "64" in wow64Arch)
                 "64-bit"
-            } else {
+            else
                 "32-bit"
-            }
         } else {
             when (System.getProperty("os.arch")) {
                 "amd64" -> "64-bit"

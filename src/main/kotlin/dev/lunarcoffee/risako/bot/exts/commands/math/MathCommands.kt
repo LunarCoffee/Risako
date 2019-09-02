@@ -16,7 +16,7 @@ import java.security.SecureRandom
 import kotlin.random.Random
 
 @CommandGroup("Math")
-internal class MathCommands(private val bot: Bot) {
+class MathCommands(private val bot: Bot) {
     fun rng() = command("rng") {
         val secureRandom = SecureRandom()
 
@@ -35,11 +35,10 @@ internal class MathCommands(private val bot: Bot) {
             val upperBound = args.get<Int>(1) + 1
             val secure = args.get<String>(2) == "-s"
 
-            val number = if (secure) {
+            val number = if (secure)
                 secureRandom.nextInt(upperBound - lowerBound) + lowerBound
-            } else {
+            else
                 Random.nextInt(lowerBound, upperBound)
-            }
 
             val secureText = if (secure) " secure" else ""
             sendSuccess("Your$secureText random number is `$number`!")
@@ -68,9 +67,8 @@ internal class MathCommands(private val bot: Bot) {
 
             send(
                 messagePaginator {
-                    for (chunk in result) {
+                    for (chunk in result)
                         page("```$chunk```")
-                    }
                 }
             )
         }

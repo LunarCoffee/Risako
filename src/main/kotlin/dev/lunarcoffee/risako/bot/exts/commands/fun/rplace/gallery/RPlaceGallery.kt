@@ -16,16 +16,15 @@ import javax.imageio.ImageIO
 
 // Takes and deletes snapshots of the passed [canvas]. A new instance should be constructed for
 // each time the canvas is updated.
-internal class RPlaceGallery(private val canvas: Array<Array<Color>>) {
+class RPlaceGallery(private val canvas: Array<Array<Color>>) {
     suspend fun takeSnapshot(ctx: CommandContext, args: DispatchableArgs) {
         val cleanName = args.get<String>(3).replace("=", "_")
         if (cleanName.length !in 1..20) {
             ctx.sendError(
-                if (cleanName.isEmpty()) {
+                if (cleanName.isEmpty())
                     "I need a name to give the snapshot!"
-                } else {
+                else
                     "I can't name a snapshot that name!"
-                }
             )
             return
         }
@@ -45,9 +44,8 @@ internal class RPlaceGallery(private val canvas: Array<Array<Color>>) {
 
         // Scale the image down to save memory.
         val scaledImage = toBufferedImage(
-            withContext(Dispatchers.IO) {
-                ImageIO.read(File(RPlaceCanvas.IMAGE_PATH))
-            }.getScaledInstance(300, 300, Image.SCALE_DEFAULT)
+            withContext(Dispatchers.IO) { ImageIO.read(File(RPlaceCanvas.IMAGE_PATH)) }
+                .getScaledInstance(300, 300, Image.SCALE_DEFAULT)
         )
 
         withContext(Dispatchers.IO) {

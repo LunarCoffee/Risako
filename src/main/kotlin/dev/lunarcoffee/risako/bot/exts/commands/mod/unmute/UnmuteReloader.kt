@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.events.GenericEvent
 import java.util.*
 
 @ReloadFrom(ColName.MUTE)
-internal class UnmuteReloader(
+class UnmuteReloader(
     time: Date,
     val userId: String,
     val prevRoleIds: List<String>,
@@ -28,9 +28,8 @@ internal class UnmuteReloader(
             // Stop if the mute is no longer in the database (it has been removed manually by an
             // <..unmute> command or similar).
             val muteStillActive = col.contains { it.rjid == rjid }
-            if (!muteStillActive) {
+            if (!muteStillActive)
                 return@scheduleNoInline
-            }
 
             val user = event.jda.getUserById(userId)!!
             val guild = event.jda.getGuildById(guildId)!!

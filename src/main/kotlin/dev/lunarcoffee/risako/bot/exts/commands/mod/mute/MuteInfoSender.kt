@@ -8,7 +8,7 @@ import dev.lunarcoffee.risako.framework.core.std.ContentSender
 import dev.lunarcoffee.risako.framework.core.std.SplitTime
 import net.dv8tion.jda.api.entities.Member
 
-internal class MuteInfoSender(
+class MuteInfoSender(
     private val offender: Member,
     private val time: SplitTime,
     private val reason: String

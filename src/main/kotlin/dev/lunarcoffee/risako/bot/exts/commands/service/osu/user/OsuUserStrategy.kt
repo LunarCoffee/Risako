@@ -3,7 +3,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.service.osu.user
 import com.google.gson.FieldNamingStrategy
 import java.lang.reflect.Field
 
-internal class OsuUserStrategy : FieldNamingStrategy {
+class OsuUserStrategy : FieldNamingStrategy {
     override fun translateName(field: Field): String {
         return when (field.name) {
             "userId" -> "user_id"

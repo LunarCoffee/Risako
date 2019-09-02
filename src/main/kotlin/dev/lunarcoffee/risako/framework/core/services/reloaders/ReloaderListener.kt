@@ -9,7 +9,7 @@ import net.dv8tion.jda.api.events.ReadyEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import java.io.File
 
-internal class ReloaderListener(
+class ReloaderListener(
     private val sourceRootDir: String
 ) : ListenerAdapter(), CoroutineScope by CoroutineScope(Dispatchers.Default) {
 

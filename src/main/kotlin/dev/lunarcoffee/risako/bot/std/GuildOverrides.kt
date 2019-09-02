@@ -2,7 +2,7 @@ package dev.lunarcoffee.risako.bot.std
 
 import org.litote.kmongo.eq
 
-internal class GuildOverrides(
+class GuildOverrides(
     val guildId: String,
     val noPayRespects: Boolean,
     val noSuggestCommands: Boolean
