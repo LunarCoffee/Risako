@@ -1,8 +1,0 @@
-prefix: ".."
-token: "NTY0MjM4MTMzMTUyMDU1MzE3.XKk9zQ.fnWT04_799MLhdpxiLE5TC1wDGk"
-#token: "NTg2MjE0NTI3NzcxNjA3MDQx.XPkw4g.43GTHboEfFy5fywzjQ10Qebbf2w"
-ownerId: "258218652497608704"
-
-sourceRootDir: "src/main/kotlin/dev/lunarcoffee/risako"
-commandP: "dev.lunarcoffee.risako.bot.exts.commands"
-listenerP: "dev.lunarcoffee.risako.bot.exts.listeners"
