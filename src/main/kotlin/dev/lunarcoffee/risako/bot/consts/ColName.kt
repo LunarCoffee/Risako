@@ -8,4 +8,5 @@ object ColName {
     const val RPLACE_COOLDOWN = "RPlaceCooldown0"
     const val MUTE = "Mutes1"
     const val GUILD_OVERRIDES = "GuildOverrides0"
+    const val STARBOARD = "Starboard0"
 }

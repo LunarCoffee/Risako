@@ -31,4 +31,5 @@ object Emoji {
     const val SPY = "\uD83D\uDD75"
     const val EXPLODE = "\uD83D\uDCA5"
     const val CHART_UPWARDS_TREND = "\uD83D\uDCC8"
+    const val STAR = "\u2B50"
 }
