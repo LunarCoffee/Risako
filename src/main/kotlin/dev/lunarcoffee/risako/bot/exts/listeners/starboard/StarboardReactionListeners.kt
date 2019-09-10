@@ -5,13 +5,13 @@ package dev.lunarcoffee.risako.bot.exts.listeners.starboard
 import dev.lunarcoffee.risako.bot.consts.*
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.dsl.message
-import dev.lunarcoffee.risako.framework.api.extensions.await
-import dev.lunarcoffee.risako.framework.api.extensions.send
+import dev.lunarcoffee.risako.framework.api.extensions.*
 import dev.lunarcoffee.risako.framework.core.DB
 import dev.lunarcoffee.risako.framework.core.annotations.ListenerGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
 import kotlinx.coroutines.*
 import net.dv8tion.jda.api.entities.*
+import net.dv8tion.jda.api.events.message.guild.*
 import net.dv8tion.jda.api.events.message.guild.react.*
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 import org.litote.kmongo.eq
@@ -34,12 +34,8 @@ class StarboardReactionListeners(
 
             if (existingEntry != null) {
                 // Get the existing embed and update it.
-                val existing = starboardChannel
-                    .retrieveMessageById(existingEntry.entryMessageId)
-                    .await()
-
-                existing.editMessage(message { embed = getStarboardEmbed(message, event) })
-                    .await()
+                val existing = getExistingEmbedMessage(event) ?: return@launch
+                existing.editMessage(getStarboardEmbed(message, event)).await()
             } else {
                 val messageId = starboardChannel.send(getStarboardEmbed(message, event)).id
 
@@ -54,26 +50,52 @@ class StarboardReactionListeners(
         if (isNotStarEmoji(event))
             return
 
-        val starboardChannel = getStarboardChannel(event) ?: return
         val message = getMessageFromEvent(event)
-
         launch {
-            // Check if we have already stored this message.
-            val existingEntry = col.findOne(StarboardEntry::messageId eq message.id)!!
-
-            // Get the existing embed.
-            val existing = starboardChannel
-                .retrieveMessageById(existingEntry.entryMessageId)
-                .await()
+            // Get the stored message.
+            val existing = getExistingEmbedMessage(event) ?: return@launch
 
             // Remove the embed and database entry if there are no more stars.
             if (getStarCount(event) == 0) {
+                col.deleteOne(StarboardEntry::entryMessageId eq existing.id)
                 existing.delete().await()
-                col.deleteOne(StarboardEntry::messageId eq existing.id)
                 return@launch
             }
 
             existing.editMessage(message { embed = getStarboardEmbed(message, event) }).await()
+        }
+    }
+
+    override fun onGuildMessageReactionRemoveAll(event: GuildMessageReactionRemoveAllEvent) {
+        launch {
+            val existingEntry = col.findOne(StarboardEntry::messageId eq event.messageId)
+                ?: return@launch
+
+            // Remove the database entry and the embed from the starboard channel.
+            col.deleteOne(StarboardEntry::messageId eq event.messageId)
+            getStarboardChannel(event)
+                ?.retrieveMessageById(existingEntry.entryMessageId)
+                ?.await()
+                ?.delete()
+                ?.await()
+        }
+    }
+
+    override fun onGuildMessageUpdate(event: GuildMessageUpdateEvent) {
+        launch {
+            val existing = getExistingEmbedMessage(event) ?: return@launch
+            existing.editMessage(getStarboardEmbed(event.message, event)).await()
+        }
+    }
+
+    override fun onGuildMessageDelete(event: GuildMessageDeleteEvent) {
+        launch {
+            // Delete the embed message.
+            val existing = getExistingEmbedMessage(event) ?: return@launch
+            existing.delete().await()
+
+            // Delete the database entry.
+            col.deleteOne(StarboardEntry::messageId eq event.messageId)
         }
     }
 
@@ -82,17 +104,33 @@ class StarboardReactionListeners(
         return !emote.isEmoji || emote.isEmoji && emote.emoji != Emoji.STAR
     }
 
-    private fun getStarboardChannel(event: GenericGuildMessageReactionEvent): TextChannel? {
-        return event.guild.textChannels.find { "starboard" in it.name }
+    private fun getStarboardChannel(event: GenericGuildMessageEvent): TextChannel? {
+        return event.guild.textChannels.find { "starboard" in it.name }.also {
+            if (it == null) {
+                launch {
+                    event.channel.sendError("Please make a channel with `starboard` in its name!")
+                }
+            }
+        }
     }
 
     private fun getMessageFromEvent(event: GenericGuildMessageReactionEvent): Message {
         return runBlocking { event.channel.retrieveMessageById(event.messageId).await() }
     }
 
+    private fun getExistingEmbedMessage(event: GenericGuildMessageEvent): Message? {
+        return runBlocking {
+            val existingEntry = col.findOne(StarboardEntry::messageId eq event.messageId)
+                ?: return@runBlocking null
+
+            val starboardChannel = getStarboardChannel(event) ?: return@runBlocking null
+            starboardChannel.retrieveMessageById(existingEntry.entryMessageId).await()
+        }
+    }
+
     private fun getStarboardEmbed(
         message: Message,
-        event: GenericGuildMessageReactionEvent
+        event: GenericGuildMessageEvent
     ): MessageEmbed {
 
         return embed {
@@ -132,14 +170,15 @@ class StarboardReactionListeners(
         }
     }
 
-    private fun getStarCount(event: GenericGuildMessageReactionEvent): Int {
+    private fun getStarCount(event: GenericGuildMessageEvent): Int {
         return runBlocking {
             event
                 .channel
                 .retrieveMessageById(event.messageId)
                 .await()
                 .reactions
-                .find { it.reactionEmote == event.reactionEmote }
+                .filter { it.reactionEmote.isEmoji }
+                .find { it.reactionEmote.emoji == Emoji.STAR }
                 ?.count ?: 0
         }
     }
