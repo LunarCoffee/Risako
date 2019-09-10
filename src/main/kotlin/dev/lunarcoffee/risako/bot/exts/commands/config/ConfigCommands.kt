@@ -2,13 +2,16 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.config
 
-import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.bot.consts.GUILD_OVERRIDES
+import dev.lunarcoffee.risako.bot.exts.commands.config.sb.StarboardConfigurer
+import dev.lunarcoffee.risako.bot.exts.commands.config.sb.StarboardToggler
 import dev.lunarcoffee.risako.bot.std.GuildOverrides
 import dev.lunarcoffee.risako.framework.api.dsl.command
+import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
+import dev.lunarcoffee.risako.framework.core.commands.transformers.TrWord
 import org.litote.kmongo.eq
 import org.litote.kmongo.set
 
@@ -91,37 +94,28 @@ class ConfigCommands(private val bot: Bot) {
         }
     }
 
-    fun togglesb() = command("togglesb") {
-        description = "Toggles the starboard feature."
-        aliases = arrayOf("togglestarboard")
+    fun sb() = command("sb") {
+        description = "Configures options for the starboard feature."
+        aliases = arrayOf("starboard")
 
         extDescription = """
-            |`$name`\n
-            |When you react to a message with a star (this one -> ${Emoji.STAR}), I will normally
-            |try to find a channel with `starboard` in its name. I will send a message there with
-            |the content of the message you reacted to. This is basically a global pin system, but
-            |if you wish to disable/enable it, use this command.
+            |`$name channel|amount|toggle [value]`\n
+            |
         """
 
-        execute {
-            GUILD_OVERRIDES.run {
-                val override = findOne(GuildOverrides::guildId eq event.guild.id)
-                sendSuccess(
-                    when {
-                        override == null -> {
-                            insertOne(GuildOverrides(event.guild.id, false, false, true))
-                            "Disabled the starboard feature!"
-                        }
-                        override.noStarboard -> {
-                            updateOne(override.isSame(), set(GuildOverrides::noStarboard, false))
-                            "Enabled the starboard feature!"
-                        }
-                        else -> {
-                            updateOne(override.isSame(), set(GuildOverrides::noStarboard, true))
-                            "Disabled the starboard feature!"
-                        }
-                    }
-                )
+        expectedArgs = arrayOf(TrWord(), TrWord(true))
+        execute { args ->
+            val option = args.get<String>(0).toLowerCase()
+            val value = args.get<String>(1)
+
+            when (option) {
+                "channel" -> StarboardConfigurer(this).setChannel(value)
+                "amount" -> if (value.toIntOrNull() != null)
+                    StarboardConfigurer(this).setRequiredStars(value.toInt())
+                else
+                    sendError("`${value}` is not a number (or is not between `1` and `1000`)!")
+                "toggle" -> StarboardToggler(this).toggle()
+                else -> sendError("That is not a valid option!")
             }
         }
     }

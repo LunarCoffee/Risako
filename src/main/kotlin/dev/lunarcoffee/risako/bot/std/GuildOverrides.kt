@@ -8,5 +8,8 @@ class GuildOverrides(
     val noSuggestCommands: Boolean,
     val noStarboard: Boolean
 ) {
+    val starboardRequirement = 1
+    val starboardChannel: String? = null
+
     fun isSame() = ::guildId eq guildId
 }

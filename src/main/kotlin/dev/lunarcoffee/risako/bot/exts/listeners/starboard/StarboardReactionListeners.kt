@@ -26,10 +26,15 @@ class StarboardReactionListeners(
         if (isNotStarEmoji(event) || starboardDisabled(event))
             return
 
+        val overrides = getGuildOverrides(event)
         val starboardChannel = getStarboardChannel(event) ?: return
         val message = getMessageFromEvent(event)
 
         launch {
+            // Stop if there aren't enough stars.
+            if (getStarCount(event) < overrides?.starboardRequirement ?: 1)
+                return@launch
+
             // Check if we have already stored this message.
             val existingEntry = col.findOne(StarboardEntry::messageId eq message.id)
 
@@ -51,13 +56,15 @@ class StarboardReactionListeners(
         if (isNotStarEmoji(event) || starboardDisabled(event))
             return
 
+        val overrides = getGuildOverrides(event)
         val message = getMessageFromEvent(event)
+
         launch {
             // Get the stored message.
             val existing = getExistingEmbedMessage(event) ?: return@launch
 
             // Remove the embed and database entry if there are no more stars.
-            if (getStarCount(event) == 0) {
+            if (getStarCount(event) < overrides?.starboardRequirement ?: 1) {
                 col.deleteOne(StarboardEntry::entryMessageId eq existing.id)
                 existing.delete().await()
                 return@launch
@@ -115,17 +122,26 @@ class StarboardReactionListeners(
     }
 
     private fun starboardDisabled(event: GenericGuildMessageEvent): Boolean {
-        return runBlocking {
-            GUILD_OVERRIDES.findOne(GuildOverrides::guildId eq event.guild.id)?.noStarboard
-        } ?: false
+        return getGuildOverrides(event)?.noStarboard == true
+    }
+
+    private fun getGuildOverrides(event: GenericGuildMessageEvent): GuildOverrides? {
+        return runBlocking { GUILD_OVERRIDES.findOne(GuildOverrides::guildId eq event.guild.id) }
     }
 
     private fun getStarboardChannel(event: GenericGuildMessageEvent): TextChannel? {
-        return event.guild.textChannels.find { "starboard" in it.name }.also {
-            if (it == null) {
-                launch {
-                    event.channel.sendError("Please make a channel with `starboard` in its name!")
-                }
+        val overrides = getGuildOverrides(event)
+
+        // Attempt to get the user defined channel, then resort to trying to find a channel with
+        // "starboard" in its name, then alert the user to set a channel if no channel exists.
+        return if (overrides?.starboardChannel != null) {
+            event.jda.getTextChannelById(overrides.starboardChannel)
+        } else {
+            event.guild.textChannels.find { "starboard" in it.name } ?: runBlocking {
+                event.channel.sendError(
+                    "Please set a starboard channel with `..sb channel <channel>`!"
+                )
+                null
             }
         }
     }
