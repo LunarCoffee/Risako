@@ -3,6 +3,7 @@
 package dev.lunarcoffee.risako.bot.exts.listeners.starboard
 
 import dev.lunarcoffee.risako.bot.consts.*
+import dev.lunarcoffee.risako.bot.std.GuildOverrides
 import dev.lunarcoffee.risako.framework.api.dsl.embed
 import dev.lunarcoffee.risako.framework.api.dsl.message
 import dev.lunarcoffee.risako.framework.api.extensions.*
@@ -22,7 +23,7 @@ class StarboardReactionListeners(
 ) : CoroutineScope by CoroutineScope(Dispatchers.IO), ListenerAdapter() {
 
     override fun onGuildMessageReactionAdd(event: GuildMessageReactionAddEvent) {
-        if (isNotStarEmoji(event))
+        if (isNotStarEmoji(event) || starboardDisabled(event))
             return
 
         val starboardChannel = getStarboardChannel(event) ?: return
@@ -47,7 +48,7 @@ class StarboardReactionListeners(
     }
 
     override fun onGuildMessageReactionRemove(event: GuildMessageReactionRemoveEvent) {
-        if (isNotStarEmoji(event))
+        if (isNotStarEmoji(event) || starboardDisabled(event))
             return
 
         val message = getMessageFromEvent(event)
@@ -67,6 +68,9 @@ class StarboardReactionListeners(
     }
 
     override fun onGuildMessageReactionRemoveAll(event: GuildMessageReactionRemoveAllEvent) {
+        if (starboardDisabled(event))
+            return
+
         launch {
             val existingEntry = col.findOne(StarboardEntry::messageId eq event.messageId)
                 ?: return@launch
@@ -82,6 +86,9 @@ class StarboardReactionListeners(
     }
 
     override fun onGuildMessageUpdate(event: GuildMessageUpdateEvent) {
+        if (starboardDisabled(event))
+            return
+
         launch {
             val existing = getExistingEmbedMessage(event) ?: return@launch
             existing.editMessage(getStarboardEmbed(event.message, event)).await()
@@ -89,6 +96,9 @@ class StarboardReactionListeners(
     }
 
     override fun onGuildMessageDelete(event: GuildMessageDeleteEvent) {
+        if (starboardDisabled(event))
+            return
+
         launch {
             // Delete the embed message.
             val existing = getExistingEmbedMessage(event) ?: return@launch
@@ -102,6 +112,12 @@ class StarboardReactionListeners(
     private fun isNotStarEmoji(event: GenericGuildMessageReactionEvent): Boolean {
         val emote = event.reactionEmote
         return !emote.isEmoji || emote.isEmoji && emote.emoji != Emoji.STAR
+    }
+
+    private fun starboardDisabled(event: GenericGuildMessageEvent): Boolean {
+        return runBlocking {
+            GUILD_OVERRIDES.findOne(GuildOverrides::guildId eq event.guild.id)?.noStarboard
+        } ?: false
     }
 
     private fun getStarboardChannel(event: GenericGuildMessageEvent): TextChannel? {

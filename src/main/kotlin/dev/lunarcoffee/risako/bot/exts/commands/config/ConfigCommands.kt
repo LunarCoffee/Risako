@@ -2,6 +2,7 @@
 
 package dev.lunarcoffee.risako.bot.exts.commands.config
 
+import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.bot.consts.GUILD_OVERRIDES
 import dev.lunarcoffee.risako.bot.std.GuildOverrides
 import dev.lunarcoffee.risako.framework.api.dsl.command
@@ -32,7 +33,7 @@ class ConfigCommands(private val bot: Bot) {
                 sendSuccess(
                     when {
                         override == null -> {
-                            insertOne(GuildOverrides(event.guild.id, false, true))
+                            insertOne(GuildOverrides(event.guild.id, false, true, false))
                             "Disabled command suggestions!"
                         }
                         override.noSuggestCommands -> {
@@ -73,7 +74,7 @@ class ConfigCommands(private val bot: Bot) {
                 sendSuccess(
                     when {
                         override == null -> {
-                            insertOne(GuildOverrides(event.guild.id, true, true))
+                            insertOne(GuildOverrides(event.guild.id, true, false, false))
                             "Disabled the pay respects embed!"
                         }
                         override.noPayRespects -> {
@@ -83,6 +84,41 @@ class ConfigCommands(private val bot: Bot) {
                         else -> {
                             updateOne(override.isSame(), set(GuildOverrides::noPayRespects, true))
                             "Disabled the pay respects embed!"
+                        }
+                    }
+                )
+            }
+        }
+    }
+
+    fun togglesb() = command("togglesb") {
+        description = "Toggles the starboard feature."
+        aliases = arrayOf("togglestarboard")
+
+        extDescription = """
+            |`$name`\n
+            |When you react to a message with a star (this one -> ${Emoji.STAR}), I will normally
+            |try to find a channel with `starboard` in its name. I will send a message there with
+            |the content of the message you reacted to. This is basically a global pin system, but
+            |if you wish to disable/enable it, use this command.
+        """
+
+        execute {
+            GUILD_OVERRIDES.run {
+                val override = findOne(GuildOverrides::guildId eq event.guild.id)
+                sendSuccess(
+                    when {
+                        override == null -> {
+                            insertOne(GuildOverrides(event.guild.id, false, false, true))
+                            "Disabled the starboard feature!"
+                        }
+                        override.noStarboard -> {
+                            updateOne(override.isSame(), set(GuildOverrides::noStarboard, false))
+                            "Enabled the starboard feature!"
+                        }
+                        else -> {
+                            updateOne(override.isSame(), set(GuildOverrides::noStarboard, true))
+                            "Disabled the starboard feature!"
                         }
                     }
                 )
