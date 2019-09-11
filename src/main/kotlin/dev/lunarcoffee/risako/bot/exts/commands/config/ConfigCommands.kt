@@ -100,7 +100,22 @@ class ConfigCommands(private val bot: Bot) {
 
         extDescription = """
             |`$name channel|amount|toggle [value]`\n
-            |
+            |This command configures options for the starboard. The option is specified as the
+            |first argument.
+            |&{Changing the starboard channel:}
+            |By default, I will look for a channel with `starboard` in its name and use that one.
+            |To change the starboard channel, the first argument should be `channel`, and the
+            |second should be the channel's name or tag (mention). For example, changing to the
+            |channel `#star-zone` could look like `..sb channel #star-zone`.
+            |&{Modifying the star requirement:}
+            |Normally, once any message gets just one star, it will be sent to the starboard. If
+            |you want to change this, you can pass the `amount` option with the minimum star count
+            |like so: `..sb amount 2`. This value can be anywhere between 1 and 1000.
+            |&{Enabling or disabling:}
+            |If you have another starboard bot or just don't want to use the feature, you can
+            |toggle it with the `toggle` option: `..sb toggle`. When off, old starboard posts will
+            |be retained but won't update with reactions. If you turn starboard back on, those will
+            |update with reactions again.
         """
 
         expectedArgs = arrayOf(TrWord(), TrWord(true))
