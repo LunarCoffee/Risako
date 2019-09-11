@@ -14,7 +14,9 @@ class CommandLoader(override val bot: Bot) : ComponentClassLoader() {
         .zip(commandGroups.map { callConstructorWithBot(it)!! })
         .associate { (methods, group) ->
             val annotation = group::class.annotations.find { it is CommandGroup } as CommandGroup
-            annotation to methods.map {
+            annotation to methods.mapNotNull {
+                if (it.returnType != Command::class.java)
+                    return@mapNotNull null
                 (it.invoke(group) as Command).apply { groupName = annotation.name }
             }
         }

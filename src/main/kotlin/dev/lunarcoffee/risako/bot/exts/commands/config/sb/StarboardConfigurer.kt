@@ -19,7 +19,7 @@ class StarboardConfigurer(private val ctx: CommandContext) {
         }
 
         GUILD_OVERRIDES.updateOne(
-            getOrCreateOverrides().isSame(),
+            GuildOverrides.getOrCreateOverrides(ctx.event.guild.id).isSame(),
             set(GuildOverrides::starboardRequirement, amount)
         )
         ctx.sendSuccess("The minimum amount of stars is now `${amount}`!")
@@ -41,7 +41,7 @@ class StarboardConfigurer(private val ctx: CommandContext) {
             return
         }
 
-        val overrides = getOrCreateOverrides()
+        val overrides = GuildOverrides.getOrCreateOverrides(ctx.event.guild.id)
 
         // Get the original channel to remove all their entries from the database to avoid errors.
         val originalChannel = if (overrides.starboardChannel != null)
@@ -59,16 +59,6 @@ class StarboardConfigurer(private val ctx: CommandContext) {
             set(GuildOverrides::starboardChannel, channel.id)
         )
         ctx.sendSuccess("The starboard channel has been set!")
-    }
-
-    private suspend fun getOrCreateOverrides(): GuildOverrides {
-        var override = GUILD_OVERRIDES.findOne(GuildOverrides::guildId eq ctx.event.guild.id)
-        if (override == null) {
-            GUILD_OVERRIDES.insertOne(
-                GuildOverrides(ctx.event.guild.id, false, false, true).apply { override = this }
-            )
-        }
-        return override!!
     }
 
     companion object {

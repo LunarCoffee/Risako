@@ -36,9 +36,10 @@ class GuildDispatcher(
             !event.message.contentRaw.startsWith(bot.config.prefix) ||
             event.author.isBot ||
             event.channel.type == ChannelType.PRIVATE ||
-            event.channel.type == ChannelType.GROUP
+            event.channel.type == ChannelType.GROUP ||
+            event.isWebhookMessage
         ) {
-            log.debug { "Event ${event.javaClass.name} caught!" }
+            log.debug { "Event ${event.javaClass.name} caught and ignored!" }
             return
         }
 

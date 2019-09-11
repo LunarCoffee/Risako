@@ -11,12 +11,56 @@ import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
 import dev.lunarcoffee.risako.framework.core.annotations.CommandGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
+import dev.lunarcoffee.risako.framework.core.commands.CommandContext
+import dev.lunarcoffee.risako.framework.core.commands.transformers.TrRest
 import dev.lunarcoffee.risako.framework.core.commands.transformers.TrWord
-import org.litote.kmongo.eq
+import net.dv8tion.jda.api.Permission
 import org.litote.kmongo.set
 
 @CommandGroup("Config")
 class ConfigCommands(private val bot: Bot) {
+    fun configrole() = command("configrole") {
+        description = "Sets the role required to use commands in this category."
+        aliases = arrayOf("setconfigrole")
+
+        extDescription = """
+            |`$name rolename|roleid`\n
+            |In order to use any command in the config category, you must either have a selected
+            |role or have the administrator permission. There is no default role, but you can set 
+            |it with this command, like: `configrole Risako Manager` if the role is called `Risako 
+            |Manager`. Instead of passing the name, you can also pass the role's ID.
+        """
+
+        expectedArgs = arrayOf(TrRest())
+        execute { args ->
+            // Only an admin can set the configurer role.
+            if (!event.member!!.hasPermission(Permission.ADMINISTRATOR)) {
+                sendError("You need to be an administrator to use this command!")
+                return@execute
+            }
+
+            // Try getting the role by name, then by ID.
+            val roleNameOrId = args.get<String>(0)
+            val role = event.guild.getRolesByName(roleNameOrId, true).firstOrNull()
+                ?: if (roleNameOrId.toLongOrNull() != null)
+                    event.guild.getRoleById(roleNameOrId)
+                else
+                    null
+
+            if (role == null) {
+                sendError("I can't find a role with that name or ID!")
+                return@execute
+            }
+
+            val overrides = GuildOverrides.getOrCreateOverrides(event.guild.id)
+            GUILD_OVERRIDES.updateOne(
+                overrides.isSame(),
+                set(GuildOverrides::risakoConfigurerRole, role.id)
+            )
+            sendSuccess("The configurer role has been updated!")
+        }
+    }
+
     fun togglecs() = command("togglecs") {
         description = "Toggles suggestions for when you type something wrong."
         aliases = arrayOf("togglesuggestions", "togglecommandsuggestions")
@@ -31,24 +75,23 @@ class ConfigCommands(private val bot: Bot) {
         """
 
         execute {
+            val overrides = GuildOverrides.getOrCreateOverrides(event.guild.id)
+            if (!checkConfigurerRole(overrides))
+                return@execute
+
             GUILD_OVERRIDES.run {
-                val override = findOne(GuildOverrides::guildId eq event.guild.id)
                 sendSuccess(
                     when {
-                        override == null -> {
-                            insertOne(GuildOverrides(event.guild.id, false, true, false))
-                            "Disabled command suggestions!"
-                        }
-                        override.noSuggestCommands -> {
+                        overrides.noSuggestCommands -> {
                             updateOne(
-                                override.isSame(),
+                                overrides.isSame(),
                                 set(GuildOverrides::noSuggestCommands, false)
                             )
                             "Enabled command suggestions!"
                         }
                         else -> {
                             updateOne(
-                                override.isSame(),
+                                overrides.isSame(),
                                 set(GuildOverrides::noSuggestCommands, true)
                             )
                             "Disabled command suggestions!"
@@ -72,20 +115,19 @@ class ConfigCommands(private val bot: Bot) {
         """
 
         execute {
+            val overrides = GuildOverrides.getOrCreateOverrides(event.guild.id)
+            if (!checkConfigurerRole(overrides))
+                return@execute
+
             GUILD_OVERRIDES.run {
-                val override = findOne(GuildOverrides::guildId eq event.guild.id)
                 sendSuccess(
                     when {
-                        override == null -> {
-                            insertOne(GuildOverrides(event.guild.id, true, false, false))
-                            "Disabled the pay respects embed!"
-                        }
-                        override.noPayRespects -> {
-                            updateOne(override.isSame(), set(GuildOverrides::noPayRespects, false))
+                        overrides.noPayRespects -> {
+                            updateOne(overrides.isSame(), set(GuildOverrides::noPayRespects, false))
                             "Enabled the pay respects embed!"
                         }
                         else -> {
-                            updateOne(override.isSame(), set(GuildOverrides::noPayRespects, true))
+                            updateOne(overrides.isSame(), set(GuildOverrides::noPayRespects, true))
                             "Disabled the pay respects embed!"
                         }
                     }
@@ -120,6 +162,10 @@ class ConfigCommands(private val bot: Bot) {
 
         expectedArgs = arrayOf(TrWord(), TrWord(true))
         execute { args ->
+            val overrides = GuildOverrides.getOrCreateOverrides(event.guild.id)
+            if (!checkConfigurerRole(overrides))
+                return@execute
+
             val option = args.get<String>(0).toLowerCase()
             val value = args.get<String>(1)
 
@@ -133,5 +179,22 @@ class ConfigCommands(private val bot: Bot) {
                 else -> sendError("That is not a valid option!")
             }
         }
+    }
+
+    private suspend fun CommandContext.checkConfigurerRole(overrides: GuildOverrides): Boolean {
+        // The administrator permission has absolute power.
+        if (event.member!!.hasPermission(Permission.ADMINISTRATOR))
+            return true
+
+        if (overrides.canConfigureBot(event.member!!) == false) {
+            sendError("You need to have the configurer role")
+            return false
+        }
+
+        if (overrides.risakoConfigurerRole == null) {
+            sendError("Please set a configurer role with `..configrole <role name or role id>`!")
+            return false
+        }
+        return true
     }
 }
