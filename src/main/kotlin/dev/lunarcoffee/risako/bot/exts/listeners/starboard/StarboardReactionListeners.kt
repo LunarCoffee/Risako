@@ -30,6 +30,12 @@ class StarboardReactionListeners(
         val starboardChannel = getStarboardChannel(event) ?: return
         val message = getMessageFromEvent(event)
 
+        // Prevent the author from starring their own message.
+        if (event.user == message.author) {
+            event.reaction.removeReaction(event.user).queue()
+            return
+        }
+
         launch {
             // Stop if there aren't enough stars.
             if (getStarCount(event) < overrides?.starboardRequirement ?: 1)
