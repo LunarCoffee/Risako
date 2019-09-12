@@ -5,8 +5,7 @@ package dev.lunarcoffee.risako.bot.exts.commands.owner
 import dev.lunarcoffee.risako.bot.consts.EMBED_COLOR
 import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.bot.exts.commands.owner.ex.ExecResultSender
-import dev.lunarcoffee.risako.bot.exts.commands.owner.ex.executors.KotlinExecutor
-import dev.lunarcoffee.risako.bot.exts.commands.owner.ex.executors.ShellScriptExecutor
+import dev.lunarcoffee.risako.bot.exts.commands.owner.ex.executors.*
 import dev.lunarcoffee.risako.bot.exts.commands.owner.file.FileContentSender
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.dsl.embed
@@ -174,6 +173,7 @@ class OwnerCommands(private val bot: Bot) {
             val result = when (language) {
                 "kotlin" -> KotlinExecutor(script.split("\n")).execute(this)
                 "sh" -> ShellScriptExecutor(script).execute(this)
+                "py", "python" -> PythonExecutor(script).execute(this)
                 else -> {
                     sendError("You must specify a valid language in a code block!")
                     return@execute
