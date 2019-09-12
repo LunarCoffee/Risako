@@ -4,7 +4,6 @@ package dev.lunarcoffee.risako.bot.exts.commands.config
 
 import dev.lunarcoffee.risako.bot.consts.GUILD_OVERRIDES
 import dev.lunarcoffee.risako.bot.exts.commands.config.sb.StarboardConfigurer
-import dev.lunarcoffee.risako.bot.exts.commands.config.sb.StarboardToggler
 import dev.lunarcoffee.risako.bot.std.GuildOverrides
 import dev.lunarcoffee.risako.framework.api.dsl.command
 import dev.lunarcoffee.risako.framework.api.extensions.sendError
@@ -175,7 +174,7 @@ class ConfigCommands(private val bot: Bot) {
                     StarboardConfigurer(this).setRequiredStars(value.toInt())
                 else
                     sendError("`${value}` is not a number (or is not between `1` and `1000`)!")
-                "toggle" -> StarboardToggler(this).toggle()
+                "toggle" -> StarboardConfigurer(this).toggle()
                 else -> sendError("That is not a valid option!")
             }
         }

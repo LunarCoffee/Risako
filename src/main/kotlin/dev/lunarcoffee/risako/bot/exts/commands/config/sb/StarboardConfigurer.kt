@@ -61,6 +61,25 @@ class StarboardConfigurer(private val ctx: CommandContext) {
         ctx.sendSuccess("The starboard channel has been set!")
     }
 
+    suspend fun toggle() {
+        val overrides = GuildOverrides.getOrCreateOverrides(ctx.event.guild.id)
+
+        GUILD_OVERRIDES.run {
+            ctx.sendSuccess(
+                when {
+                    overrides.noStarboard -> {
+                        updateOne(overrides.isSame(), set(GuildOverrides::noStarboard, false))
+                        "Enabled the starboard feature!"
+                    }
+                    else -> {
+                        updateOne(overrides.isSame(), set(GuildOverrides::noStarboard, true))
+                        "Disabled the starboard feature!"
+                    }
+                }
+            )
+        }
+    }
+
     companion object {
         private val CHANNEL_REGEX = """<#(\d{18})>""".toRegex()
         private val col = DB.getCollection<StarboardEntry>(ColName.STARBOARD)
