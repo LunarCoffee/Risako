@@ -17,7 +17,7 @@ class SplitTime(val days: Long, val hours: Long, val minutes: Long, val seconds:
         .plusMinutes(minutes)
         .plusSeconds(seconds)!!
 
-    fun localWithoutWeekday() = asLocal.format(TIME_FORMATTER).drop(4)
+    fun localWithoutWeekday() = asLocal.format(TIME_FORMATTER).drop(5)
 
     override fun toString(): String {
         val mtoDay = if (days != 1L) "s" else ""
