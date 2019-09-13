@@ -4,16 +4,15 @@ import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
+import java.math.BigDecimal
 import java.util.*
-import kotlin.math.pow
-import kotlin.math.roundToInt
 
 class RPNCalculationSender(private val expression: List<String>) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
-        val stack = Stack<Double>()
+        val stack = Stack<BigDecimal>()
 
         for (token in expression) {
-            val number = token.toDoubleOrNull()
+            val number = token.toBigDecimalOrNull()
             if (number != null) {
                 stack.push(number)
                 continue
@@ -36,19 +35,19 @@ class RPNCalculationSender(private val expression: List<String>) : ContentSender
                     "+" -> op1 + op2
                     "-" -> op1 - op2
                     "*" -> op1 * op2
-                    "/" -> op1 / op2
-                    "**" -> op1.pow(op2)
+                    "/" -> op1.divide(op2)
+                    "**" -> op1.pow(op2.intValueExact())
                     "%" -> op1 % op2
                     else -> {
-                        val o1 = op1.roundToInt()
-                        val o2 = op2.roundToInt()
+                        val o1 = op1.toBigIntegerExact()
+                        val o2 = op2.toBigIntegerExact()
 
                         when (token) {
                             "&" -> o1 and o2
                             "|" -> o1 or o2
                             "^" -> o1 xor o2
                             else -> throw IllegalStateException()
-                        }.toDouble()
+                        }.toBigDecimal()
                     }
                 }
             )

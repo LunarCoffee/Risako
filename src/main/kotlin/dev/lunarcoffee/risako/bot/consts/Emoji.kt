@@ -13,6 +13,7 @@ object Emoji {
     const val FRAMED_PICTURE = "\uD83D\uDDBC️"
     const val COFFEE = "\u2615"
     const val SATELLITE = "\uD83D\uDEF0️"
+    const val INDICATOR_A = "\uD83C\uDDE6"
     const val INDICATOR_F = "\uD83C\uDDEB"
     const val INDICATOR_X = "\uD83C\uDDFD"
     const val HAMMER_AND_WRENCH = "\uD83D\uDEE0️"
