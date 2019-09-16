@@ -246,17 +246,10 @@ class UtilityCommands(private val bot: Bot) {
     fun help() = command("help") {
         description = "Lists all commands or shows help for a specific command."
         extDescription = """
-            |`$name [command name] [-v]`\n
+            |`$name [command name]`\n
             |With a command name, this command gets its aliases, expected usage, expected
-            |arguments, and optionally (if the `-v` flag is set) an extended description (which
-            |you're reading right now). Otherwise, this command simply lists available commands.
-            |&{Examples:}
-            |Here are some examples of using this command:\n
-            | - `..help`: lists all commands\n
-            | - `..help osu`: shows general information about the `osu` command\n
-            | - `..help rplace -v`: shows very detailed information about the `rplace` command\n
-            |Basically, add `-v` (things prefixed with a `-` are called flags) to the end for more
-            |detailed help text.
+            |arguments, and n extended description. Otherwise, this command simply lists all of the
+            |available commands, as well as short descriptions of the commands in each category.
             |&{Reading command usages:}
             |The syntax of the expected command usage is as follows:\n
             | - `name`: denotes that `name` is required, which may be literal or variable\n
@@ -266,17 +259,16 @@ class UtilityCommands(private val bot: Bot) {
             |argument with double quotes "like this" to treat it as one instead of multiple.
         """
 
-        expectedArgs = arrayOf(TrWord(true), TrWord(true))
+        expectedArgs = arrayOf(TrWord(true))
         execute { args ->
             val commandName = args.get<String>(0)
-            val flags = args.get<String>(1)
             val command = bot.commands.find { commandName in it.names }
 
             if (commandName.isNotBlank() && command == null) {
                 sendError("I can't find that command!")
                 return@execute
             }
-            send(if (command == null) HelpListSender() else HelpDetailSender(command, flags))
+            send(if (command == null) HelpListSender() else HelpDetailSender(command))
         }
     }
 }

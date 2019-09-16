@@ -8,12 +8,11 @@ import dev.lunarcoffee.risako.framework.core.commands.Command
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.std.ContentSender
 
-class HelpDetailSender(private val command: Command, private val flags: String) : ContentSender {
+class HelpDetailSender(private val command: Command) : ContentSender {
     override suspend fun send(ctx: CommandContext) {
         ctx.send(
             embed {
-                // The first line of the extended description should always be the command usage
-                // (i.e. `help [command name] [-v]`).
+                // The first line of the extended description should always be the command usage.
                 val usage = command.extDescription.substringBefore("\n")
                 val aliases = if (command.aliases.isEmpty())
                     "(none)"
@@ -27,10 +26,7 @@ class HelpDetailSender(private val command: Command, private val flags: String) 
                     |**Usage**: $usage
                 """.trimMargin()
 
-                if (flags != "-v")
-                    footer { text = "Type '..help ${command.name} -v' for more info." }
-                else
-                    addExtendedDescription(command)
+                addExtendedDescription(command)
             }
         )
     }

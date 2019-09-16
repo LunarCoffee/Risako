@@ -104,6 +104,8 @@ class MathCommands(private val bot: Bot) {
         execute { args ->
             val expression = args.get<String>(0)
             val variables = args.get<List<String>>(1)
+
+
         }
     }
 
