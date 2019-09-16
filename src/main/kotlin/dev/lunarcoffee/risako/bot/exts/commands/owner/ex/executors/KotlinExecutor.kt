@@ -30,7 +30,7 @@ class KotlinExecutor(private val lines: List<String>) : CodeExecutor {
                 ENGINE.eval(
                     // This prepends imports and adds the actual code.
                     File("$EX_ROOT/ek_prelude.txt").readText().format(imports, code),
-                    SimpleBindings().apply { put("event", ctx.event) }
+                    SimpleBindings().apply { put("ctx", ctx) }
                 ) as Pair<*, *>
             }
         } catch (e: ScriptException) {
