@@ -101,7 +101,8 @@ class GuildDispatcher(
             try {
                 handleEvent(event)
             } catch (e: Exception) {
-                log.warn("Exception caught at the dispatcher level!")
+                log.warn("Exception caught at the dispatcher level:")
+                e.printStackTrace()
             }
         }
     }

@@ -109,6 +109,7 @@ class MathCommands(private val bot: Bot) {
         }
     }
 
+
     fun plot() = command("plot") {
         description = "Plots one or more given functions on a plane."
         aliases = arrayOf("graph", "plotfunc", "graphfunc")
