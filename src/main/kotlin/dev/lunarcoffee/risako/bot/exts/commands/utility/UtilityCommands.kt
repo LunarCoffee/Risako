@@ -17,52 +17,6 @@ import dev.lunarcoffee.risako.framework.core.std.SplitTime
 
 @CommandGroup("Utility")
 class UtilityCommands(private val bot: Bot) {
-    fun rev() = command("rev") {
-        description = "Reverses the given text."
-        aliases = arrayOf("reverse", "backwards")
-
-        extDescription = """
-            |`$name text [-w]`\n
-            |Reverses the given text, letter by letter if the `-w` flag is not specified, and word
-            |by word if it is specified (the text is simply split by spaces).
-        """
-
-        expectedArgs = arrayOf(TrRest())
-        execute { args ->
-            val rawText = args.get<String>(0)
-            val byWords = rawText.endsWith(" -w")
-
-            val text = if (byWords)
-                rawText.split(" ").dropLast(1).reversed().joinToString(" ")
-            else
-                rawText.reversed()
-
-            sendSuccess("Your text reversed is `$text`")
-        }
-    }
-
-    fun len() = command("len") {
-        description = "Shows the length of the given text."
-        aliases = arrayOf("length")
-
-        extDescription = """
-            |`$name text [-w]`\n
-            |Counts the characters in the given text if the `-w` flag is not specified, and counts
-            |words if it is specified (the text is simply split by spaces).
-        """
-
-        expectedArgs = arrayOf(TrRest())
-        execute { args ->
-            val rawText = args.get<String>(0)
-            val byWords = rawText.endsWith(" -w")
-
-            val length = if (byWords) rawText.split(" ").size - 1 else rawText.length
-            val charsOrWords = if (byWords) "words" else "characters"
-
-            sendSuccess("Your text is `$length` $charsOrWords long.")
-        }
-    }
-
     fun emote() = command("emote") {
         description = "Sends one or more custom emotes from any server I am in."
         aliases = arrayOf("sendemote")

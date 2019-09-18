@@ -91,25 +91,6 @@ class MathCommands(private val bot: Bot) {
         }
     }
 
-    fun mathexp() = command("mathexp") {
-        description = "Evaluates a mathematical expression, supporting variables."
-        aliases = arrayOf("matheval")
-
-        extDescription = """
-            `$name expression [name=value...]`\n
-            
-        """
-
-        expectedArgs = arrayOf(TrWord(), TrRemaining(true))
-        execute { args ->
-            val expression = args.get<String>(0)
-            val variables = args.get<List<String>>(1)
-
-
-        }
-    }
-
-
     fun plot() = command("plot") {
         description = "Plots one or more given functions on a plane."
         aliases = arrayOf("graph", "plotfunc", "graphfunc")
