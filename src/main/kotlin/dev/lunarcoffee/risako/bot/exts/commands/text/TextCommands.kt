@@ -86,6 +86,10 @@ class TextCommands(private val bot: Bot) {
             |example, for the command invocation `..sub hwllaa w=e aa=o`, the result would be
             |`hello`. If you need to replace an equals sign in the text, don't put anything on the
             |left side (`=a` would replace all equals signs with `a`).
+            |&{Removing characters or phrases:}
+            |This command can also remove any strings of text. To do this, simply do not provide
+            |an `output` for the `input` you want to remove. For example, `..sub helylyo y=` will
+            |remove every `y` from the text.
         """
 
         expectedArgs = arrayOf(TrWord(), TrRemaining())
