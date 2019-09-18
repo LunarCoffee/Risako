@@ -90,6 +90,10 @@ class TextCommands(private val bot: Bot) {
             |This command can also remove any strings of text. To do this, simply do not provide
             |an `output` for the `input` you want to remove. For example, `..sub helylyo y=` will
             |remove every `y` from the text.
+            |&{Substitution order:}
+            |It is worth mentioning that the order in which the substitutions will be applied is
+            |from the first provided to the last. This is important because an invocation like
+            |`..sub holle e=o o=e` will not result in `hello`, but rather `helle`.
         """
 
         expectedArgs = arrayOf(TrWord(), TrRemaining())
