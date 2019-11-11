@@ -102,12 +102,14 @@ class TextCommands(private val bot: Bot) {
             val substitutions = args
                 .get<List<String>>(1)
                 .map { it.split("=") }
-                .mapNotNull { if (it.size < 2) null else Pair(it[0].ifEmpty { "=" }, it[1]) }
+                .filter { it.size > 1 }
+                .map { Pair(it[0].ifEmpty { "=" }, it[1]) }
 
             val result = substitutions
                 .fold(text) { acc, next -> acc.replace(next.first, next.second) }
 
-            sendSuccess("Your substituted text is `$result`.")
+            val resultText = if (result.isEmpty()) "empty" else "`$result`"
+            sendSuccess("Your substituted text is $resultText.")
         }
     }
 

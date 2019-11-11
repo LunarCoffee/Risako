@@ -14,14 +14,14 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter
 @ListenerGroup
 class MentionListeners(private val bot: Bot) : ListenerAdapter() {
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
-        val content = event.message.contentRaw
+        val content = event.message.contentRaw.trim()
 
         // React to the message if it contained a mention to the owner or the bot.
-        if ("<@${bot.config.ownerId}>" in content)
+        if ("<@${bot.config.ownerId}>" in content || "<@!${bot.config.ownerId}>" in content)
             event.message.addReaction(Emoji.COFFEE).queue()
 
         // Help the user that couldn't read the activity text by sending them the prefix. :P
-        if (content == "<@${bot.jda.selfUser.id}>")
+        if (content == "<@${bot.jda.selfUser.id}>" || content == "<@!${bot.jda.selfUser.id}>")
             GlobalScope.launch { event.channel.sendSuccess("My prefix here is `..`!") }
     }
 }
