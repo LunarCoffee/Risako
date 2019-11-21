@@ -80,21 +80,15 @@ class ConfigCommands(private val bot: Bot) {
 
             GUILD_OVERRIDES.run {
                 sendSuccess(
-                    when {
-                        overrides.noSuggestCommands -> {
-                            updateOne(
-                                overrides.isSame(),
-                                set(GuildOverrides::noSuggestCommands, false)
-                            )
-                            "Enabled command suggestions!"
-                        }
-                        else -> {
-                            updateOne(
-                                overrides.isSame(),
-                                set(GuildOverrides::noSuggestCommands, true)
-                            )
-                            "Disabled command suggestions!"
-                        }
+                    if (overrides.noSuggestCommands) {
+                        updateOne(
+                            overrides.isSame(),
+                            set(GuildOverrides::noSuggestCommands, false)
+                        )
+                        "Enabled command suggestions!"
+                    } else {
+                        updateOne(overrides.isSame(), set(GuildOverrides::noSuggestCommands, true))
+                        "Disabled command suggestions!"
                     }
                 )
             }
@@ -120,15 +114,12 @@ class ConfigCommands(private val bot: Bot) {
 
             GUILD_OVERRIDES.run {
                 sendSuccess(
-                    when {
-                        overrides.noPayRespects -> {
-                            updateOne(overrides.isSame(), set(GuildOverrides::noPayRespects, false))
-                            "Enabled the pay respects embed!"
-                        }
-                        else -> {
-                            updateOne(overrides.isSame(), set(GuildOverrides::noPayRespects, true))
-                            "Disabled the pay respects embed!"
-                        }
+                    if (overrides.noPayRespects) {
+                        updateOne(overrides.isSame(), set(GuildOverrides::noPayRespects, false))
+                        "Enabled the pay respects embed!"
+                    } else {
+                        updateOne(overrides.isSame(), set(GuildOverrides::noPayRespects, true))
+                        "Disabled the pay respects embed!"
                     }
                 )
             }

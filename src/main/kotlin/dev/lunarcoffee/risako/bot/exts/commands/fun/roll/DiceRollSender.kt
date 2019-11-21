@@ -15,9 +15,6 @@ class DiceRollSender(private val diceRolls: List<DiceRoll>) : ContentSender {
 
         // Sum all the results of each individual roll and add all the modifiers.
         val total = results.flatten().sum() + diceRolls.sumBy { it.mod }
-
-        // If the user rolls more than one die, make the embed title "You rolled a total of..."
-        // instead of "You rolled a..." if only one die was rolled. Makes it a bit more human.
         val totalOfOrEmpty = if (diceRolls.size > 1) "total of " else ""
 
         // Make each roll specifier's results look like "**2d8-2**: [3, 6] -2" or so.
