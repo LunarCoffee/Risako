@@ -6,13 +6,17 @@ import dev.lunarcoffee.risako.bot.consts.Emoji
 import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
 import dev.lunarcoffee.risako.framework.core.annotations.ListenerGroup
 import dev.lunarcoffee.risako.framework.core.bot.Bot
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent
 import net.dv8tion.jda.api.hooks.ListenerAdapter
 
 @ListenerGroup
-class MentionListeners(private val bot: Bot) : ListenerAdapter() {
+class MentionListeners(
+    private val bot: Bot
+) : ListenerAdapter(), CoroutineScope by CoroutineScope(Dispatchers.IO) {
+    
     override fun onGuildMessageReceived(event: GuildMessageReceivedEvent) {
         val content = event.message.contentRaw.trim()
 
@@ -22,6 +26,6 @@ class MentionListeners(private val bot: Bot) : ListenerAdapter() {
 
         // Help the user that couldn't read the activity text by sending them the prefix. :P
         if (content == "<@${bot.jda.selfUser.id}>" || content == "<@!${bot.jda.selfUser.id}>")
-            GlobalScope.launch { event.channel.sendSuccess("My prefix here is `..`!") }
+            launch { event.channel.sendSuccess("My prefix here is `..`!") }
     }
 }

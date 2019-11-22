@@ -2,10 +2,13 @@ package dev.lunarcoffee.risako.bot.exts.commands.`fun`.rplace.gallery
 
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.rplace.RPlaceCanvas
 import dev.lunarcoffee.risako.bot.exts.commands.`fun`.rplace.RPlaceCanvasSaver
-import dev.lunarcoffee.risako.framework.api.extensions.*
+import dev.lunarcoffee.risako.framework.api.extensions.send
+import dev.lunarcoffee.risako.framework.api.extensions.sendError
+import dev.lunarcoffee.risako.framework.api.extensions.sendSuccess
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.dispatchers.DispatchableArgs
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.awt.Color
 import java.awt.Image
 import java.awt.image.BufferedImage
@@ -64,7 +67,7 @@ class RPlaceGallery(private val canvas: Array<Array<Color>>) {
 
         val name = args.get<String>(3)
         try {
-            GlobalScope.launch(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 // Simply deleting the image will do. We also don't need to check for the return of
                 // [delete] since it only returns [false] when the file does not exist, which is
                 // handled by the try/catch.

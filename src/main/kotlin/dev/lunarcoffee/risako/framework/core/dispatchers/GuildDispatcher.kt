@@ -3,13 +3,14 @@ package dev.lunarcoffee.risako.framework.core.dispatchers
 import dev.lunarcoffee.risako.framework.api.extensions.await
 import dev.lunarcoffee.risako.framework.api.extensions.sendError
 import dev.lunarcoffee.risako.framework.core.bot.Bot
-import dev.lunarcoffee.risako.framework.core.commands.*
+import dev.lunarcoffee.risako.framework.core.commands.Command
+import dev.lunarcoffee.risako.framework.core.commands.GuildCommandArgs
+import dev.lunarcoffee.risako.framework.core.commands.GuildCommandContext
 import dev.lunarcoffee.risako.framework.core.dispatchers.parsers.ArgParser
 import dev.lunarcoffee.risako.framework.core.std.OpError
 import dev.lunarcoffee.risako.framework.core.std.OpSuccess
 import kotlinx.coroutines.*
 import mu.KotlinLogging
-import net.dv8tion.jda.api.entities.ChannelType
 import net.dv8tion.jda.api.entities.MessageChannel
 import net.dv8tion.jda.api.events.GenericEvent
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent
@@ -17,7 +18,7 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent
 class GuildDispatcher(
     override val bot: Bot,
     override val argParser: ArgParser
-) : CoroutineScope by CoroutineScope(Dispatchers.Default), Dispatcher {
+) : CoroutineScope by CoroutineScope(Dispatchers.IO), Dispatcher {
 
     override val commands = mutableListOf<Command>()
 
@@ -35,8 +36,7 @@ class GuildDispatcher(
             event !is MessageReceivedEvent ||
             !event.message.contentRaw.startsWith(bot.config.prefix) ||
             event.author.isBot ||
-            event.channel.type == ChannelType.PRIVATE ||
-            event.channel.type == ChannelType.GROUP ||
+            !event.isFromGuild ||
             event.isWebhookMessage
         ) {
             log.debug { "Event ${event.javaClass.name} caught and ignored!" }
@@ -109,7 +109,7 @@ class GuildDispatcher(
 
     // Tell the user to see the command's help message if the arguments were wrong.
     private suspend fun sendUsage(channel: MessageChannel, name: String) {
-        channel.sendError("That's not right. Type `..help $name` for more info.") {
+        channel.sendError("That's not quite the right usage. Type `..help $name` for more info.") {
             delay(5000L)
             it.delete().await()
         }

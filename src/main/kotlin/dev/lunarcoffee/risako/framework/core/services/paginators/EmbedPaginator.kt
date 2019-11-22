@@ -1,7 +1,6 @@
-package dev.lunarcoffee.framework.core.paginators
+package dev.lunarcoffee.risako.framework.core.services.paginators
 
 import dev.lunarcoffee.risako.framework.api.dsl.message
-import dev.lunarcoffee.risako.framework.core.services.paginators.Paginator
 import net.dv8tion.jda.api.entities.Message
 import net.dv8tion.jda.api.entities.User
 import java.util.*

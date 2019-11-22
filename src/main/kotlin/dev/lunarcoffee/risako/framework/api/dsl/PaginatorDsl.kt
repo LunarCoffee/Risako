@@ -1,6 +1,6 @@
 package dev.lunarcoffee.risako.framework.api.dsl
 
-import dev.lunarcoffee.framework.core.paginators.EmbedPaginator
+import dev.lunarcoffee.risako.framework.core.services.paginators.EmbedPaginator
 import dev.lunarcoffee.risako.framework.core.commands.CommandContext
 import dev.lunarcoffee.risako.framework.core.services.paginators.MessagePaginator
 import net.dv8tion.jda.api.entities.MessageEmbed

@@ -4,13 +4,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
-inline fun <T> silence(crossinline f: () -> T): T? {
-    return try {
-        f()
-    } catch (e: Exception) {
-        null
-    }
-}
+inline fun <T> silence(crossinline f: () -> T) = runCatching { f() }.getOrNull()
 
 fun String.trimToDescription() = trimMargin().replace("\n", " ").replace("\\n", "\n")
 
